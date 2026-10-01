@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Boceto · Monitoreo ERM 2026</title>
+<link rel="stylesheet" href="https://unpkg.com/maplibre-gl@5.6.0/dist/maplibre-gl.css">
+<style>
+:root{--fondo:#f7f6f2;--tarjeta:#fff;--tinta:#1f1e1a;--suave:#66625a;--linea:#e5e2d9;--relleno:#f1efe8;
+--teal:#0b7a8e;--rojo:#8b2530;--alerta:#d92d20;--g0:#7fb7a4;--g1:#e8a33d;--g2:#b4231f;--jne:#2b3a8f;
+--e1:4px;--e2:8px;--e3:12px;--e4:16px;--e5:24px;--r:10px;--sombra:0 1px 2px rgb(31 30 26/.05),0 8px 24px -12px rgb(31 30 26/.14)}
+@media(prefers-color-scheme:dark){:root{--fondo:#171613;--tarjeta:#211f1b;--tinta:#eeece5;--suave:#a29e93;--linea:#37342d;--relleno:#2a2823;--teal:#1aacca;--rojo:#c4404e;--jne:#8b9cf0}}
+*{box-sizing:border-box}body{margin:0;background:var(--fondo);color:var(--tinta);font:14px/1.45 system-ui,Segoe UI,sans-serif}
+.sim{background:#fff3cd;color:#664d03;text-align:center;font-weight:600;padding:6px;font-size:12px}
+header{display:flex;align-items:center;gap:var(--e4);padding:var(--e4) var(--e5);flex-wrap:wrap}
+header img{height:40px}h1{font-size:18px;margin:0}header p{margin:0;color:var(--suave);font-size:12px}
+.hora{margin-left:auto;text-align:right;font-variant-numeric:tabular-nums}.hora b{font-size:20px;display:block}
+main{padding:0 var(--e5) var(--e5);max-width:1480px;margin:auto}
+.cortes{display:flex;gap:var(--e2);flex-wrap:wrap;margin-bottom:var(--e4)}
+.corte{flex:1;min-width:150px;border:1px solid var(--linea);background:var(--tarjeta);border-radius:var(--r);padding:var(--e3);cursor:pointer;text-align:left;color:inherit;font:inherit}
+.corte[aria-pressed=true]{border-color:var(--teal);box-shadow:0 0 0 2px var(--teal) inset}
+.corte b{display:block}.corte small{color:var(--suave)}.barra{height:6px;background:var(--relleno);border-radius:3px;margin-top:6px;overflow:hidden}.barra i{display:block;height:100%;background:var(--teal)}
+.cifras{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:var(--e2);margin-bottom:var(--e4)}
+.cifra{background:var(--tarjeta);border:1px solid var(--linea);border-radius:var(--r);padding:var(--e3);box-shadow:var(--sombra)}
+.cifra b{font-size:26px;display:block;font-variant-numeric:tabular-nums}.cifra span{color:var(--suave);font-size:12px}
+.cifra.grave b{color:var(--g2)}
+.cuerpo{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(300px,1fr);gap:var(--e4)}
+@media(max-width:900px){.cuerpo{grid-template-columns:1fr}}
+.mapa{position:relative;background:var(--tarjeta);border:1px solid var(--linea);border-radius:var(--r);overflow:hidden;box-shadow:var(--sombra)}
+#map{height:620px}@media(max-width:900px){#map{height:460px}}
+.leyenda{position:absolute;left:10px;bottom:10px;background:color-mix(in srgb,var(--tarjeta) 94%,transparent);border:1px solid var(--linea);border-radius:8px;padding:8px 10px;font-size:11.5px;max-width:250px}
+.leyenda div{display:flex;align-items:center;gap:6px;margin:3px 0}.sw{width:14px;height:14px;border-radius:3px;flex:none}
+.hueco{border:1px dashed var(--suave)}.verif{background:repeating-linear-gradient(45deg,#e34948 0 2px,transparent 2px 5px);border:1px solid #e34948}
+.tog{position:absolute;right:10px;top:10px;background:var(--tarjeta);border:1px solid var(--linea);border-radius:8px;padding:6px 10px;font-size:12px}
+.lado{display:flex;flex-direction:column;gap:var(--e3);min-width:0}
+.card{background:var(--tarjeta);border:1px solid var(--linea);border-radius:var(--r);padding:var(--e3) var(--e4);box-shadow:var(--sombra)}
+.card h2{font-size:13px;margin:0 0 var(--e2);text-transform:uppercase;letter-spacing:.04em;color:var(--suave)}
+#feed{max-height:330px;overflow:auto}.it{display:grid;grid-template-columns:auto 1fr;gap:2px 10px;padding:8px 0;border-top:1px solid var(--linea);cursor:pointer}
+.it:first-child{border-top:0}.chip{font-size:11px;font-weight:700;padding:2px 8px;border-radius:99px;color:#fff;align-self:start}
+.c0{background:var(--g0)}.c1{background:var(--g1);color:#3a2a00}.c2{background:var(--g2)}.cj{background:var(--jne)}
+.it small{color:var(--suave)}.hh{font-variant-numeric:tabular-nums;color:var(--suave)}
+.cons{display:grid;gap:6px}.cons div{display:grid;grid-template-columns:130px 1fr 40px;gap:8px;align-items:center;font-size:12.5px}
+.cons i{display:block;height:10px;border-radius:5px;background:var(--teal)}
+.bandera{background:none;border:0;padding:0;cursor:pointer}
+.jne{background:var(--jne);color:#fff;font-weight:800;font-size:10.5px;padding:3px 6px;border-radius:6px;border:2px solid #fff;box-shadow:0 1px 4px rgb(0 0 0/.4);cursor:pointer;letter-spacing:.04em}
+.pulso{animation:p 1.6s ease-out infinite}@keyframes p{0%{box-shadow:0 0 0 0 rgba(180,35,31,.5)}100%{box-shadow:0 0 0 14px rgba(180,35,31,0)}}
+.pie{color:var(--suave);font-size:11.5px;margin-top:var(--e4)}
+#panel b.t{font-size:15px}#panel p{margin:4px 0;font-size:13px}
+</style></head><body>
+<div class="sim">BOCETO · reportes y alertas JNE SIMULADOS · contexto REA con datos reales (precarga)</div>
+<header><img src="../dashboard/public/reniec-logo.png" alt="RENIEC">
+<div><h1>Monitoreo de la jornada electoral · ERM 2026</h1><p>Domingo 4 de octubre de 2026 · SDPEG · Dirección de Registro Electoral</p></div>
+<div class="hora"><b id="reloj">--:--</b><span id="ultimo">último corte: —</span></div></header>
+<main>
+<div class="cortes" id="cortes"></div>
+<div class="cifras" id="cifras"></div>
+<div class="cuerpo">
+ <div class="mapa"><div id="map"></div>
+  <label class="tog"><input type="checkbox" id="tRiesgo" checked> Riesgo previo (REA)</label>
+  <div class="leyenda" id="leyenda"></div></div>
+ <div class="lado">
+  <div class="card" id="panel"><h2>Distrito</h2><p style="color:var(--suave)">Toque un distrito, bandera o marker para ver el detalle.</p></div>
+  <div class="card"><h2>Incidencias del corte</h2><div id="feed"></div></div>
+  <div class="card"><h2>Consultas atendidas</h2><div class="cons" id="cons"></div></div>
+ </div></div>
+<p class="pie">Contexto precargado: 8 denuncias REA con alerta, 67 distritos con verificación domiciliaria y 38 597 restituidos en 165 distritos (cortes REA 30/09, 21/09 y 25/09). UBIGEO INEI.</p>
+</main>
+<script src="https://unpkg.com/maplibre-gl@5.6.0/dist/maplibre-gl.js"></script>
+<script>
+const P='../dashboard/public/data/precarga/';
+const ESP=[120,250,380]; // locales esperados por corte (provisional)
+const HORAS=['07:30','12:00','16:30'];
+let corte=1,reps=[],riesgo=new Map(),jneAl=[],map,geo,sel=null;
+// RNG determinista
+let s=7;const rnd=()=>(s=(s*16807)%2147483647)/2147483647;
+const RES=['Sin incidencias; flujo normal de consultas.','Cola larga y consultas por DNI vencido; sin conflicto.','Discusión entre personeros cerca del local; se mantuvo distancia.','Ciudadanos reclaman restitución de domicilio; se derivó a RENIEC.','Presencia insistente de prensa en el local.','Rumor de padrón manipulado; se aclaró con el dashboard.'];
+const FUENTES=['Orientador','WhatsApp','Correo','Llamada'];
+function simular(feats){
+ const pool=feats.slice().sort(()=>rnd()-.5);
+ const prio=[...riesgo.keys()].filter(u=>feats.find(f=>f.properties.u===u));
+ const base=[...new Set([...prio.slice(0,40),...pool.slice(0,380).map(f=>f.properties.u)])];
+ for(let c=1;c<=3;c++){
+  base.slice(0,ESP[c-1]).forEach((u,i)=>{
+   if(rnd()>.55+c*.12)return;
+   const r=riesgo.get(u);let g=rnd()<.7?0:rnd()<.75?1:2; if(r&&r.alertas_rea.length&&rnd()<.5)g=Math.max(g,1);
+   const m=Math.floor(rnd()*6);const f=feats.find(x=>x.properties.u===u).properties;
+   const h=HORAS[c-1].split(':').map(Number);const min=h[0]*60+h[1]+Math.floor(rnd()*70);
+   reps.push({corte:c,u,dep:f.dep,prov:f.prov,dist:f.dist,g,reniec:g>0&&rnd()<.4,
+    hora:`${String(Math.floor(min/60)).padStart(2,'0')}:${String(min%60).padStart(2,'0')}`,
+    fuente:FUENTES[Math.floor(rnd()*4)],resumen:g==0?RES[0]:RES[1+Math.floor(rnd()*5)],
+    cons:[Math.floor(rnd()*30),Math.floor(rnd()*20),Math.floor(rnd()*25),Math.floor(rnd()*15),Math.floor(rnd()*10)]});
+  });
+ }
+ // 3 alertas JNE simuladas
+ jneAl=['010105','150101','080910'].map((u,i)=>({u,hora:['09:10','11:40','14:05'][i],texto:['Alerta JNE simulada: incidente en local de votación.','Alerta JNE simulada: reporte de fiscalización.','Alerta JNE simulada: denuncia de propaganda.'][i]})).filter(a=>feats.find(f=>f.properties.u===a.u));
+}
+const porU=()=>{const m=new Map();reps.filter(r=>r.corte===corte).forEach(r=>{const o=m.get(r.u);if(!o||r.g>o.g)m.set(r.u,r)});return m};
+function pintar(){
+ const m=porU(),lista=reps.filter(r=>r.corte===corte);
+ geo.features.forEach(f=>{const r=m.get(f.properties.u);f.properties.g=r?r.g:-1;f.properties.rn=r&&r.reniec?1:0;
+  const q=riesgo.get(f.properties.u);f.properties.rest=q&&q.restituidos?q.restituidos.total:0;f.properties.ver=q&&q.verificacion?1:0});
+ map.getSource('d').setData(geo);
+ // cortes
+ document.getElementById('cortes').innerHTML=[1,2,3].map(c=>{const n=new Set(reps.filter(r=>r.corte===c).map(r=>r.u)).size;
+  return `<button class="corte" aria-pressed="${c===corte}" data-c="${c}"><b>Corte ${c} · ${['Inicio de votación','Mediodía','16:30 · cierre local'][c-1]}</b><small>${n} de ${ESP[c-1]} reportes esperados</small><div class="barra"><i style="width:${Math.min(100,n/ESP[c-1]*100)}%"></i></div></button>`}).join('');
+ document.querySelectorAll('.corte').forEach(b=>b.onclick=()=>{corte=+b.dataset.c;pintar()});
+ const inc=lista.filter(r=>r.g>0),gr=lista.filter(r=>r.g==2),mr=lista.filter(r=>r.reniec);
+ const tot=[0,0,0,0,0];lista.forEach(r=>r.cons.forEach((v,i)=>tot[i]+=v));
+ document.getElementById('cifras').innerHTML=[['locales reportando',lista.length,''],['incidencias',inc.length,''],['graves',gr.length,'grave'],['mencionan a RENIEC',mr.length,''],['alertas JNE',jneAl.length,''],['consultas atendidas',tot.reduce((a,b)=>a+b,0),'']].map(([l,v,c])=>`<div class="cifra ${c}"><b>${v}</b><span>${l}</span></div>`).join('');
+ const N=['DNI vencido','Restitución de domicilio','«Cara de niño»','Cierre de padrón','Otros'],mx=Math.max(...tot,1);
+ document.getElementById('cons').innerHTML=N.map((n,i)=>`<div><span>${n}</span><span><i style="width:${tot[i]/mx*100}%"></i></span><b>${tot[i]}</b></div>`).join('');
+ const items=[...inc.map(r=>({h:r.hora,html:`<span class="chip c${r.g}">${r.g==2?'GRAVE':'ATENCIÓN'}</span><div><b>${r.dist}</b> <small>${r.prov} · ${r.dep}</small><br>${r.resumen}${r.reniec?' <b>· Menciona a RENIEC</b>':''}<br><small class="hh">${r.hora} · ${r.fuente}</small></div>`,u:r.u})),
+  ...jneAl.map(a=>({h:a.hora,html:`<span class="chip cj">JNE</span><div><b>${geo.features.find(f=>f.properties.u===a.u).properties.dist}</b><br>${a.texto}<br><small class="hh">${a.hora} · fuente JNE</small></div>`,u:a.u}))].sort((a,b)=>b.h.localeCompare(a.h));
+ document.getElementById('feed').innerHTML=items.length?items.map(i=>`<div class="it" data-u="${i.u}">${i.html}</div>`).join(''):'<small>Sin incidencias en este corte.</small>';
+ document.querySelectorAll('.it').forEach(e=>e.onclick=()=>abrir(e.dataset.u));
+ document.getElementById('ultimo').textContent=`último corte: ${HORAS[corte-1]}`;
+}
+function abrir(u){
+ const f=geo.features.find(x=>x.properties.u===u);if(!f)return;const p=f.properties,q=riesgo.get(u),r=reps.filter(x=>x.u===u&&x.corte===corte);
+ document.getElementById('panel').innerHTML=`<h2>Distrito</h2><b class="t">${p.dist}</b><p style="color:var(--suave)">${p.prov} · ${p.dep} · ubigeo INEI ${u}</p>`+
+  (r.length?r.map(x=>`<p><span class="chip c${x.g}">${['SIN INCIDENCIA','ATENCIÓN','GRAVE'][x.g]}</span> ${x.hora} · ${x.resumen}</p>`).join(''):'<p style="color:var(--suave)">Sin reporte en este corte.</p>')+
+  (jneAl.filter(a=>a.u===u).map(a=>`<p><span class="chip cj">JNE</span> ${a.texto}</p>`).join(''))+
+  (q?`<hr style="border:0;border-top:1px solid var(--linea)"><p><b>Riesgo previo (REA)</b></p>`+
+   (q.alertas_rea.map(a=>`<p>⚑ Ítem ${a.item}: ${a.motivo}</p>`).join(''))+
+   (q.verificacion?`<p>Verificación domiciliaria realizada (${q.verificacion.domicilios??'—'} domicilios).</p>`:'')+
+   (q.restituidos?`<p>Restituidos: ${q.restituidos.total.toLocaleString('es-PE')} (RENIEC ${q.restituidos.reniec.toLocaleString('es-PE')} · JNE ${q.restituidos.jne.toLocaleString('es-PE')}).</p>`:''):'');
+ map.fitBounds(bounds(f),{padding:60,maxZoom:9,duration:600});
+}
+function bounds(f){const b=[[180,90],[-180,-90]];(function w(c){if(typeof c[0]==='number'){b[0][0]=Math.min(b[0][0],c[0]);b[0][1]=Math.min(b[0][1],c[1]);b[1][0]=Math.max(b[1][0],c[0]);b[1][1]=Math.max(b[1][1],c[1])}else c.forEach(w)})(f.geometry.coordinates);return b}
+const FLAG='<svg viewBox="0 0 24 30" width="22" height="27"><path d="M4 2v26" stroke="#3a0d09" stroke-width="2.4" stroke-linecap="round"/><path d="M5 3.5c5-2.6 8 2.6 14 0v11c-6 2.6-9-2.6-14 0z" fill="#d92d20" stroke="#7a1610" stroke-width="1.2"/></svg>';
+(async()=>{
+ const [g,r]=await Promise.all([fetch(P+'distritos_pais.geojson').then(x=>x.json()),fetch(P+'riesgo_previo.json').then(x=>x.json())]);
+ geo=g;r.distritos.forEach(d=>riesgo.set(d.ubigeo_inei,d));simular(g.features);
+ const dark=matchMedia('(prefers-color-scheme:dark)').matches;
+ map=new maplibregl.Map({container:'map',style:{version:8,sources:{},layers:[{id:'bg',type:'background',paint:{'background-color':dark?'#1c1b18':'#eef0ed'}}]},center:[-75.5,-9.3],zoom:4.2,attributionControl:false});
+ map.addControl(new maplibregl.NavigationControl({showCompass:false}),'top-left');
+ map.on('load',()=>{
+  map.addSource('d',{type:'geojson',data:geo});
+  map.addLayer({id:'rest',type:'fill',source:'d',paint:{'fill-color':'#5a6b8c','fill-opacity':['step',['get','rest'],0,1,.12,100,.22,1000,.34]}});
+  map.addLayer({id:'rep',type:'fill',source:'d',filter:['>=',['get','g'],0],paint:{'fill-color':['match',['get','g'],0,'#7fb7a4',1,'#e8a33d','#b4231f'],'fill-opacity':.85}});
+  map.addLayer({id:'lin',type:'line',source:'d',paint:{'line-color':dark?'#4a4740':'#c9c5b8','line-width':.3}});
+  map.addLayer({id:'ver',type:'line',source:'d',filter:['==',['get','ver'],1],paint:{'line-color':'#e34948','line-width':1.6,'line-dasharray':[2,1.5]}});
+  map.addLayer({id:'ren',type:'circle',source:'d',filter:['==',['get','rn'],1],paint:{'circle-radius':0}});
+  map.addLayer({id:'sel',type:'line',source:'d',filter:['==',['get','u'],''],paint:{'line-color':'#000','line-width':2.5}});
+  map.on('click','lin',e=>{});
+  map.on('click',e=>{const f=map.queryRenderedFeatures(e.point,{layers:['rest','rep','lin']})[0];if(f)abrir(f.properties.u)});
+  // markers
+  const ctr=u=>{const f=geo.features.find(x=>x.properties.u===u);return[f.properties.lon,f.properties.lat]};
+  [...riesgo.values()].filter(d=>d.alertas_rea.length).forEach(d=>{const e=document.createElement('button');e.className='bandera';e.title='Alerta REA: riesgo de conflicto';e.innerHTML=FLAG;e.onclick=ev=>{ev.stopPropagation();abrir(d.ubigeo_inei)};new maplibregl.Marker({element:e,anchor:'bottom-left'}).setLngLat(ctr(d.ubigeo_inei)).addTo(map)});
+  jneAl.forEach(a=>{const e=document.createElement('div');e.className='jne pulso';e.textContent='JNE';e.title='Alerta del JNE';e.onclick=ev=>{ev.stopPropagation();abrir(a.u)};new maplibregl.Marker({element:e}).setLngLat(ctr(a.u)).addTo(map)});
+  document.getElementById('tRiesgo').onchange=ev=>{const v=ev.target.checked?'visible':'none';['rest','ver'].forEach(l=>map.setLayoutProperty(l,'visibility',v));document.querySelectorAll('.bandera').forEach(b=>b.style.display=ev.target.checked?'':'none')};
+  pintar();
+ });
+ document.getElementById('leyenda').innerHTML=`<div><span class="sw" style="background:var(--g0)"></span>Reporte sin incidencia</div><div><span class="sw" style="background:var(--g1)"></span>Atención</div><div><span class="sw" style="background:var(--g2)"></span>Grave</div><div><span class="sw hueco"></span>Sin reporte en el corte</div><div><span class="sw verif"></span>Verificación domiciliaria (REA)</div><div><span class="sw" style="background:#5a6b8c;opacity:.4"></span>Restituidos (más oscuro = más)</div><div>${FLAG.replace('width="22" height="27"','width="14" height="17"')} Alerta REA de riesgo</div><div><span class="jne" style="padding:1px 4px">JNE</span> Alerta del JNE</div>`;
+ setInterval(()=>reloj.textContent=new Date().toLocaleTimeString('es-PE',{hour:'2-digit',minute:'2-digit'}),1000);
+})();
+</script></body></html>
