@@ -168,7 +168,10 @@ def main() -> None:
     escaneadas: list[int] = []
     for n in paginas:
         t = doc[n - 1].get_text().strip()
-        if len(t) >= MIN_TEXTO:
+        # Una pagina con texto digital pero con una imagen grande incrustada (p. ej. una tabla pegada)
+        # es MIXTA: el texto digital no la cubre, asi que tambien va a OCR.
+        mixta = any(img[2] >= 600 and img[3] >= 200 for img in doc[n - 1].get_images())
+        if len(t) >= MIN_TEXTO and not mixta:
             (SALIDA / f"{pdf.stem}__p{n:03d}.txt").write_text(t, encoding="utf-8")
             manifiesto["paginas"][n] = {"metodo": "digital", "caracteres": len(t)}
         else:
