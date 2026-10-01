@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="es"><head><meta name="robots" content="noindex, nofollow"><meta charset="utf-8">
+<html lang="es"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Boceto v5 · Monitoreo ERM 2026</title>
 <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@5.6.0/dist/maplibre-gl.css">
@@ -91,7 +91,7 @@ td.g{color:var(--g2)}
 </style></head><body>
 <div class="sim">BOCETO v5 · reportes y otros canales simulados · REALES: 32 alertas del JNE y 10 banderas REA (corte 01/10/2026) · contexto REA con datos reales (precarga)</div>
 <div class="wrap">
-<header><img src="reniec-logo.png" alt="RENIEC">
+<header><img src="../dashboard/public/reniec-logo.png" alt="RENIEC">
 <div><h1>Monitoreo de la jornada electoral ERM 2026</h1><div class="sub">Domingo 4 de octubre de 2026 · SDPEG · Dirección de Registro Electoral</div></div>
 <button class="sala-b" id="sala" aria-pressed="false">Modo sala</button>
 <div class="reloj"><b id="reloj">--:--</b><span class="sub" id="ultimo"></span></div></header>
@@ -114,7 +114,7 @@ td.g{color:var(--g2)}
 </div>
 <script src="https://unpkg.com/maplibre-gl@5.6.0/dist/maplibre-gl.js"></script>
 <script>
-const P='data/precarga/', LOGO='logo/JNE_marker.png';
+const P='../dashboard/public/data/precarga/', LOGO='../logo/JNE_marker.png';
 const ESP=[120,250,380], HORAS=['07:30','12:00','16:30'], VENT=[[7,10],[10,14],[14,18]];
 
 const CANALES=['Denuncia REA','Entidades del sistema','Prensa y redes','Llamadas'];
@@ -208,7 +208,7 @@ const css=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim
 document.getElementById('sala').onclick=e=>{const v=document.documentElement.classList.toggle('sala');e.target.setAttribute('aria-pressed',v);setTimeout(()=>map.resize(),50)};
 if(location.search.includes('sala'))document.documentElement.classList.add('sala');
 (async()=>{
- const [g,r,aj,bj]=await Promise.all([fetch(P+'distritos_pais.geojson').then(x=>x.json()),fetch(P+'riesgo_previo.json').then(x=>x.json()),fetch('data/alertas_jne.json').then(x=>x.json()),fetch('data/banderas_rea.json').then(x=>x.json())]);
+ const [g,r,aj,bj]=await Promise.all([fetch(P+'distritos_pais.geojson').then(x=>x.json()),fetch(P+'riesgo_previo.json').then(x=>x.json()),fetch('../data/alertas_jne_Q20261001.json').then(x=>x.json()),fetch('../data/banderas_rea_Q20261001.json').then(x=>x.json())]);
  ban=bj.registros.filter(x=>x.conflictividad).map(x=>({...x,u:x.ubigeo_inei,dist:x.distrito,dep:x.departamento,prov:x.provincia}));DIA=new Set(ban.map(x=>x.u));geo=g;r.distritos.forEach(d=>riesgo.set(d.ubigeo_inei,d));simular(g.features);
  jne=aj.alertas.map(a=>({u:a.ubigeo_inei,dep:a.departamento,prov:a.provincia,dist:a.distrito,g:0,reniec:false,hora:'',texto:'Riesgo de violencia electoral. '+a.tipo_riesgo+' (JEE '+a.jee+').'}));
  map=new maplibregl.Map({container:'map',style:{version:8,sources:{},layers:[{id:'bg',type:'background',paint:{'background-color':css('--mapa')}}]},center:[-75.5,-9.3],zoom:4.2,attributionControl:false});
