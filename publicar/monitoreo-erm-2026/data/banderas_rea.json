@@ -1,5 +1,5 @@
 {
- "fuente": "REA, denuncias informadas (items 75 a 88)",
+ "fuente": "REA, denuncias informadas (items 75 a 89)",
  "corte": "02/10/2026",
  "registros": [
   {
@@ -307,6 +307,28 @@
    "n_ciudadanos": null,
    "entidad_emisora": "REEL DE FACEBOOK (MEDIO NO IDENTIFICADO)",
    "canal": "WhatsApp o noticias",
+   "estado": "VALIDADO",
+   "simulado": false
+  },
+  {
+   "id": "REA-89",
+   "item": 89,
+   "fecha_recepcion": "02/10/2026",
+   "fecha_asumida": true,
+   "departamento": "ICA",
+   "provincia": "ICA",
+   "distrito": "YAUCA DEL ROSARIO",
+   "ubigeo_inei": "110114",
+   "lon": -75.42064,
+   "lat": -14.09147,
+   "categoria_rea": 4,
+   "conflictividad": true,
+   "motivo_conflictividad": "Presidente de mesa que sería candidato a la alcaldía distrital; la Defensoría gestiona su exclusión y la PNP y el Ministerio Público intervienen.",
+   "fuente_dashboard": "conflictividad",
+   "resumen_publicable": "Una alerta advierte que, en el distrito de Yauca del Rosario (Ica), un presidente de mesa sería a la vez candidato a la alcaldía distrital y estaría designado en la IE 22361 Manuel Pablo Olaechea, local de votación donde RENIEC despliega orientación. La Defensoría del Pueblo gestiona su exclusión como presidente de mesa, y la Policía Nacional y el Ministerio Público ya intervienen. Se presumen 4 casos en la región Ica. El riesgo: que quien debe garantizar la imparcialidad de la mesa tenga interés directo en el resultado.",
+   "n_ciudadanos": null,
+   "entidad_emisora": "ALERTA INFORMADA A RENIEC (ORIGEN NO PRECISADO)",
+   "canal": "RENIEC",
    "estado": "VALIDADO",
    "simulado": false
   }

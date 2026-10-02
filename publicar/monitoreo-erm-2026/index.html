@@ -227,7 +227,7 @@ function cHora(inc){
 function cCanal(inc){
  const n=Object.fromEntries(CANALES.map(c=>[c[0],0]));inc.forEach(x=>n[x.c]++);const mx=Math.max(1,...Object.values(n));
  return CANALES.map(([k,t,s,ic,cl])=>`<div class="bar ${cl}"><span class="et"><i class="fa-solid ${ic}"></i><span>${t}${s?`<small>${s}</small>`:''}</span></span><span class="pista"><i style="width:${n[k]/mx*100}%"></i></span><b class="${n[k]?'':'cero'}">${n[k]}</b></div>`).join('')
-  +`<p class="nota-g">${inc.length?'Cada fila cuenta las incidencias validadas de ese canal.':'Aún sin reportes: aquí se verá si la incidencia llegó por un orientador o por otro canal.'}</p>`;
+  +`<div class="bar tot"><span class="et">Total de incidencias</span><span></span><b class="${inc.length?'':'cero'}">${inc.length}</b></div><p class="nota-g">${inc.length?'Cada fila cuenta las incidencias validadas de ese canal.':'Aún sin reportes: aquí se verá si la incidencia llegó por un orientador o por otro canal.'}</p>`;
 }
 function cTotal(inc){
  const r=den.length,j=jne.length,dm=inc.length,mx=Math.max(r,j,dm,1),bar=(cl,ic,t,s,n)=>`<div class="bar ${cl}"><span class="et">${ic}<span>${t}${s?`<small>${s}</small>`:''}</span></span><span class="pista"><i style="width:${n/mx*100}%"></i></span><b class="${n?'':'cero'}">${n}</b></div>`;
