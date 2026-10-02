@@ -1,0 +1,441 @@
+{
+ "fuente": "Padrón de instituciones educativas (MINEDU, ESCALE)",
+ "descarga": "28/08/2026",
+ "registros": [
+  {
+   "id": "L-01",
+   "codlocal": "003616",
+   "nombre_padron": "16273",
+   "direccion": "AVENIDA CAJAMARCA S/N",
+   "centro_poblado": "EL PARCO",
+   "area": "Rural",
+   "niveles": [
+    "Primaria"
+   ],
+   "lat": -5.625393,
+   "lon": -78.47619,
+   "confianza": "exacta"
+  },
+  {
+   "id": "L-02",
+   "lat": null,
+   "lon": null,
+   "confianza": "sin dato"
+  },
+  {
+   "id": "L-03",
+   "codlocal": "001900",
+   "nombre_padron": "18078",
+   "direccion": "CARRETERA NUEVO OLMAL",
+   "centro_poblado": "NUEVO OLMAL",
+   "area": "Rural",
+   "niveles": [
+    "Primaria"
+   ],
+   "lat": -6.1862,
+   "lon": -77.7812,
+   "confianza": "exacta"
+  },
+  {
+   "id": "L-04",
+   "codlocal": "023558",
+   "nombre_padron": "ELEAZAR GUZMAN BARRON",
+   "direccion": "LAS NAZARENAS",
+   "centro_poblado": "ANRA",
+   "area": "Rural",
+   "niveles": [
+    "Secundaria"
+   ],
+   "lat": -9.23271,
+   "lon": -76.9246,
+   "confianza": "exacta"
+  },
+  {
+   "id": "L-05",
+   "codlocal": "024044",
+   "nombre_padron": "CARLOS ALBERTO IZAGUIRRE",
+   "direccion": "AVENIDA JULIO CESAR TELLO S/N",
+   "centro_poblado": "CHAVIN DE HUANTAR",
+   "area": "Urbana",
+   "niveles": [
+    "Secundaria"
+   ],
+   "lat": -9.583398,
+   "lon": -77.17642,
+   "confianza": "revisar"
+  },
+  {
+   "id": "L-06",
+   "codlocal": "025557",
+   "nombre_padron": "REPUBLICA DE CANADA",
+   "direccion": "HUARIPAMPA BAJO S/N",
+   "centro_poblado": "HUARIPAMPA BAJO",
+   "area": "Rural",
+   "niveles": [
+    "Secundaria"
+   ],
+   "lat": -9.503052,
+   "lon": -77.145676,
+   "confianza": "exacta"
+  },
+  {
+   "id": "L-07",
+   "codlocal": "062413",
+   "nombre_padron": "40160 OBDULIO BARRIGA VIZCARRA",
+   "direccion": "CALLE UNION S/N",
+   "centro_poblado": "MOLLEBAYA",
+   "area": "Rural",
+   "niveles": [
+    "Primaria",
+    "Secundaria"
+   ],
+   "lat": -16.487072,
+   "lon": -71.469696,
+   "confianza": "revisar"
+  },
+  {
+   "id": "L-08",
+   "codlocal": "063441",
+   "nombre_padron": "40192",
+   "direccion": "PLAZA PRINCIPAL S/N",
+   "centro_poblado": "QUEQUEÑA",
+   "area": "Rural",
+   "niveles": [
+    "Primaria"
+   ],
+   "lat": -16.55735,
+   "lon": -71.45096,
+   "confianza": "exacta"
+  },
+  {
+   "id": "L-09",
+   "lat": null,
+   "lon": null,
+   "confianza": "sin dato"
+  },
+  {
+   "id": "L-10",
+   "codlocal": "065341",
+   "nombre_padron": "40209 HEROES DE YARABAMBA",
+   "direccion": "PASAJE LINO URQUIETA S/N",
+   "centro_poblado": "YARABAMBA",
+   "area": "Rural",
+   "niveles": [
+    "Primaria"
+   ],
+   "lat": -16.54842,
+   "lon": -71.47409,
+   "confianza": "exacta"
+  },
+  {
+   "id": "L-11",
+   "codlocal": "091137",
+   "nombre_padron": "EL AMAUTA",
+   "direccion": "JIRON ANDAHUAYLAS S/N",
+   "centro_poblado": "SAN SALVADOR DE QUIJE",
+   "area": "Rural",
+   "niveles": [
+    "Secundaria"
+   ],
+   "lat": -13.9675,
+   "lon": -73.7333,
+   "confianza": "exacta"
+  },
+  {
+   "id": "L-12",
+   "codlocal": "092052",
+   "nombre_padron": "38482 SANTO DOMINGO",
+   "direccion": "JIRON 28 DE JULIO S/N MZ J LOTE 9 HUANCARAYLLA",
+   "centro_poblado": "HUANCARAYLLA",
+   "area": "Rural",
+   "niveles": [
+    "Primaria",
+    "Secundaria"
+   ],
+   "lat": -13.717683,
+   "lon": -74.101395,
+   "confianza": "exacta"
+  },
+  {
+   "id": "L-13",
+   "codlocal": "595067",
+   "nombre_padron": "CLARA COGORNO DE COGORNO",
+   "direccion": "JIRON AGUSTIN TOVAR S/N",
+   "centro_poblado": "LA PUNTA",
+   "area": "Urbana",
+   "niveles": [
+    "Primaria",
+    "Secundaria"
+   ],
+   "lat": -12.07409,
+   "lon": -77.16323,
+   "confianza": "revisar"
+  },
+  {
+   "id": "L-14",
+   "codlocal": "148836",
+   "nombre_padron": "50036",
+   "direccion": "CALLE HUASCAR S/N",
+   "centro_poblado": "SAYLLA",
+   "area": "Urbana",
+   "niveles": [
+    "Primaria"
+   ],
+   "lat": -13.56926,
+   "lon": -71.82726,
+   "confianza": "exacta"
+  },
+  {
+   "id": "L-15",
+   "codlocal": "164746",
+   "nombre_padron": "LA VICTORIA",
+   "direccion": "AVENIDA INCA GARCILASO DE LA VEGA MZ Q LOTE 1",
+   "centro_poblado": "PICHARI",
+   "area": "Urbana",
+   "niveles": [
+    "Básica Alternativa - Avanzado",
+    "Primaria",
+    "Secundaria"
+   ],
+   "lat": -12.51929,
+   "lon": -73.83097,
+   "confianza": "revisar"
+  },
+  {
+   "id": "L-16",
+   "codlocal": "174731",
+   "nombre_padron": "36054",
+   "direccion": "PLAZA PRINCIPAL S/N",
+   "centro_poblado": "PILCHACA",
+   "area": "Rural",
+   "niveles": [
+    "Primaria"
+   ],
+   "lat": -12.40045,
+   "lon": -75.08392,
+   "confianza": "exacta"
+  },
+  {
+   "id": "L-17",
+   "codlocal": "185329",
+   "nombre_padron": "SANTA ROSA",
+   "direccion": "AVENIDA ALAMEDA S/N",
+   "centro_poblado": "SANTA ROSA DE TAMBO",
+   "area": "Rural",
+   "niveles": [
+    "Secundaria"
+   ],
+   "lat": -13.689044,
+   "lon": -75.2765,
+   "confianza": "exacta"
+  },
+  {
+   "id": "L-18",
+   "codlocal": "194423",
+   "nombre_padron": "ANDRES A. CACERES",
+   "direccion": "YARUMAYO",
+   "centro_poblado": "YARUMAYO",
+   "area": "Rural",
+   "niveles": [
+    "Primaria",
+    "Secundaria"
+   ],
+   "lat": -10.005,
+   "lon": -76.4682,
+   "confianza": "revisar"
+  },
+  {
+   "id": "L-19",
+   "codlocal": "209575",
+   "nombre_padron": "32261 JULIO C. TELLO",
+   "direccion": "JIRON 3 DE OCTUBRE",
+   "centro_poblado": "CHACABAMBA",
+   "area": "Rural",
+   "niveles": [
+    "Primaria",
+    "Secundaria"
+   ],
+   "lat": -9.903955,
+   "lon": -76.61354,
+   "confianza": "exacta"
+  },
+  {
+   "id": "L-20",
+   "codlocal": "213964",
+   "nombre_padron": "22361 MANUEL PABLO OLAECHEA",
+   "direccion": "PAMPAHUASI",
+   "centro_poblado": "PAMPAHUASI",
+   "area": "Rural",
+   "niveles": [
+    "Primaria",
+    "Secundaria"
+   ],
+   "lat": -14.099078,
+   "lon": -75.47674,
+   "confianza": "exacta"
+  },
+  {
+   "id": "L-21",
+   "codlocal": "247742",
+   "nombre_padron": "31158 VIRGEN DE FATIMA",
+   "direccion": "AVENIDA 28 DE JULIO 143",
+   "centro_poblado": "MARCAPOMACOCHA",
+   "area": "Rural",
+   "niveles": [
+    "Primaria",
+    "Secundaria"
+   ],
+   "lat": -11.4076,
+   "lon": -76.337,
+   "confianza": "revisar"
+  },
+  {
+   "id": "L-22",
+   "codlocal": "354063",
+   "nombre_padron": "SANTIAGO ANTUNEZ DE MAYOLO",
+   "direccion": "JIRON CALLAO S/N",
+   "centro_poblado": "PACARAN",
+   "area": "Rural",
+   "niveles": [
+    "Secundaria"
+   ],
+   "lat": -12.865987,
+   "lon": -76.05143,
+   "confianza": "exacta"
+  },
+  {
+   "id": "L-23",
+   "codlocal": "362341",
+   "nombre_padron": "20683 SANTO DOMINGO",
+   "direccion": "CALLE SANTO DOMINGO S/N",
+   "centro_poblado": "AYAUCA",
+   "area": "Rural",
+   "niveles": [
+    "Primaria",
+    "Secundaria"
+   ],
+   "lat": -12.592277,
+   "lon": -76.03623,
+   "confianza": "exacta"
+  },
+  {
+   "id": "L-24",
+   "codlocal": "400041",
+   "nombre_padron": "43130 SANTA ROSA DE LIMA",
+   "direccion": "CARRETERA PRINCIPAL KM 15",
+   "centro_poblado": "ALGARROBAL",
+   "area": "Urbana",
+   "niveles": [
+    "Primaria"
+   ],
+   "lat": -17.622349,
+   "lon": -71.26806,
+   "confianza": "exacta"
+  },
+  {
+   "id": "L-25",
+   "codlocal": "446869",
+   "nombre_padron": "CAMINACA",
+   "direccion": "JIRON CONDE DE LEMUS S/N",
+   "centro_poblado": "CAMINACA",
+   "area": "Rural",
+   "niveles": [
+    "Secundaria"
+   ],
+   "lat": -15.324107,
+   "lon": -70.07146,
+   "confianza": "exacta"
+  },
+  {
+   "id": "L-26",
+   "codlocal": "466051",
+   "nombre_padron": "72445 GLORIOSO 835 SAN JUAN BOSCO",
+   "direccion": "LIMBANI",
+   "centro_poblado": "LIMBANI",
+   "area": "Rural",
+   "niveles": [
+    "Básica Alternativa - Avanzado",
+    "Primaria"
+   ],
+   "lat": -14.152238,
+   "lon": -69.68981,
+   "confianza": "exacta"
+  },
+  {
+   "id": "L-27",
+   "codlocal": "479299",
+   "nombre_padron": "0091 ABRAHAM GARCIA TORRES",
+   "direccion": "JIRON JORGE CHAVEZ S/N",
+   "centro_poblado": "TINGO DE PONASA",
+   "area": "Rural",
+   "niveles": [
+    "Primaria",
+    "Secundaria"
+   ],
+   "lat": -6.938297,
+   "lon": -76.24981,
+   "confianza": "exacta"
+  },
+  {
+   "id": "L-28",
+   "codlocal": "485219",
+   "nombre_padron": "0233",
+   "direccion": "CARRETERA TOCACHE- MONTECRISTO KM 60",
+   "centro_poblado": "MONTE CRISTO",
+   "area": "Rural",
+   "niveles": [
+    "Primaria",
+    "Secundaria"
+   ],
+   "lat": -8.350831,
+   "lon": -76.73017,
+   "confianza": "exacta"
+  },
+  {
+   "id": "L-29",
+   "codlocal": "489298",
+   "nombre_padron": "GUSTAVO ANTONIO PINTO ZEBALLOS",
+   "direccion": "CALLE ARICA S/N",
+   "centro_poblado": "ILABAYA",
+   "area": "Rural",
+   "niveles": [
+    "Primaria",
+    "Secundaria"
+   ],
+   "lat": -17.419493,
+   "lon": -70.51264,
+   "confianza": "exacta"
+  },
+  {
+   "id": "L-30",
+   "codlocal": "488487",
+   "nombre_padron": "42072 CAROLINA FREYRE ARIAS",
+   "direccion": "AVENIDA LOS HEROES 636",
+   "centro_poblado": "SAMA LAS YARAS",
+   "area": "Rural",
+   "niveles": [
+    "Primaria",
+    "Secundaria"
+   ],
+   "lat": -17.862398,
+   "lon": -70.55952,
+   "confianza": "exacta"
+  },
+  {
+   "id": "L-31",
+   "codlocal": "489689",
+   "nombre_padron": "42086 HEROES ALBARRACIN",
+   "direccion": "MZ L LOTE 2",
+   "centro_poblado": "CHUCATAMANI",
+   "area": "Rural",
+   "niveles": [
+    "Inicial - Jardín",
+    "Primaria",
+    "Secundaria"
+   ],
+   "lat": -17.4818,
+   "lon": -70.123,
+   "confianza": "exacta"
+  }
+ ]
+}
