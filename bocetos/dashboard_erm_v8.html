@@ -15,7 +15,7 @@
  --ori:#2bb5cf;--jne:#ee4a44;--atn:#e0a21a;--rest:#8a9bc0;--mapa:#1b1a17;--lineamapa:#46433c;
  --rc:#7f9fe0;--rr1:#2a3550;--rr2:#3f5a93;--rr3:#6988cf;--rr4:#a9c0f2;
  --jc:#e0a540;--jj1:#4a3b1d;--jj2:#7b5c22;--jj3:#bd8a2d;--jj4:#f0c45c}}
-html{font-size:16px}html.sala{font-size:21px}
+html{font-size:16px}@media(min-width:900px){html{font-size:21px}} /* vista de sala fija para todos en pantalla ancha (antes era un boton); en celular 21 px desbordaba */
 *{box-sizing:border-box}
 [hidden]{display:none!important}
 body{margin:0;background:var(--fondo);color:var(--tinta);font:400 1rem/1.45 "Segoe UI Variable Text","Segoe UI",system-ui,sans-serif;font-variant-numeric:tabular-nums}
@@ -110,14 +110,13 @@ td{padding:.45rem .3rem;border-top:1px solid var(--linea);text-align:right;font-
 .mk-jne{width:1.5rem;height:1.5rem;border-radius:50%;background:#fff;border:2px solid var(--jne);display:grid;place-items:center;cursor:pointer;box-shadow:0 1px 5px rgb(0 0 0/.45);padding:0}
 .mk-jne img{width:74%;height:74%;object-fit:contain}
 .bandera{background:none;border:0;padding:0;cursor:pointer}
-@media(max-width:1100px){.cuerpo{grid-template-columns:1fr}.fuentes{grid-template-columns:1fr 1fr}}
+@media(max-width:1100px){.cuerpo{grid-template-columns:1fr}.fuentes{grid-template-columns:repeat(2,minmax(0,1fr))}.f{min-width:0}.f>span:nth-child(2){min-width:0;overflow-wrap:anywhere}}
 @media(max-width:560px){.fuentes{gap:.4rem}.f{padding:.45rem .55rem;gap:.4rem}.f small{display:none}.f .gl{width:auto;min-width:1.6rem}.f b{font-size:.8rem}.f .n{font-size:.95rem}h1{font-size:1.2rem}.reloj{margin-left:0;text-align:left;width:100%}#map{height:26rem}.franja b{font-size:1.3rem}.bar{grid-template-columns:minmax(0,9rem) 1fr 2rem}.gr{border-left:0;border-top:1px solid var(--linea)}.gr:first-child{border-top:0}}
 </style></head><body>
 <div class="aviso" id="aviso">BOCETO v8 · solo datos reales cargados antes de la jornada · los reportes del día llegarán desde el formulario</div>
 <div class="wrap">
 <header><img src="../dashboard/public/reniec-logo.png" alt="RENIEC">
 <div><h1>Monitoreo de la jornada electoral ERM 2026</h1><div class="sub">Domingo 4 de octubre de 2026 · SDPEG · Dirección de Registro Electoral</div></div>
-<button class="btn" id="sala" aria-pressed="false">Modo sala</button>
 <div class="reloj"><b id="reloj">--:--</b><span class="sub">Corte de la lista de orientadores: 01/10/2026</span></div></header>
 <div class="franja" id="franja"></div>
 <div class="fuentes" id="fuentes" role="group" aria-label="Capas del mapa"></div>
@@ -262,7 +261,6 @@ function abrir(u,lid){
  const bb=[[180,90],[-180,-90]];(function w(c){if(typeof c[0]==='number'){bb[0][0]=Math.min(bb[0][0],c[0]);bb[0][1]=Math.min(bb[0][1],c[1]);bb[1][0]=Math.max(bb[1][0],c[0]);bb[1][1]=Math.max(bb[1][1],c[1])}else c.forEach(w)})(f.geometry.coordinates);
  map.fitBounds(bb,{padding:80,maxZoom:9,duration:600});
 }
-document.getElementById('sala').onclick=e=>{const v=document.documentElement.classList.toggle('sala');e.target.setAttribute('aria-pressed',v);setTimeout(()=>map.resize(),50)};
 leyenda.open=innerWidth>=900;
 (async()=>{
  const [g,r,aj,bj,oj]=await Promise.all([fetch(P+'distritos_pais.geojson').then(x=>x.json()),fetch(P+'riesgo_previo.json').then(x=>x.json()),fetch(JNE_).then(x=>x.json()),fetch(BAN_).then(x=>x.json()),fetch(ORIE).then(x=>x.json())]);
