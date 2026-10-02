@@ -3,6 +3,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Boceto v6 · Monitoreo ERM 2026</title>
 <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@5.6.0/dist/maplibre-gl.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <style>
 :root{
  --fondo:#f4f3ee;--panel:#fff;--tinta:#1d1c18;--suave:#5f5b53;--linea:#dedad0;--relleno:#eceae2;--acento:#0b7a8e;--acento-t:#fff;
@@ -66,6 +67,11 @@ td{padding:.45rem .3rem;border-top:1px solid var(--linea);text-align:right;font-
 .hexC>i{width:1.7rem;height:2rem;clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);background:var(--panel);display:flex;gap:.2rem;align-items:center;justify-content:center}
 .hexC b{width:.46rem;height:.46rem;border-radius:50%;border:1.5px solid var(--ori);background:transparent;display:block}
 .hexC b.l{background:var(--ori)}.hexC b.c{background:var(--ori);box-shadow:0 0 0 2px var(--panel),0 0 0 3.5px var(--ori)}
+.pinD{width:2.1rem;height:2.1rem;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:var(--panel);border:2px dashed var(--ori);display:grid;place-items:center;position:relative;margin-bottom:.1rem}
+.pinD>span{transform:rotate(45deg);color:var(--ori);font-size:.95rem;line-height:1}
+.pinD.p{border-style:solid}.pinD.l,.pinD.c{border-style:solid;background:var(--ori)}.pinD.l>span,.pinD.c>span{color:var(--acento-t)}
+.pinD>em{position:absolute;right:-.45rem;top:-.45rem;transform:rotate(45deg);min-width:1.05rem;height:1.05rem;border-radius:50%;background:var(--panel);color:var(--ori);border:1.5px solid var(--ori);font:700 .68rem/1 inherit;display:grid;place-items:center;font-style:normal}
+.pinD.c>em{background:var(--ori);color:var(--acento-t)}
 .mk-jne{width:2rem;height:2rem;border-radius:50%;background:#fff;border:2px solid var(--jne);display:grid;place-items:center;cursor:pointer;box-shadow:0 1px 5px rgb(0 0 0/.45);padding:0}
 .mk-jne img{width:74%;height:74%;object-fit:contain}
 .bandera{background:none;border:0;padding:0;cursor:pointer}.bandera.previo{opacity:.5}
@@ -113,7 +119,7 @@ function pintar(){
  fuentes.innerHTML=[['ori',gl('ori'),`Orientación RENIEC`,'Locales donde se despliega orientación',loc.length],['jne',`<span class="jl"><img src="${LOGO}" alt=""></span>`,'Alertas del JNE','Riesgo de violencia electoral (base del JNE)',jne.length],['ban',FL(22,27),'Posible conflicto o violencia','Denuncias REA, corte 01/10/2026',ban.length],['riesgo','<span style="width:1.3rem;height:1.3rem;border:2px dashed var(--ver);display:block;background:color-mix(in srgb,var(--rest) 35%,transparent)"></span>','Riesgo previo REA','Verificación domiciliaria y restituidos',null]]
   .map(([k,g,n,d,c])=>`<button class="f" data-k="${k}" aria-pressed="${on[k]}"><span class="gl">${g}</span><span><b>${n}</b><small>${d}</small></span>${c===null?'':`<span class="n">${c}</span>`}</button>`).join('');
  document.querySelectorAll('.f').forEach(b=>b.onclick=()=>{on[b.dataset.k]=!on[b.dataset.k];pintar()});
- estilos.innerHTML='<span class="rot">Marker de orientación (a elegir):</span>'+[['A','Cuadrado numerado','número de orientadores'],['B','Distrito resaltado','área + punto numerado'],['C','Hexágono con puntos','un punto por orientador']].map(([k,t,s])=>`<button class="btn" data-e="${k}" aria-pressed="${estilo===k}"><b>${k}. ${t}</b><small>${s}</small></button>`).join('')+`<button class="btn" id="prueba" aria-pressed="${prueba}"><b>Probar estados</b><small>solo dibujo, no son datos</small></button>`;
+ estilos.innerHTML='<span class="rot">Marker de orientación (a elegir):</span>'+[['A','Cuadrado numerado','número de orientadores'],['B','Distrito resaltado','área + punto numerado'],['C','Hexágono con puntos','un punto por orientador'],['D','Pin con icono de personas','estilo folium']].map(([k,t,s])=>`<button class="btn" data-e="${k}" aria-pressed="${estilo===k}"><b>${k}. ${t}</b><small>${s}</small></button>`).join('')+`<button class="btn" id="prueba" aria-pressed="${prueba}"><b>Probar estados</b><small>solo dibujo, no son datos</small></button>`;
  document.querySelectorAll('[data-e]').forEach(b=>b.onclick=()=>{estilo=b.dataset.e;pintar()});
  document.getElementById('prueba').onclick=()=>{prueba=!prueba;pintar()};
  ledger.innerHTML=`<tr><th></th><th>Esperados</th><th>Llegada</th><th>Cierre</th></tr><tr><td>Locales</td><td>${loc.length}</td><td>${llego}</td><td>${cerro}</td></tr><tr><td>Orientadores</td><td>${total}</td><td>${E.flat().filter(x=>x>=1).length}</td><td>${E.flat().filter(x=>x==2).length}</td></tr>`
@@ -136,13 +142,13 @@ function pintar(){
  mkOri.forEach(m=>m.remove());mkOri=[];mkOtros.forEach(m=>m.remove());mkOtros=[];
  const ctr=u=>{const p=geo.features.find(x=>x.properties.u===u).properties;return[p.lon,p.lat]};
  if(on.ori){const vistos={};loc.forEach((l,i)=>{const c=agr(E[i]),e=E[i];vistos[l.ubigeo_inei]=(vistos[l.ubigeo_inei]||0)+1;const k=vistos[l.ubigeo_inei]-1,dx=(k%2?1:-1)*(k?14:0)*(k?1:0);
-   const b=document.createElement('button');b.className='m';b.title=`${l.local} · ${l.distrito}`;b.setAttribute('aria-label',`Orientación en ${l.local}, ${l.distrito}: ${l.n_orientadores} orientadores`);
-   b.innerHTML=estilo==='C'?`<div class="hexC"><i>${e.map(x=>`<b class="${x==2?'c':x==1?'l':''}"></b>`).join('')}</i></div>`:estilo==='B'?`<div class="dotB ${c==='c'?'c':c==='l'?'l':c==='n'?'n':''}">${l.n_orientadores}</div>`:`<div class="sqA ${c}">${l.n_orientadores}</div>`;
-   b.onclick=ev=>{ev.stopPropagation();abrir(l.ubigeo_inei,l.id)};mkOri.push(new maplibregl.Marker({element:b,offset:[dx,0]}).setLngLat(ctr(l.ubigeo_inei)).addTo(map))})}
+   const b=document.createElement('button');b.className='m';b.title=estilo==='D'?`Orientación electoral · ${l.local} · ${l.distrito}`:`${l.local} · ${l.distrito}`;b.setAttribute('aria-label',`Orientación en ${l.local}, ${l.distrito}: ${l.n_orientadores} orientadores`);
+   b.innerHTML=estilo==='D'?`<div class="pinD ${c==='n'?'':c}"><span><i class="fa-solid fa-users"></i></span><em>${l.n_orientadores}</em></div>`:estilo==='C'?`<div class="hexC"><i>${e.map(x=>`<b class="${x==2?'c':x==1?'l':''}"></b>`).join('')}</i></div>`:estilo==='B'?`<div class="dotB ${c==='c'?'c':c==='l'?'l':c==='n'?'n':''}">${l.n_orientadores}</div>`:`<div class="sqA ${c}">${l.n_orientadores}</div>`;
+   b.onclick=ev=>{ev.stopPropagation();abrir(l.ubigeo_inei,l.id)};mkOri.push(new maplibregl.Marker({element:b,anchor:estilo==='D'?'bottom':'center',offset:[dx,0]}).setLngLat(ctr(l.ubigeo_inei)).addTo(map))})}
  if(on.jne)jne.forEach(a=>{const e=document.createElement('button');e.className='mk-jne';e.title='Alerta del JNE';e.innerHTML=`<img src="${LOGO}" alt="">`;e.setAttribute('aria-label','Alerta del JNE en '+a.dist);e.onclick=ev=>{ev.stopPropagation();abrir(a.u)};mkOtros.push(new maplibregl.Marker({element:e,offset:[10,-10]}).setLngLat(ctr(a.u)).addTo(map))});
  if(on.ban){const v=new Set();ban.forEach(b=>{if(v.has(b.u))return;v.add(b.u);const e=document.createElement('button');e.className='bandera';e.title='Posible conflicto o violencia';e.setAttribute('aria-label','Posible conflicto o violencia en '+b.dist);e.innerHTML=FL(24,30);e.onclick=ev=>{ev.stopPropagation();abrir(b.u)};mkOtros.push(new maplibregl.Marker({element:e,anchor:'bottom-left',offset:[-6,-6]}).setLngLat(ctr(b.u)).addTo(map))})}
 }
-function gl(k){return estilo==='C'?'<div class="hexC"><i><b></b><b></b></i></div>':estilo==='B'?'<div class="dotB n">2</div>':'<div class="sqA">2</div>'}
+function gl(k){return estilo==='D'?'<div class="pinD"><span><i class="fa-solid fa-users"></i></span></div>':estilo==='C'?'<div class="hexC"><i><b></b><b></b></i></div>':estilo==='B'?'<div class="dotB n">2</div>':'<div class="sqA">2</div>'}
 function abrir(u,lid){
  const f=geo.features.find(x=>x.properties.u===u);if(!f)return;const p=f.properties,q=riesgo.get(u);
  const ls=locales.filter(l=>l.ubigeo_inei===u&&(!lid||l.id===lid)),b=ban.filter(x=>x.u===u),j=jne.filter(x=>x.u===u);
