@@ -19,7 +19,7 @@ PRECARGA = RAIZ / "dashboard" / "public" / "data" / "precarga"
 CAMBIOS = [
     ("const P='../dashboard/public/data/precarga/'", "const P='data/precarga/'"),
     ("JNE_='../data/alertas_jne_Q20261001.json'", "JNE_='data/alertas_jne.json'"),
-    ("BAN_='../data/banderas_rea_Q20261001.json'", "BAN_='data/banderas_rea.json'"),
+    ("BAN_='../data/banderas_rea_Q20261002.json'", "BAN_='data/banderas_rea.json'"),
     ("ORIE='../data/orientacion_locales.json'", "ORIE='data/orientacion_locales.json'"),
     ("LOGO='../logo/JNE_marker.png'", "LOGO='logo/JNE_marker.png'"),
     ('src="../dashboard/public/reniec-logo.png"', 'src="reniec-logo.png"'),
@@ -39,7 +39,7 @@ VERCEL = """{
 """
 DATOS = [  # (origen, destino dentro de publicar/.../data)
     (RAIZ / "data" / "alertas_jne_Q20261001.json", "alertas_jne.json"),
-    (RAIZ / "data" / "banderas_rea_Q20261001.json", "banderas_rea.json"),
+    (RAIZ / "data" / "banderas_rea_Q20261002.json", "banderas_rea.json"),
     (RAIZ / "data" / "orientacion_locales.json", "orientacion_locales.json"),
 ]
 

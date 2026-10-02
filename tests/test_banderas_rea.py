@@ -15,17 +15,17 @@ class BanderasREA(unittest.TestCase):
         cls.con = [r for r in cls.reg if r["conflictividad"]]
 
     def test_cifras_de_control(self):
-        self.assertEqual(len(self.reg), 11)
-        self.assertEqual(len(self.con), 10)
+        self.assertEqual(len(self.reg), 14)
+        self.assertEqual(len(self.con), 11)
         self.assertEqual(len({r["ubigeo_inei"] for r in self.con}), 9)
-        self.assertEqual(sum(r["n_ciudadanos"] or 0 for r in self.reg), 365)
+        self.assertEqual(sum(r["n_ciudadanos"] or 0 for r in self.reg), 380)
 
     def test_item_sin_bandera_es_el_76(self):
-        self.assertEqual([r["item"] for r in self.reg if not r["conflictividad"]], [76])
+        self.assertEqual([r["item"] for r in self.reg if not r["conflictividad"]], [76, 86, 87])
 
     def test_san_marcos_reune_80_y_84(self):
         sm = sorted(r["item"] for r in self.con if r["ubigeo_inei"] == "021014")
-        self.assertEqual(sm, [80, 84])
+        self.assertEqual(sm, [80, 84, 88])
 
     def test_ubigeo_texto_y_ceros(self):
         for r in self.reg:
@@ -33,7 +33,7 @@ class BanderasREA(unittest.TestCase):
         self.assertEqual(next(r for r in self.reg if r["item"] == 82)["ubigeo_inei"], "010104")
 
     def test_fechas_asumidas(self):
-        self.assertEqual(sorted(r["item"] for r in self.reg if r["fecha_asumida"]), [80, 82, 83])
+        self.assertEqual(sorted(r["item"] for r in self.reg if r["fecha_asumida"]), [80, 82, 83, 86, 87, 88])
 
     def test_lista_vacia_no_es_cero(self):
         self.assertIsNone(next(r for r in self.reg if r["item"] == 75)["n_ciudadanos"])
