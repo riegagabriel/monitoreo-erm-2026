@@ -54,8 +54,8 @@ header img{height:2.4rem}h1{font-size:1.6rem;line-height:1.15;margin:0;font-weig
 .leyenda h3{font-size:.84rem;font-weight:700;margin:.65rem 0 .25rem}.leyenda h3:first-child{margin-top:0}
 .leyenda .fila{display:grid;grid-template-columns:2rem 1fr;gap:.45rem;align-items:center;padding:.12rem 0;line-height:1.3}
 .leyenda .g{height:1.9rem;display:grid;place-items:center}
-.leyenda .g .pinD{width:1.4rem;height:1.4rem;margin:0}.leyenda .g .pinD>span{font-size:.68rem}.leyenda .g .pinD>em{min-width:.9rem;height:.9rem;right:-.4rem;top:-.4rem}
-.leyenda .g .jl{width:1.6rem;height:1.6rem;border:2px solid var(--jne)}
+.leyenda .g .pinD{margin:0}
+.leyenda .g .jl{width:1.5rem;height:1.5rem;border:2px solid var(--jne)}
 .leyenda .def{margin:.4rem 0 0;color:var(--suave);line-height:1.35}.leyenda .def b{color:var(--tinta);font-weight:650}
 .leyenda .tot{margin:.35rem 0 0;color:var(--suave)}
 .rampa{display:grid;grid-template-columns:repeat(4,1fr);gap:.2rem;text-align:center}
@@ -104,10 +104,10 @@ td{padding:.45rem .3rem;border-top:1px solid var(--linea);text-align:right;font-
 .pie{color:var(--suave);font-size:.78rem;padding-bottom:var(--e6)}
 /* markers */
 .m{background:none;border:0;padding:0;cursor:pointer}
-.pinD{width:2.1rem;height:2.1rem;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:var(--ori);border:2px solid var(--ori);display:grid;place-items:center;position:relative;margin-bottom:.1rem}
-.pinD>span{transform:rotate(45deg);color:var(--acento-t);font-size:.95rem;line-height:1}
-.pinD>em{position:absolute;right:-.45rem;top:-.45rem;transform:rotate(45deg);min-width:1.05rem;height:1.05rem;border-radius:50%;background:var(--panel);color:var(--ori);border:1.5px solid var(--ori);font:700 .68rem/1 inherit;display:grid;place-items:center;font-style:normal}
-.mk-jne{width:2rem;height:2rem;border-radius:50%;background:#fff;border:2px solid var(--jne);display:grid;place-items:center;cursor:pointer;box-shadow:0 1px 5px rgb(0 0 0/.45);padding:0}
+.pinD{width:1.6rem;height:1.6rem;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:var(--ori);border:2px solid var(--ori);display:grid;place-items:center;position:relative;margin-bottom:.1rem}
+.pinD>span{transform:rotate(45deg);color:var(--acento-t);font-size:.75rem;line-height:1}
+.pinD>em{position:absolute;right:-.4rem;top:-.4rem;transform:rotate(45deg);min-width:.95rem;height:.95rem;border-radius:50%;background:var(--panel);color:var(--ori);border:1.5px solid var(--ori);font:700 .68rem/1 inherit;display:grid;place-items:center;font-style:normal}
+.mk-jne{width:1.5rem;height:1.5rem;border-radius:50%;background:#fff;border:2px solid var(--jne);display:grid;place-items:center;cursor:pointer;box-shadow:0 1px 5px rgb(0 0 0/.45);padding:0}
 .mk-jne img{width:74%;height:74%;object-fit:contain}
 .bandera{background:none;border:0;padding:0;cursor:pointer}
 @media(max-width:1100px){.cuerpo{grid-template-columns:1fr}.fuentes{grid-template-columns:1fr 1fr}}
@@ -235,11 +235,11 @@ function pintar(){
  aplica();
  mkOri.forEach(m=>m.remove());mkOri=[];mkOtros.forEach(m=>m.remove());mkOtros=[];
  const ctr=u=>{const p=idx.get(u);return[p.lon,p.lat]};
- if(on.ori){const vistos={};loc.forEach(l=>{vistos[l.ubigeo_inei]=(vistos[l.ubigeo_inei]||0)+1;const k=vistos[l.ubigeo_inei]-1,dx=k?(k%2?1:-1)*14:0;
+ if(on.ori){const vistos={};loc.forEach(l=>{vistos[l.ubigeo_inei]=(vistos[l.ubigeo_inei]||0)+1;const k=vistos[l.ubigeo_inei]-1,dx=k?(k%2?1:-1)*12:0;
    const b=document.createElement('button');b.className='m';b.title=`Orientación electoral · ${l.local} · ${l.distrito}`;b.setAttribute('aria-label',`Orientación en ${l.local}, ${l.distrito}: ${l.n_orientadores} orientadores`);
    b.innerHTML=pin(l.n_orientadores);
    b.onclick=ev=>{ev.stopPropagation();abrir(l.ubigeo_inei,l.id)};mkOri.push(new maplibregl.Marker({element:b,anchor:'bottom',offset:[dx,0]}).setLngLat(ctr(l.ubigeo_inei)).addTo(map))})}
- if(on.jne)jne.forEach(a=>{const e=document.createElement('button');e.className='mk-jne';e.title='Alerta del JNE';e.innerHTML=`<img src="${LOGO}" alt="">`;e.setAttribute('aria-label','Alerta del JNE en '+a.dist);e.onclick=ev=>{ev.stopPropagation();abrir(a.u)};mkOtros.push(new maplibregl.Marker({element:e,offset:[10,-10]}).setLngLat(ctr(a.u)).addTo(map))});
+ if(on.jne)jne.forEach(a=>{const e=document.createElement('button');e.className='mk-jne';e.title='Alerta del JNE';e.innerHTML=`<img src="${LOGO}" alt="">`;e.setAttribute('aria-label','Alerta del JNE en '+a.dist);e.onclick=ev=>{ev.stopPropagation();abrir(a.u)};mkOtros.push(new maplibregl.Marker({element:e,offset:[8,-8]}).setLngLat(ctr(a.u)).addTo(map))});
  if(on.ban){const v=new Set();den.forEach(b=>{if(v.has(b.u))return;v.add(b.u);const e=document.createElement('button');e.className='bandera';e.title='Posible conflicto o violencia';e.setAttribute('aria-label','Posible conflicto o violencia en '+b.dist);e.innerHTML=FL(24,30);e.onclick=ev=>{ev.stopPropagation();abrir(b.u)};mkOtros.push(new maplibregl.Marker({element:e,anchor:'bottom-left',offset:[-6,-6]}).setLngLat(ctr(b.u)).addTo(map))})}
 }
 /* ---------- capas del mapa ---------- */
