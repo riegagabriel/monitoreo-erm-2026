@@ -138,7 +138,7 @@ td{padding:.45rem .3rem;border-top:1px solid var(--linea);text-align:right;font-
 const P='../dashboard/public/data/precarga/', LOGO='../logo/JNE_marker.png';
 const ORIE='../data/orientacion_locales.json', JNE_='../data/alertas_jne_Q20261001.json', BAN_='../data/banderas_rea_Q20261001.json';
 const SELECTOR=true; // en la web publicada el constructor lo pone en false: sin modo de ejemplo
-let on={ori:true,jne:true,ban:true,ver:true,rest:true},prueba=false,scope=null;
+let on={ori:true,jne:true,ban:true,ver:true,rest:true},prueba=false;
 let map,geo,locales=[],jne=[],ban=[],den=[],META={},riesgo=new Map(),totREA={},mkOri=[],mkOtros=[],idx=new Map();
 const BT=['1–99','100–499','500–2 999','≥ 3 000'],UMB=[100,500,3000],CORTES=[[9,'Corte 1'],[12,'Corte 2'],[16.5,'Corte 3']]; // hora del corte 1 provisional
 const CANALES=[['ori','Orientadores','Reporta el monitor','fa-users','ori'],['rea','Denuncias REA de hoy','','fa-file-lines','otro g1'],['ent','Entidades del sistema','ONPE, Defensoría, Fiscalía','fa-building-columns','otro'],['pre','Prensa y redes sociales','','fa-newspaper','otro'],['tel','Llamadas o mesa de ayuda','','fa-phone','otro'],['jne','JNE','Alerta del día','','jne g1']];
@@ -164,24 +164,22 @@ function kpis(D,E,loc){
   [D.inc.length,'incidencias reportadas hoy',D.inc.length?`${graves} graves · ${D.inc.length-graves} de atención`:sin,D.inc.length],
   [nc,'consultas atendidas',nc?'acumuladas del día':sin,nc],
   [jne.length,'alertas del JNE',`riesgo de violencia · ${new Set(jne.map(a=>a.u)).size} distritos · previas`,1,'previo p1'],
-  [den.length,'denuncias con posible conflicto o violencia',`REA, en ${new Set(den.map(d=>d.u)).size} distritos · previas`,1,'previo']
+  [den.length,'denuncias con posible conflicto o violencia',`en ${new Set(den.map(d=>d.u)).size} distritos · previas`,1,'previo']
  ].map(([v,t,s,z,c])=>`<div class="${c||''}"><b class="${z?'':'cero'}">${v}</b><span>${t}</span><small>${s}</small></div>`).join('');
  return{total,llego,cerro};
 }
 /* ---------- leyenda del mapa ---------- */
 const fila=(g,t)=>`<div class="fila"><span class="g">${g}</span><span>${t}</span></div>`;
+function restBloque(rb,nombre,sub){return `<p><b>Restituidos por entidad: ${nombre}</b></p>${rb?barras(rb):''}<p class="mut">${sub}</p>`}
+function panelPais(){const T=totREA.restituidos;panel.innerHTML=`<h2>Detalle</h2><p class="mut">Toque un marcador o un distrito para ver el detalle.</p>`+restBloque(T,'todo el país',`${fmt(T.total)} restituidos en ${T.distritos} distritos`)}
 function barras(rb){const mx=Math.max(rb.reniec,rb.jne,1);return `<div class="grp">${[['RENIEC',rb.reniec,'--rr4'],['JNE',rb.jne,'--rr2']].map(([t,n,c])=>`<div class="gf"><span>${t}</span><span class="pista"><i style="width:${n/mx*100}%;background:var(${c})"></i></span><b>${fmt(n)}</b></div>`).join('')}</div>`}
 function leyendaMapa(){
- const T=totREA.restituidos,q=scope&&riesgo.get(scope),rb=scope?(q&&q.restituidos):T,nombre=scope?idx.get(scope).dist:'todo el país';
- const sub=scope?(rb?`${fmt(rb.total)} restituidos en este distrito`:'Sin restituidos registrados en este distrito'):`${fmt(T.total)} restituidos en ${T.distritos} distritos`;
- leyenda.innerHTML=`<summary>Cómo leer el mapa</summary><div class="cu"><h3>Orientación RENIEC</h3>${fila(pin(2),'Local donde se planificó orientar. El número es la cantidad de orientadores.')}
- <h3>Alertas</h3>${fila(jl(),'JNE: riesgo de violencia electoral')}${fila(FL(16,20),'Denuncia REA con posible conflicto o violencia')}
+ leyenda.innerHTML=`<summary>Cómo leer el mapa</summary><div class="cu"><h3>Orientación RENIEC</h3>${fila(pin(2),'Distrito donde se está desplegando orientación')}
+ <h3>Alertas</h3>${fila(jl(),'JNE: riesgo de violencia electoral')}${fila(FL(16,20),'Denuncia con posible conflicto o violencia')}
  <h3>Verificación domiciliaria</h3>${fila('<i class="oln"></i>','Contorno rojo: distrito donde RENIEC verificó domicilios')}
  <h3>Restituidos por distrito</h3><div class="rampa">${[1,2,3,4].map(i=>`<i class="sw" style="background:var(--rr${i})"></i>`).join('')}${BT.map(t=>`<span>${t}</span>`).join('')}</div><p class="def">Cuanto más intenso el color, más restituidos.</p>
- <h3>Restituidos por entidad: ${nombre}</h3>${rb?barras(rb):''}<p class="tot vt">${sub}</p>${scope?'<button class="btn" id="todoPais">Ver todo el país</button>':'<p class="def">Toque un distrito para ver el suyo.</p>'}
  <p class="def"><b>Verificación domiciliaria:</b> RENIEC comprobó en campo si los ciudadanos residen en su domicilio declarado.</p><p class="def"><b>Restituido:</b> ciudadano cuyo domicilio electoral volvió al anterior, por decisión de RENIEC o del JNE.</p>
  <p class="def">Los pines y las alertas se ubican en el centro del distrito: la ubicación del colegio es aproximada.</p></div>`;
- const bt=document.getElementById('todoPais');if(bt)bt.onclick=()=>{scope=null;leyendaMapa()};
 }
 /* ---------- graficos ---------- */
 function cHora(inc){
@@ -219,7 +217,7 @@ function pintar(){
  aviso.textContent=prueba?'EJEMPLO ACTIVADO · cifras y gráficos son solo un dibujo para evaluar el diseño; no son datos':avisoBase;aviso.classList.toggle('ej',prueba);
  const {total,llego,cerro}=kpis(D,E,loc);
  const nd=new Set(loc.map(l=>l.ubigeo_inei)).size,ndep=new Set(loc.map(l=>l.departamento)).size,dd=new Set(den.map(d=>d.u)).size;
- fuentes.innerHTML=[['ori',pin(''),'Orientación RENIEC',`${total} orientadores en ${nd} distritos de ${ndep} departamentos`,loc.length],['jne',jl(),'Alertas del JNE','Riesgo de violencia electoral (base del JNE)',jne.length],['ban',FL(22,27),'Posible conflicto o violencia',`Denuncias REA en ${dd} distritos, corte ${META.rea.corte}`,den.length],['ver','<span class="oln"></span>','Verificación domiciliaria','Distritos donde RENIEC verificó domicilios',totREA.distritos_verificados],['rest','<span class="mini-r"><i></i><i></i><i></i></span>','Restituidos','Más intenso el color, más ciudadanos restituidos',totREA.restituidos.distritos]]
+ fuentes.innerHTML=[['ori',pin(''),'Orientación RENIEC',`${total} orientadores en ${nd} distritos de ${ndep} departamentos`,loc.length],['jne',jl(),'Alertas del JNE','Riesgo de violencia electoral (base del JNE)',jne.length],['ban',FL(22,27),'Posible conflicto o violencia',`Denuncias en ${dd} distritos, corte ${META.rea.corte}`,den.length],['ver','<span class="oln"></span>','Verificación domiciliaria','Distritos donde RENIEC verificó domicilios',totREA.distritos_verificados],['rest','<span class="mini-r"><i></i><i></i><i></i></span>','Restituidos','Más intenso el color, más ciudadanos restituidos',totREA.restituidos.distritos]]
   .map(([k,g,n,d,c])=>`<button class="f" data-k="${k}" aria-pressed="${on[k]}"><span class="gl">${g}</span><span><b>${n}</b><small>${d}</small></span><span class="n">${c}</span></button>`).join('');
  document.querySelectorAll('.f').forEach(b=>b.onclick=()=>{on[b.dataset.k]=!on[b.dataset.k];pintar()});
  if(SELECTOR){estilos.innerHTML=`<button class="btn" id="prueba" aria-pressed="${prueba}"><b>Ver con ejemplo</b><small>solo dibujo, no son datos</small></button>`;document.getElementById('prueba').onclick=()=>{prueba=!prueba;pintar()}}else estilos.hidden=true;
@@ -257,10 +255,10 @@ function abrir(u,lid){
  const ls=locales.filter(l=>l.ubigeo_inei===u&&(!lid||l.id===lid)),d=den.filter(x=>x.u===u),j=jne.filter(x=>x.u===u),rb=q&&q.restituidos;
  panel.innerHTML=`<h2>Detalle</h2><b style="font-size:1.05rem">${p.dist}</b><p class="mut">${p.prov}, ${p.dep}. Ubigeo INEI ${u}</p>`
   +ls.map(l=>`<p><b>Orientación RENIEC</b> · ${l.local}</p><p class="mut">${l.n_orientadores} ${l.n_orientadores==1?'orientador planificado':'orientadores planificados'}</p>`).join('')
-  +(d.length?'<p><b>Posible conflicto o violencia (denuncias REA)</b></p>'+d.map(x=>`<p>${x.resumen_publicable}</p><p class="mut">${x.id}${x.canal?` · ${x.canal} · ${x.entidad_emisora} · ingresó el ${x.fecha_recepcion}${x.fecha_asumida?' (fecha asumida)':''}`:''}${x.n_ciudadanos?' · '+x.n_ciudadanos+' ciudadanos listados en la denuncia (no son verificados ni restituidos)':''}</p>`).join(''):'')
+  +(d.length?'<p><b>Posible conflicto o violencia (denuncias)</b></p>'+d.map(x=>`<p>${x.resumen_publicable}</p><p class="mut">${x.id}${x.canal?` · ${x.canal} · ${x.entidad_emisora} · ingresó el ${x.fecha_recepcion}${x.fecha_asumida?' (fecha asumida)':''}`:''}${x.n_ciudadanos?' · '+x.n_ciudadanos+' ciudadanos listados en la denuncia (no son verificados ni restituidos)':''}</p>`).join(''):'')
   +(j.length?'<p><b>JNE</b></p>'+j.map(x=>`<p>Riesgo de violencia electoral. ${x.tipo} (JEE ${x.jee}).</p>`).join(''):'')
-  +(q&&(q.verificacion||rb)?'<p><b>Verificación y restituidos</b></p>'+`<p>Verificación domiciliaria: ${q.verificacion?`realizada${q.verificacion.domicilios?` (${fmt(q.verificacion.domicilios)} domicilios)`:''}`:'no registrada'}.</p>`+(rb?`<p>Restituidos: ${fmt(rb.total)} (RENIEC ${fmt(rb.reniec)} · JNE ${fmt(rb.jne)}).</p>`:'<p>Restituidos: ninguno registrado.</p>'):'');
- scope=u;leyendaMapa();
+  +(q&&(q.verificacion||rb)?'<p><b>Verificación y restituidos</b></p>'+`<p>Verificación domiciliaria: ${q.verificacion?`realizada${q.verificacion.domicilios?` (${fmt(q.verificacion.domicilios)} domicilios)`:''}`:'no registrada'}.</p>`+restBloque(rb,p.dist,rb?`${fmt(rb.total)} restituidos en este distrito`:'Sin restituidos registrados en este distrito'):'');
+ panel.insertAdjacentHTML('beforeend','<p><button class="btn" id="todoPais">Ver todo el país</button></p>');document.getElementById('todoPais').onclick=panelPais;
  const bb=[[180,90],[-180,-90]];(function w(c){if(typeof c[0]==='number'){bb[0][0]=Math.min(bb[0][0],c[0]);bb[0][1]=Math.min(bb[0][1],c[1]);bb[1][0]=Math.max(bb[1][0],c[0]);bb[1][1]=Math.max(bb[1][1],c[1])}else c.forEach(w)})(f.geometry.coordinates);
  map.fitBounds(bb,{padding:80,maxZoom:9,duration:600});
 }
@@ -276,6 +274,7 @@ leyenda.open=innerWidth>=900;
  riesgo.forEach(d=>d.alertas_rea.forEach(a=>{if(!enBan.has(a.item))den.push({id:'REA-'+a.item,u:d.ubigeo_inei,dist:d.distrito,resumen_publicable:a.motivo})}));
  // atributos fijos de cada distrito para dibujar: total de restituidos y si hubo verificacion
  geo.features.forEach(f=>{const p=f.properties,q=riesgo.get(p.u),rb=q&&q.restituidos;idx.set(p.u,p);p.rest=rb?rb.total:0;p.ver=q&&q.verificacion?1:0});
+ panelPais();
  map=new maplibregl.Map({container:'map',style:{version:8,sources:{},layers:[{id:'bg',type:'background',paint:{'background-color':css('--mapa')}}]},center:[-75.5,-9.3],zoom:4.2,attributionControl:false});
  map.addControl(new maplibregl.NavigationControl({showCompass:false}),'top-left');
  matchMedia('(prefers-color-scheme:dark)').addEventListener('change',()=>setTimeout(()=>{recolorea();leyendaMapa()},50));
