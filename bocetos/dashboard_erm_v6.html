@@ -13,6 +13,7 @@
  --ori:#2bb5cf;--jne:#ee4a44;--rest:#8a9bc0;--mapa:#1b1a17;--lineamapa:#46433c}}
 html{font-size:16px}html.sala{font-size:21px}
 *{box-sizing:border-box}
+[hidden]{display:none!important}
 body{margin:0;background:var(--fondo);color:var(--tinta);font:400 1rem/1.45 "Segoe UI Variable Text","Segoe UI",system-ui,sans-serif;font-variant-numeric:tabular-nums}
 ::selection{background:var(--acento);color:var(--acento-t)}*{scrollbar-color:var(--linea) transparent}
 :focus-visible{outline:2px solid var(--acento);outline-offset:2px;border-radius:4px}button{font:inherit;color:inherit}
@@ -102,7 +103,8 @@ td{padding:.45rem .3rem;border-top:1px solid var(--linea);text-align:right;font-
 <script>
 const P='../dashboard/public/data/precarga/', LOGO='../logo/JNE_marker.png';
 const ORIE='../data/orientacion_locales.json', JNE_='../data/alertas_jne_Q20261001.json', BAN_='../data/banderas_rea_Q20261001.json';
-let on={ori:true,jne:true,ban:true,riesgo:true},estilo='A',prueba=false;
+const SELECTOR=true; // en la web publicada el constructor lo pone en false: sin selector de estilos ni modo de prueba
+let on={ori:true,jne:true,ban:true,riesgo:true},estilo='D',prueba=false;
 let map,geo,locales=[],jne=[],ban=[],riesgo=new Map(),mkOri=[],mkOtros=[],flags=[];
 const ESTADO=['Sin reporte','Llegó','Cierre enviado'];
 const FL=(w,h)=>`<svg viewBox="0 0 24 30" width="${w}" height="${h}" aria-hidden="true"><path d="M4 2v26" stroke="#3a0d09" stroke-width="2.4" stroke-linecap="round"/><path d="M5 3.5c5-2.6 8 2.6 14 0v11c-6 2.6-9-2.6-14 0z" fill="#d92d20" stroke="#7a1610" stroke-width="1.2"/></svg>`;
@@ -119,9 +121,11 @@ function pintar(){
  fuentes.innerHTML=[['ori',gl('ori'),`Orientación RENIEC`,'Locales donde se despliega orientación',loc.length],['jne',`<span class="jl"><img src="${LOGO}" alt=""></span>`,'Alertas del JNE','Riesgo de violencia electoral (base del JNE)',jne.length],['ban',FL(22,27),'Posible conflicto o violencia','Denuncias REA, corte 01/10/2026',ban.length],['riesgo','<span style="width:1.3rem;height:1.3rem;border:2px dashed var(--ver);display:block;background:color-mix(in srgb,var(--rest) 35%,transparent)"></span>','Riesgo previo REA','Verificación domiciliaria y restituidos',null]]
   .map(([k,g,n,d,c])=>`<button class="f" data-k="${k}" aria-pressed="${on[k]}"><span class="gl">${g}</span><span><b>${n}</b><small>${d}</small></span>${c===null?'':`<span class="n">${c}</span>`}</button>`).join('');
  document.querySelectorAll('.f').forEach(b=>b.onclick=()=>{on[b.dataset.k]=!on[b.dataset.k];pintar()});
+ if(SELECTOR){
  estilos.innerHTML='<span class="rot">Marker de orientación (a elegir):</span>'+[['A','Cuadrado numerado','número de orientadores'],['B','Distrito resaltado','área + punto numerado'],['C','Hexágono con puntos','un punto por orientador'],['D','Pin con icono de personas','estilo folium']].map(([k,t,s])=>`<button class="btn" data-e="${k}" aria-pressed="${estilo===k}"><b>${k}. ${t}</b><small>${s}</small></button>`).join('')+`<button class="btn" id="prueba" aria-pressed="${prueba}"><b>Probar estados</b><small>solo dibujo, no son datos</small></button>`;
- document.querySelectorAll('[data-e]').forEach(b=>b.onclick=()=>{estilo=b.dataset.e;pintar()});
- document.getElementById('prueba').onclick=()=>{prueba=!prueba;pintar()};
+  document.querySelectorAll('[data-e]').forEach(b=>b.onclick=()=>{estilo=b.dataset.e;pintar()});
+  document.getElementById('prueba').onclick=()=>{prueba=!prueba;pintar()};
+ }else estilos.hidden=true;
  ledger.innerHTML=`<tr><th></th><th>Esperados</th><th>Llegada</th><th>Cierre</th></tr><tr><td>Locales</td><td>${loc.length}</td><td>${llego}</td><td>${cerro}</td></tr><tr><td>Orientadores</td><td>${total}</td><td>${E.flat().filter(x=>x>=1).length}</td><td>${E.flat().filter(x=>x==2).length}</td></tr>`
   +`<tr><td>Alertas JNE</td><td>${jne.length}</td><td></td><td></td></tr><tr><td>Banderas REA</td><td>${ban.length}</td><td></td><td></td></tr>`;
  const items=[...ban.map(b=>({u:b.u,k:'b',d:b.dist,t:b.resumen_publicable,f:`${b.id} · ${b.canal} · ${b.fecha_recepcion}${b.fecha_asumida?' (fecha asumida)':''}`})),...jne.map(a=>({u:a.u,k:'j',d:a.dist,t:'Riesgo de violencia electoral. '+a.tipo,f:'JNE · JEE '+a.jee}))];
