@@ -25,11 +25,10 @@ CAMBIOS = [
     ('src="../dashboard/public/reniec-logo.png"', 'src="reniec-logo.png"'),
     ("const SELECTOR=true;", "const SELECTOR=false;"),  # sin selector de estilos ni modo de prueba en la web
 ]
-# Cambios de rotulado: se aplican solo si el boceto todavia trae el texto de boceto.
+# Cambios de rotulado (regex): se aplican solo si el boceto todavia trae el texto de boceto.
 OPCIONALES = [
-    ("<title>Boceto v6 · Monitoreo ERM 2026</title>", "<title>Monitoreo ERM 2026</title>"),
-    ("BOCETO v6 · solo datos reales: 31 locales de orientación, 32 alertas del JNE y 10 banderas REA · los reportes del día llegarán desde el formulario",
-     "VISTA PREVIA · datos reales cargados antes de la jornada: 31 locales de orientación, 32 alertas del JNE y 10 banderas REA · los reportes del día llegarán desde el formulario"),
+    (r"<title>Boceto v\d+ · ", "<title>"),
+    (r"BOCETO v\d+ · solo datos reales cargados", "VISTA PREVIA · datos reales cargados"),
 ]
 VERCEL = """{
   "headers": [
@@ -57,8 +56,8 @@ def main() -> None:
         if a not in html:
             raise SystemExit(f"No encuentro en el boceto: {a}")
         html = html.replace(a, b)
-    for a, b in OPCIONALES:
-        html = html.replace(a, b)
+    for patron, nuevo in OPCIONALES:
+        html = re.sub(patron, nuevo, html)
     restantes = re.findall(r"""['"(]\.\./[^'")]*""", html)
     if restantes:
         raise SystemExit(f"Quedan rutas relativas fuera de la carpeta publicable: {restantes[:5]}")
