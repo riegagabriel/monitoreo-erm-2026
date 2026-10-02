@@ -7,10 +7,14 @@
 <style>
 :root{
  --fondo:#f4f3ee;--panel:#fff;--tinta:#1d1c18;--suave:#5f5b53;--linea:#dedad0;--relleno:#eceae2;--acento:#0b7a8e;--acento-t:#fff;
- --ori:#0b7a8e;--jne:#b00d08;--rea:#d92d20;--ver:#e34948;--rest:#5a6b8c;--mapa:#e9ece8;--lineamapa:#c3c0b4;
+ --ori:#0b7a8e;--jne:#b00d08;--rea:#d92d20;--atn:#c98a00;--ver:#e34948;--rest:#5a6b8c;--mapa:#e9ece8;--lineamapa:#c3c0b4;
+ --rc:#3f5f9e;--rr1:#c3cfe8;--rr2:#8fa5d4;--rr3:#5a7bb8;--rr4:#2f4d8c;
+ --jc:#b8731a;--jj1:#f2dcae;--jj2:#e3b866;--jj3:#c98a24;--jj4:#8f5a0a;
  --e2:.5rem;--e3:.75rem;--e4:1rem;--e5:1.5rem;--e6:2rem;--r:.5rem;--ancho:1680px}
 @media(prefers-color-scheme:dark){:root{--fondo:#151412;--panel:#1e1c19;--tinta:#ece9e1;--suave:#a39f94;--linea:#383530;--relleno:#292724;--acento:#2bb5cf;--acento-t:#06222a;
- --ori:#2bb5cf;--jne:#ee4a44;--rest:#8a9bc0;--mapa:#1b1a17;--lineamapa:#46433c}}
+ --ori:#2bb5cf;--jne:#ee4a44;--atn:#e0a21a;--rest:#8a9bc0;--mapa:#1b1a17;--lineamapa:#46433c;
+ --rc:#7f9fe0;--rr1:#2a3550;--rr2:#3f5a93;--rr3:#6988cf;--rr4:#a9c0f2;
+ --jc:#e0a540;--jj1:#4a3b1d;--jj2:#7b5c22;--jj3:#bd8a2d;--jj4:#f0c45c}}
 html{font-size:16px}html.sala{font-size:21px}
 *{box-sizing:border-box}
 [hidden]{display:none!important}
@@ -18,69 +22,98 @@ body{margin:0;background:var(--fondo);color:var(--tinta);font:400 1rem/1.45 "Seg
 ::selection{background:var(--acento);color:var(--acento-t)}*{scrollbar-color:var(--linea) transparent}
 :focus-visible{outline:2px solid var(--acento);outline-offset:2px;border-radius:4px}button{font:inherit;color:inherit}
 .aviso{background:#e5f3f6;color:#073a45;text-align:center;font-weight:600;padding:.4rem var(--e4);font-size:.8rem}
-@media(prefers-color-scheme:dark){.aviso{background:#10333b;color:#b9e6ee}}
+.aviso.ej{background:#fff1c9;color:#4a3300}
+@media(prefers-color-scheme:dark){.aviso{background:#10333b;color:#b9e6ee}.aviso.ej{background:#4a3a10;color:#ffe9a8}}
 .wrap{max-width:var(--ancho);margin:auto;padding:0 clamp(.75rem,2vw,1.75rem)}
 header{display:flex;align-items:center;gap:var(--e4);padding:var(--e4) 0;flex-wrap:wrap}
 header img{height:2.4rem}h1{font-size:1.6rem;line-height:1.15;margin:0;font-weight:700;letter-spacing:-.01em}.sub{color:var(--suave);font-size:.8rem}
 .reloj{margin-left:auto;text-align:right}.reloj b{font-size:1.5rem;font-weight:650;display:block;line-height:1.1}
 .btn{border:1px solid var(--linea);background:var(--panel);border-radius:var(--r);padding:.4rem .75rem;cursor:pointer;font-size:.85rem}
 .btn[aria-pressed=true]{background:var(--acento);color:var(--acento-t);border-color:var(--acento)}
-/* cifras: una franja, no tarjetas */
-.franja{display:grid;grid-template-columns:repeat(auto-fit,minmax(9.5rem,1fr));border:1px solid var(--linea);background:var(--panel);border-radius:var(--r);margin-bottom:var(--e3)}
-.franja div{padding:.65rem .9rem;border-left:1px solid var(--linea)}.franja div:first-child{border-left:0}
-.franja b{font-size:1.6rem;font-weight:650;line-height:1.1;display:block}.franja span{color:var(--suave);font-size:.78rem}
-.fuentes{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--e2);margin-bottom:var(--e3)}
+/* cifras: una franja, no tarjetas. Las cuatro primeras son del dia; las dos ultimas, previas */
+.franja{display:grid;grid-template-columns:repeat(auto-fit,minmax(11rem,1fr));border:1px solid var(--linea);background:var(--panel);border-radius:var(--r);margin-bottom:var(--e3)}
+.franja>div{padding:.65rem .9rem;border-left:1px solid var(--linea)}.franja>div:first-child{border-left:0}.franja>div.previo.p1{border-left:3px double var(--linea)}
+.franja b{font-size:1.6rem;font-weight:650;line-height:1.1;display:block}.franja b.cero{color:var(--suave)}
+.franja span{display:block;font-size:.86rem;font-weight:500;line-height:1.25}.franja small{display:block;color:var(--suave);font-size:.78rem;line-height:1.3;margin-top:.1rem}
+.fuentes{display:grid;grid-template-columns:repeat(5,1fr);gap:var(--e2);margin-bottom:var(--e3)}
 .f{display:flex;gap:.65rem;align-items:flex-start;border:1px solid var(--linea);background:var(--panel);border-radius:var(--r);padding:.6rem .75rem;cursor:pointer;text-align:left}
 .f[aria-pressed=false]{opacity:.5}.f .gl{flex:none;width:2.1rem;height:2.1rem;display:grid;place-items:center}
-.f b{display:block;font-weight:650;font-size:.92rem}.f small{color:var(--suave);font-size:.76rem;line-height:1.3;display:block}
+.f b{display:block;font-weight:650;font-size:.92rem}.f small{color:var(--suave);font-size:.78rem;line-height:1.3;display:block}
 .f .n{margin-left:auto;font-size:1.15rem;font-weight:650}
 .jl{width:2.1rem;height:2.1rem;border-radius:50%;background:#fff;border:1px solid var(--linea);display:grid;place-items:center}.jl img{width:78%;height:78%;object-fit:contain}
+.mini-r{display:flex;gap:.12rem}.mini-r i{width:.55rem;height:1.3rem;border-radius:2px}.mini-r i:nth-child(1){background:var(--rr1)}.mini-r i:nth-child(2){background:var(--rr3)}.mini-r i:nth-child(3){background:var(--rr4)}
 .estilos{display:flex;gap:var(--e2);align-items:center;flex-wrap:wrap;margin-bottom:var(--e3);font-size:.85rem}
-.estilos .rot{color:var(--suave)}.estilos .btn small{display:block;color:inherit;opacity:.75;font-size:.76rem}
+.estilos .rot{color:var(--suave)}.estilos .btn small{display:block;color:inherit;opacity:.75;font-size:.78rem}
 .cuerpo{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(22rem,1fr);gap:var(--e4);align-items:start}
 .mapa{position:relative;border:1px solid var(--linea);border-radius:var(--r);overflow:hidden;background:var(--mapa)}
 #map{height:clamp(26rem,74vh,56rem)}
-.nota{position:absolute;left:.6rem;bottom:.6rem;background:color-mix(in srgb,var(--panel) 92%,transparent);border:1px solid var(--linea);border-radius:6px;padding:.35rem .6rem;font-size:.78rem;max-width:20rem}
+/* leyenda del mapa: una sola, plegable */
+.leyenda{position:absolute;left:.6rem;bottom:.6rem;z-index:5;width:min(21rem,calc(100% - 1.2rem));max-height:calc(100% - 1.2rem);overflow:auto;background:color-mix(in srgb,var(--panel) 95%,transparent);border:1px solid var(--linea);border-radius:6px;font-size:.8rem}
+.leyenda summary{cursor:pointer;padding:.45rem .65rem;font-weight:650;font-size:.86rem}
+.leyenda .cu{padding:0 .65rem .6rem}
+.leyenda h3{font-size:.84rem;font-weight:700;margin:.65rem 0 .25rem}.leyenda h3:first-child{margin-top:0}
+.leyenda .fila{display:grid;grid-template-columns:2rem 1fr;gap:.45rem;align-items:center;padding:.12rem 0;line-height:1.3}
+.leyenda .g{height:1.9rem;display:grid;place-items:center}
+.leyenda .g .pinD{margin:0}
+.leyenda .g .jl{width:1.5rem;height:1.5rem;border:2px solid var(--jne)}
+.leyenda .def{margin:.4rem 0 0;color:var(--suave);line-height:1.35}.leyenda .def b{color:var(--tinta);font-weight:650}
+.leyenda .tot{margin:.35rem 0 0;color:var(--suave)}
+.rampa{display:grid;grid-template-columns:repeat(4,1fr);gap:.2rem;text-align:center}
+.rampa span{white-space:nowrap;color:var(--suave);font-size:.78rem}
+.sw{display:block;height:1rem;border-radius:2px;border:1px solid color-mix(in srgb,var(--tinta) 18%,transparent)}
+.oln{display:block;width:1.5rem;height:1rem;border:2px solid var(--ver);background:transparent}
+.grp{margin:.2rem 0}.gf{display:grid;grid-template-columns:3.4rem 1fr 3.8rem;gap:.45rem;align-items:center;padding:.15rem 0;font-size:.82rem}.gf b{text-align:right;font-weight:650}
+.vt{margin:.45rem 0 0}
 .lado{display:flex;flex-direction:column;min-width:0;background:var(--panel);border:1px solid var(--linea);border-radius:var(--r)}
 .sec{padding:var(--e4);border-top:1px solid var(--linea)}.sec:first-child{border-top:0}
-h2{font-size:1.1rem;font-weight:700;margin:0 0 var(--e2)}
+h2{font-size:1.25rem;font-weight:700;margin:0 0 var(--e2);line-height:1.2}
 table{width:100%;border-collapse:collapse;font-size:.88rem}
-th{font-weight:500;color:var(--suave);text-align:right;padding:.2rem .3rem;font-size:.76rem}th:first-child{text-align:left}
+th{font-weight:500;color:var(--suave);text-align:right;padding:.2rem .3rem;font-size:.78rem}th:first-child{text-align:left}
 td{padding:.45rem .3rem;border-top:1px solid var(--linea);text-align:right;font-size:1rem;font-weight:600}td:first-child{text-align:left;font-weight:500;font-size:.86rem}
 #panel p{margin:.25rem 0;font-size:.88rem}.mut{color:var(--suave)}
 .slot{display:flex;justify-content:space-between;font-size:.84rem;padding:.15rem 0}.slot em{font-style:normal;color:var(--suave)}
+.split{display:flex;height:.5rem;border-radius:3px;overflow:hidden;background:var(--relleno);margin:.3rem 0}.split .sr{background:var(--rc)}.split .sj{background:var(--jc)}
 #feed{max-height:19rem;overflow:auto;margin:0 calc(var(--e2)*-1);padding:0 var(--e2)}
 .it{display:grid;grid-template-columns:1.6rem 1fr;gap:.55rem;padding:.55rem 0;border-top:1px solid var(--linea);cursor:pointer;font-size:.86rem}
 .it:first-child{border-top:0}.it:hover{background:var(--relleno)}.it small{color:var(--suave)}
 .mini{width:1.2rem;height:1.2rem;display:grid;place-items:center}.mini img{width:100%}
+/* graficos bajo el mapa: tres columnas con divisores, no tarjetas */
+.graficos{display:grid;grid-template-columns:repeat(auto-fit,minmax(20rem,1fr));margin-top:var(--e4);border:1px solid var(--linea);background:var(--panel);border-radius:var(--r)}
+.gr{padding:var(--e4);border-left:1px solid var(--linea);min-width:0}.gr:first-child{border-left:0}
+.gr .sub{margin:0 0 var(--e3);font-size:.82rem}
+.ej{display:inline-block;font-size:.78rem;font-weight:700;background:#fff1c9;color:#4a3300;border-radius:4px;padding:.05rem .4rem;vertical-align:middle;margin-left:.4rem}
+.cortes{position:relative;height:1.3rem;margin-left:1.9rem}.cortes span{position:absolute;transform:translateX(-50%);font-size:.78rem;color:var(--suave);white-space:nowrap}
+.hc{display:grid;grid-template-columns:1.6rem 1fr;gap:.3rem;height:11rem}
+.ejeY{position:relative}.ejeY span{position:absolute;right:.15rem;transform:translateY(50%);font-size:.78rem;color:var(--suave)}
+.plot{position:relative;border-bottom:1px solid var(--tinta)}
+.plot .gl{position:absolute;left:0;right:0;border-top:1px solid var(--linea)}
+.plot .corte{position:absolute;top:0;bottom:0;border-left:1px dashed var(--suave)}
+.cols{position:absolute;inset:0;display:grid;grid-template-columns:repeat(10,1fr);gap:.3rem;padding:0 .25rem}
+.col{display:flex;flex-direction:column;justify-content:flex-end;height:100%}.col i{display:block;width:100%}.col i.g2{background:var(--rea)}.col i.g1{background:var(--atn)}
+.vacio{position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:0 1rem;color:var(--suave);font-size:.86rem;line-height:1.35}
+.ejeX{display:grid;grid-template-columns:1.6rem 1fr;gap:.3rem;margin-top:.2rem}.ejeX div{display:grid;grid-template-columns:repeat(10,1fr);gap:.3rem;padding:0 .25rem;text-align:center;font-size:.78rem;color:var(--suave)}
+.clave{display:flex;gap:var(--e4);font-size:.78rem;color:var(--suave);margin-top:.5rem;flex-wrap:wrap}.clave span{display:flex;align-items:center;gap:.35rem}.clave i{display:block;width:.8rem;height:.8rem;border-radius:2px}
+.bar{display:grid;grid-template-columns:minmax(0,12rem) 1fr 2.4rem;gap:.6rem;align-items:center;padding:.3rem 0}
+.bar .et{display:flex;gap:.5rem;align-items:center;font-size:.86rem;line-height:1.2}.bar .et>i,.bar .et>img{flex:none;width:1.2rem;text-align:center;color:var(--suave)}.bar .et>img{height:1.2rem;object-fit:contain}
+.bar small{display:block;color:var(--suave);font-size:.78rem}
+.pista{height:.75rem;background:var(--relleno);border-radius:3px;overflow:hidden}.pista i{display:block;height:100%;background:var(--suave)}
+.bar.ori .pista i{background:var(--ori)}.bar.jne .pista i{background:var(--jne)}.bar b{text-align:right;font-size:1rem}.bar b.cero{color:var(--suave);font-weight:500}
+.bar.g1{margin-top:.5rem}
+.nota-g{margin:.6rem 0 0;color:var(--suave);font-size:.82rem;line-height:1.35}
 .dep{margin-top:var(--e4);padding-bottom:var(--e6)}.dep table{max-width:60rem}
-.pie{color:var(--vacio,var(--suave));font-size:.78rem;padding-bottom:var(--e6)}
-/* markers de orientación */
+.pie{color:var(--suave);font-size:.78rem;padding-bottom:var(--e6)}
+/* markers */
 .m{background:none;border:0;padding:0;cursor:pointer}
-.sqA{width:1.8rem;height:1.8rem;border-radius:.45rem;border:2px dashed var(--ori);background:var(--panel);color:var(--ori);font-weight:800;font-size:.95rem;display:grid;place-items:center;position:relative}
-.sqA.p{border-style:solid}.sqA.l{border-style:solid;background:var(--ori);color:var(--acento-t)}
-.sqA.c{border-style:solid;background:var(--ori);color:var(--acento-t)}
-.sqA.c::after{content:"";position:absolute;right:-.35rem;top:-.4rem;width:.8rem;height:.8rem;border-radius:50%;background:var(--panel);border:2px solid var(--ori);box-sizing:border-box}
-.sqA.c::before{content:"";position:absolute;right:-.07rem;top:-.1rem;width:.28rem;height:.5rem;border:solid var(--ori);border-width:0 2px 2px 0;transform:rotate(40deg) scale(.7);z-index:1}
-.dotB{width:1.5rem;height:1.5rem;border-radius:50%;border:2px solid var(--ori);background:var(--panel);color:var(--ori);font-weight:800;font-size:.8rem;display:grid;place-items:center}
-.dotB.l,.dotB.c{background:var(--ori);color:var(--acento-t)}.dotB.n{border-style:dashed}
-.hexC{width:2rem;height:2.3rem;clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);background:var(--ori);display:grid;place-items:center}
-.hexC>i{width:1.7rem;height:2rem;clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);background:var(--panel);display:flex;gap:.2rem;align-items:center;justify-content:center}
-.hexC b{width:.46rem;height:.46rem;border-radius:50%;border:1.5px solid var(--ori);background:transparent;display:block}
-.hexC b.l{background:var(--ori)}.hexC b.c{background:var(--ori);box-shadow:0 0 0 2px var(--panel),0 0 0 3.5px var(--ori)}
-.pinD{width:2.1rem;height:2.1rem;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:var(--panel);border:2px dashed var(--ori);display:grid;place-items:center;position:relative;margin-bottom:.1rem}
-.pinD>span{transform:rotate(45deg);color:var(--ori);font-size:.95rem;line-height:1}
-.pinD.p{border-style:solid}.pinD.l,.pinD.c{border-style:solid;background:var(--ori)}.pinD.l>span,.pinD.c>span{color:var(--acento-t)}
-.pinD>em{position:absolute;right:-.45rem;top:-.45rem;transform:rotate(45deg);min-width:1.05rem;height:1.05rem;border-radius:50%;background:var(--panel);color:var(--ori);border:1.5px solid var(--ori);font:700 .68rem/1 inherit;display:grid;place-items:center;font-style:normal}
-.pinD.c>em{background:var(--ori);color:var(--acento-t)}
-.mk-jne{width:2rem;height:2rem;border-radius:50%;background:#fff;border:2px solid var(--jne);display:grid;place-items:center;cursor:pointer;box-shadow:0 1px 5px rgb(0 0 0/.45);padding:0}
+.pinD{width:1.6rem;height:1.6rem;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:var(--ori);border:2px solid var(--ori);display:grid;place-items:center;position:relative;margin-bottom:.1rem}
+.pinD>span{transform:rotate(45deg);color:var(--acento-t);font-size:.75rem;line-height:1}
+.pinD>em{position:absolute;right:-.4rem;top:-.4rem;transform:rotate(45deg);min-width:.95rem;height:.95rem;border-radius:50%;background:var(--panel);color:var(--ori);border:1.5px solid var(--ori);font:700 .68rem/1 inherit;display:grid;place-items:center;font-style:normal}
+.mk-jne{width:1.5rem;height:1.5rem;border-radius:50%;background:#fff;border:2px solid var(--jne);display:grid;place-items:center;cursor:pointer;box-shadow:0 1px 5px rgb(0 0 0/.45);padding:0}
 .mk-jne img{width:74%;height:74%;object-fit:contain}
-.bandera{background:none;border:0;padding:0;cursor:pointer}.bandera.previo{opacity:.5}
-.leg{display:flex;gap:var(--e4);flex-wrap:wrap;font-size:.8rem;color:var(--suave);margin:.4rem 0 var(--e3)}.leg span{display:flex;align-items:center;gap:.4rem}
+.bandera{background:none;border:0;padding:0;cursor:pointer}
 @media(max-width:1100px){.cuerpo{grid-template-columns:1fr}.fuentes{grid-template-columns:1fr 1fr}}
-@media(max-width:560px){.fuentes{gap:.4rem}.f{padding:.45rem .55rem;gap:.4rem}.f small{display:none}.f .gl{width:auto;min-width:1.6rem}.f b{font-size:.8rem}.f .n{font-size:.95rem}h1{font-size:1.05rem}.reloj{margin-left:0;text-align:left;width:100%}#map{height:26rem}.franja b{font-size:1.3rem}}
+@media(max-width:560px){.fuentes{gap:.4rem}.f{padding:.45rem .55rem;gap:.4rem}.f small{display:none}.f .gl{width:auto;min-width:1.6rem}.f b{font-size:.8rem}.f .n{font-size:.95rem}h1{font-size:1.2rem}.reloj{margin-left:0;text-align:left;width:100%}#map{height:26rem}.franja b{font-size:1.3rem}.bar{grid-template-columns:minmax(0,9rem) 1fr 2rem}.gr{border-left:0;border-top:1px solid var(--linea)}.gr:first-child{border-top:0}}
 </style></head><body>
-<div class="aviso">VISTA PREVIA · datos reales cargados antes de la jornada: 31 locales de orientación, 32 alertas del JNE y 10 banderas REA · los reportes del día llegarán desde el formulario</div>
+<div class="aviso" id="aviso">VISTA PREVIA · datos reales cargados antes de la jornada · los reportes del día llegarán desde el formulario</div>
 <div class="wrap">
 <header><img src="reniec-logo.png" alt="RENIEC">
 <div><h1>Monitoreo de la jornada electoral ERM 2026</h1><div class="sub">Domingo 4 de octubre de 2026 · SDPEG · Dirección de Registro Electoral</div></div>
@@ -88,14 +121,15 @@ td{padding:.45rem .3rem;border-top:1px solid var(--linea);text-align:right;font-
 <div class="reloj"><b id="reloj">--:--</b><span class="sub">Corte de la lista de orientadores: 01/10/2026</span></div></header>
 <div class="franja" id="franja"></div>
 <div class="fuentes" id="fuentes" role="group" aria-label="Capas del mapa"></div>
-<div class="estilos" id="estilos"><span class="rot">Marker de orientación (a elegir):</span></div>
+<div class="estilos" id="estilos"></div>
 <div class="cuerpo">
- <div class="mapa"><div id="map"></div><div class="nota">Cada marker de orientación está en el centro de su distrito: la ubicación del colegio es aproximada.</div></div>
+ <div class="mapa"><div id="map"></div><details class="leyenda" id="leyenda" open></details></div>
  <div class="lado">
   <div class="sec"><h2>Resumen</h2><table id="ledger"></table></div>
   <div class="sec" id="panel"><h2>Detalle</h2><p class="mut">Toque un marcador o un distrito para ver el detalle.</p></div>
   <div class="sec"><h2>Alertas y banderas</h2><div id="feed"></div></div>
  </div></div>
+<section class="graficos" id="graficos" aria-label="Gráficos de la jornada"></section>
 <div class="dep"><h2>Orientación por departamento</h2><table id="deps"></table></div>
 <p class="pie" id="pie"></p>
 </div>
@@ -103,86 +137,151 @@ td{padding:.45rem .3rem;border-top:1px solid var(--linea);text-align:right;font-
 <script>
 const P='data/precarga/', LOGO='logo/JNE_marker.png';
 const ORIE='data/orientacion_locales.json', JNE_='data/alertas_jne.json', BAN_='data/banderas_rea.json';
-const SELECTOR=false; // en la web publicada el constructor lo pone en false: sin selector de estilos ni modo de prueba
-let on={ori:true,jne:true,ban:true,riesgo:true},estilo='D',prueba=false;
-let map,geo,locales=[],jne=[],ban=[],riesgo=new Map(),mkOri=[],mkOtros=[],flags=[];
-const ESTADO=['Sin reporte','Llegó','Cierre enviado'];
+const SELECTOR=false; // en la web publicada el constructor lo pone en false: sin modo de ejemplo
+let on={ori:true,jne:true,ban:true,ver:true,rest:true},prueba=false;
+let map,geo,locales=[],jne=[],ban=[],den=[],META={},riesgo=new Map(),totREA={},mkOri=[],mkOtros=[],idx=new Map();
+const BT=['1–99','100–499','500–2 999','≥ 3 000'],UMB=[100,500,3000],CORTES=[[9,'Corte 1'],[12,'Corte 2'],[16.5,'Corte 3']]; // hora del corte 1 provisional
+const CANALES=[['ori','Orientadores','Reporta el monitor','fa-users','ori'],['rea','Denuncias REA de hoy','','fa-file-lines','otro g1'],['ent','Entidades del sistema','ONPE, Defensoría, Fiscalía','fa-building-columns','otro'],['pre','Prensa y redes sociales','','fa-newspaper','otro'],['tel','Llamadas o mesa de ayuda','','fa-phone','otro'],['jne','JNE','Alerta del día','','jne g1']];
+const CONSULTAS=[['dni','DNI vencido'],['rest','Restitución de domicilio'],['nino','«Cara de niño»'],['cierre','Cierre de padrón'],['otro','Otras consultas']];
 const FL=(w,h)=>`<svg viewBox="0 0 24 30" width="${w}" height="${h}" aria-hidden="true"><path d="M4 2v26" stroke="#3a0d09" stroke-width="2.4" stroke-linecap="round"/><path d="M5 3.5c5-2.6 8 2.6 14 0v11c-6 2.6-9-2.6-14 0z" fill="#d92d20" stroke="#7a1610" stroke-width="1.2"/></svg>`;
 const css=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
-// Estado de cada orientador de un local. Hoy no hay reportes: todos en 0 (sin reporte).
-// «Probar estados» solo cambia el DIBUJO para comparar estilos; no son datos.
+const fmt=n=>String(n).replace(/\B(?=(\d{3})+(?!\d))/g,' '); // 31 659, como en el resto de los informes
+const avisoBase=aviso.textContent;
+const pin=n=>`<div class="pinD"><span><i class="fa-solid fa-users"></i></span>${n===''?'':`<em>${n}</em>`}</div>`;
+const jl=()=>`<span class="jl"><img src="${LOGO}" alt=""></span>`;
+// Avance de cada orientador (0 sin reporte, 1 llego, 2 cierre). Hoy no hay reportes: todo en 0. Solo alimenta las cifras, no el pin.
+// «Ejemplo» cambia el DIBUJO de cifras y graficos para evaluar el diseno; no son datos y no existe en la web publicada.
 function estados(l){return Array.from({length:l.n_orientadores},(_,i)=>{if(!prueba)return 0;const k=(+l.id.slice(2)+i)%5;return k<2?0:k<4?1:2})}
-const agr=e=>e.every(x=>x==2)?'c':e.every(x=>x>=1)?'l':e.some(x=>x>=1)?'p':'n';
+function ejemplo(){return{inc:[[7.2,1,'ori'],[8.4,1,'ori'],[9.1,1,'ori'],[9.6,2,'rea'],[10.2,1,'tel'],[10.8,1,'ori'],[11.3,2,'ent'],[11.9,1,'pre'],[12.4,2,'ori'],[12.7,1,'tel'],[13.5,1,'ori'],[14.2,2,'jne'],[15.1,1,'ori'],[15.8,1,'rea'],[16.2,2,'ori'],[16.4,1,'ent']].map(([h,g,c])=>({h,g,c})),cons:{dni:41,rest:27,nino:9,cierre:12,otro:18},legal:6}}
+const VACIO={inc:[],cons:{dni:0,rest:0,nino:0,cierre:0,otro:0},legal:0};
+/* ---------- cifras ---------- */
+function kpis(D,E,loc){
+ const total=loc.reduce((a,l)=>a+l.n_orientadores,0),ori=E.flat().filter(x=>x>=1).length,llego=E.filter(e=>e.every(x=>x>=1)).length,cerro=E.filter(e=>e.every(x=>x==2)).length;
+ const nc=Object.values(D.cons).reduce((a,x)=>a+x,0),graves=D.inc.filter(x=>x.g==2).length,hay=ori>0||D.inc.length>0||nc>0,sin='aún sin reportes';
+ franja.innerHTML=[
+  [`${ori} de ${total}`,'orientadores con llegada reportada',hay?`${llego} de ${loc.length} locales completos`:sin,ori],
+  [`${cerro} de ${loc.length}`,'locales con cierre enviado',hay?'cierre hacia las 16:30':sin,cerro],
+  [D.inc.length,'incidencias reportadas hoy',D.inc.length?`${graves} graves · ${D.inc.length-graves} de atención`:sin,D.inc.length],
+  [nc,'consultas atendidas',nc?'acumuladas del día':sin,nc],
+  [jne.length,'alertas del JNE',`riesgo de violencia · ${new Set(jne.map(a=>a.u)).size} distritos · previas`,1,'previo p1'],
+  [den.length,'denuncias con posible conflicto o violencia',`en ${new Set(den.map(d=>d.u)).size} distritos · previas`,1,'previo']
+ ].map(([v,t,s,z,c])=>`<div class="${c||''}"><b class="${z?'':'cero'}">${v}</b><span>${t}</span><small>${s}</small></div>`).join('');
+ return{total,llego,cerro};
+}
+/* ---------- leyenda del mapa ---------- */
+const fila=(g,t)=>`<div class="fila"><span class="g">${g}</span><span>${t}</span></div>`;
+function restBloque(rb,nombre,sub){return `<p><b>Restituidos por entidad: ${nombre}</b></p>${rb?barras(rb):''}<p class="mut">${sub}</p>`}
+function panelPais(){const T=totREA.restituidos;panel.innerHTML=`<h2>Detalle</h2><p class="mut">Toque un marcador o un distrito para ver el detalle.</p>`+restBloque(T,'todo el país',`${fmt(T.total)} restituidos en ${T.distritos} distritos`)}
+function barras(rb){const mx=Math.max(rb.reniec,rb.jne,1);return `<div class="grp">${[['RENIEC',rb.reniec,'--rr4'],['JNE',rb.jne,'--rr2']].map(([t,n,c])=>`<div class="gf"><span>${t}</span><span class="pista"><i style="width:${n/mx*100}%;background:var(${c})"></i></span><b>${fmt(n)}</b></div>`).join('')}</div>`}
+function leyendaMapa(){
+ leyenda.innerHTML=`<summary>Cómo leer el mapa</summary><div class="cu"><h3>Orientación RENIEC</h3>${fila(pin(2),'Distrito donde se está desplegando orientación')}
+ <h3>Alertas</h3>${fila(jl(),'JNE: riesgo de violencia electoral')}${fila(FL(16,20),'Denuncia con posible conflicto o violencia')}
+ <h3>Verificación domiciliaria</h3>${fila('<i class="oln"></i>','Contorno rojo: distrito donde RENIEC verificó domicilios')}
+ <h3>Restituidos por distrito</h3><div class="rampa">${[1,2,3,4].map(i=>`<i class="sw" style="background:var(--rr${i})"></i>`).join('')}${BT.map(t=>`<span>${t}</span>`).join('')}</div><p class="def">Cuanto más intenso el color, más restituidos.</p>
+ <p class="def"><b>Verificación domiciliaria:</b> RENIEC comprobó en campo si los ciudadanos residen en su domicilio declarado.</p><p class="def"><b>Restituido:</b> ciudadano cuyo domicilio electoral volvió al anterior, por decisión de RENIEC o del JNE.</p>
+ <p class="def">Los pines y las alertas se ubican en el centro del distrito: la ubicación del colegio es aproximada.</p></div>`;
+}
+/* ---------- graficos ---------- */
+function cHora(inc){
+ const bins=Array.from({length:10},()=>({a:0,g:0}));let fuera=0;
+ inc.forEach(x=>{const i=Math.floor(x.h)-7;if(i<0||i>9){fuera++;return}x.g==2?bins[i].g++:bins[i].a++});
+ const mx=Math.max(4,...bins.map(b=>b.a+b.g)),paso=mx<=4?1:mx<=8?2:mx<=20?5:10,top=Math.ceil(mx/paso)*paso,ticks=[];for(let t=0;t<=top;t+=paso)ticks.push(t);
+ const x=h=>(h-7)/10*100;
+ return `<div class="cortes">${CORTES.map(([h,t])=>`<span style="left:${x(h)}%">${t}</span>`).join('')}</div>
+ <div class="hc"><div class="ejeY">${ticks.map(t=>`<span style="bottom:${t/top*100}%">${t}</span>`).join('')}</div>
+ <div class="plot">${ticks.slice(1).map(t=>`<div class="gl" style="bottom:${t/top*100}%"></div>`).join('')}${CORTES.map(([h])=>`<div class="corte" style="left:${x(h)}%"></div>`).join('')}
+ <div class="cols">${bins.map((b,i)=>`<div class="col" title="${String(i+7).padStart(2,'0')}:00 a ${String(i+7).padStart(2,'0')}:59 · ${b.a+b.g} incidencias (${b.g} graves)"><i class="g1" style="height:${b.a/top*100}%"></i><i class="g2" style="height:${b.g/top*100}%"></i></div>`).join('')}</div>
+ ${inc.length?'':'<div class="vacio">Aún sin incidencias reportadas.<br>Cada incidencia validada se suma a su hora.</div>'}</div></div>
+ <div class="ejeX"><span></span><div>${bins.map((_,i)=>`<span>${String(i+7).padStart(2,'0')}</span>`).join('')}</div></div>
+ <div class="clave"><span><i style="background:var(--rea)"></i>Grave</span><span><i style="background:var(--atn)"></i>Atención</span><span>Hora de inicio de cada intervalo${fuera?` · ${fuera} fuera de 07 a 17 h`:''}</span></div>`;
+}
+function cCanal(inc){
+ const n=Object.fromEntries(CANALES.map(c=>[c[0],0]));inc.forEach(x=>n[x.c]++);const mx=Math.max(1,...Object.values(n));
+ return CANALES.map(([k,t,s,ic,cl])=>`<div class="bar ${cl}"><span class="et">${k==='jne'?`<img src="${LOGO}" alt="">`:`<i class="fa-solid ${ic}"></i>`}<span>${t}${s?`<small>${s}</small>`:''}</span></span><span class="pista"><i style="width:${n[k]/mx*100}%"></i></span><b class="${n[k]?'':'cero'}">${n[k]}</b></div>`).join('')
+  +`<p class="nota-g">${inc.length?'Cada fila cuenta las incidencias validadas de ese canal.':'Aún sin reportes: aquí se verá si la incidencia llegó por un orientador, por otro canal o por el JNE.'}</p>`;
+}
+function cCons(D){
+ const mx=Math.max(1,...Object.values(D.cons));
+ return CONSULTAS.map(([k,t])=>`<div class="bar ori"><span class="et"><span>${t}</span></span><span class="pista"><i style="width:${D.cons[k]/mx*100}%"></i></span><b class="${D.cons[k]?'':'cero'}">${D.cons[k]}</b></div>`).join('')
+  +`<p class="nota-g">${Object.values(D.cons).some(Boolean)?`${D.legal} consultas derivadas al Área Legal.`:'Aún sin reportes: aquí se sumarán las consultas que atienden los orientadores.'}</p>`;
+}
+function graficos_(D){
+ const ej=prueba?'<span class="ej">EJEMPLO</span>':'';
+ graficos.innerHTML=`<div class="gr"><h2>Incidencias por hora${ej}</h2><p class="sub">Cuándo se concentran y qué tan graves son</p>${cHora(D.inc)}</div>
+ <div class="gr"><h2>Por dónde llegaron${ej}</h2><p class="sub">Orientadores frente a otros canales y al JNE</p>${cCanal(D.inc)}</div>
+ <div class="gr"><h2>Consultas por tipo${ej}</h2><p class="sub">Acumuladas en los locales de orientación</p>${cCons(D)}</div>`;
+}
+/* ---------- pagina ---------- */
 function pintar(){
- const loc=locales,E=loc.map(estados),total=loc.reduce((a,l)=>a+l.n_orientadores,0);
- const llego=E.filter(e=>e.every(x=>x>=1)).length,cerro=E.filter(e=>e.every(x=>x==2)).length;
- const nd=new Set(loc.map(l=>l.ubigeo_inei)).size,ndep=new Set(loc.map(l=>l.departamento)).size;
- franja.innerHTML=[[loc.length,'locales de orientación'],[total,'orientadores esperados'],[nd,'distritos'],[ndep,'departamentos'],[`${llego} de ${loc.length}`,'locales con todos llegados'],[`${cerro} de ${loc.length}`,'locales con cierre'],[jne.length,'alertas del JNE'],[new Set(ban.map(b=>b.u)).size,'distritos con bandera']].map(([v,t])=>`<div><b>${v}</b><span>${t}</span></div>`).join('');
- fuentes.innerHTML=[['ori',gl('ori'),`Orientación RENIEC`,'Locales donde se despliega orientación',loc.length],['jne',`<span class="jl"><img src="${LOGO}" alt=""></span>`,'Alertas del JNE','Riesgo de violencia electoral (base del JNE)',jne.length],['ban',FL(22,27),'Posible conflicto o violencia','Denuncias REA, corte 01/10/2026',ban.length],['riesgo','<span style="width:1.3rem;height:1.3rem;border:2px dashed var(--ver);display:block;background:color-mix(in srgb,var(--rest) 35%,transparent)"></span>','Riesgo previo REA','Verificación domiciliaria y restituidos',null]]
-  .map(([k,g,n,d,c])=>`<button class="f" data-k="${k}" aria-pressed="${on[k]}"><span class="gl">${g}</span><span><b>${n}</b><small>${d}</small></span>${c===null?'':`<span class="n">${c}</span>`}</button>`).join('');
+ const loc=locales,E=loc.map(estados),D=prueba?ejemplo():VACIO;
+ aviso.textContent=prueba?'EJEMPLO ACTIVADO · cifras y gráficos son solo un dibujo para evaluar el diseño; no son datos':avisoBase;aviso.classList.toggle('ej',prueba);
+ const {total,llego,cerro}=kpis(D,E,loc);
+ const nd=new Set(loc.map(l=>l.ubigeo_inei)).size,ndep=new Set(loc.map(l=>l.departamento)).size,dd=new Set(den.map(d=>d.u)).size;
+ fuentes.innerHTML=[['ori',pin(''),'Orientación RENIEC',`${total} orientadores en ${nd} distritos de ${ndep} departamentos`,loc.length],['jne',jl(),'Alertas del JNE','Riesgo de violencia electoral (base del JNE)',jne.length],['ban',FL(22,27),'Posible conflicto o violencia',`Denuncias en ${dd} distritos, corte ${META.rea.corte}`,den.length],['ver','<span class="oln"></span>','Verificación domiciliaria','Distritos donde RENIEC verificó domicilios',totREA.distritos_verificados],['rest','<span class="mini-r"><i></i><i></i><i></i></span>','Restituidos','Más intenso el color, más ciudadanos restituidos',totREA.restituidos.distritos]]
+  .map(([k,g,n,d,c])=>`<button class="f" data-k="${k}" aria-pressed="${on[k]}"><span class="gl">${g}</span><span><b>${n}</b><small>${d}</small></span><span class="n">${c}</span></button>`).join('');
  document.querySelectorAll('.f').forEach(b=>b.onclick=()=>{on[b.dataset.k]=!on[b.dataset.k];pintar()});
- if(SELECTOR){
- estilos.innerHTML='<span class="rot">Marker de orientación (a elegir):</span>'+[['A','Cuadrado numerado','número de orientadores'],['B','Distrito resaltado','área + punto numerado'],['C','Hexágono con puntos','un punto por orientador'],['D','Pin con icono de personas','estilo folium']].map(([k,t,s])=>`<button class="btn" data-e="${k}" aria-pressed="${estilo===k}"><b>${k}. ${t}</b><small>${s}</small></button>`).join('')+`<button class="btn" id="prueba" aria-pressed="${prueba}"><b>Probar estados</b><small>solo dibujo, no son datos</small></button>`;
-  document.querySelectorAll('[data-e]').forEach(b=>b.onclick=()=>{estilo=b.dataset.e;pintar()});
-  document.getElementById('prueba').onclick=()=>{prueba=!prueba;pintar()};
- }else estilos.hidden=true;
+ if(SELECTOR){estilos.innerHTML=`<button class="btn" id="prueba" aria-pressed="${prueba}"><b>Ver con ejemplo</b><small>solo dibujo, no son datos</small></button>`;document.getElementById('prueba').onclick=()=>{prueba=!prueba;pintar()}}else estilos.hidden=true;
  ledger.innerHTML=`<tr><th></th><th>Esperados</th><th>Llegada</th><th>Cierre</th></tr><tr><td>Locales</td><td>${loc.length}</td><td>${llego}</td><td>${cerro}</td></tr><tr><td>Orientadores</td><td>${total}</td><td>${E.flat().filter(x=>x>=1).length}</td><td>${E.flat().filter(x=>x==2).length}</td></tr>`
-  +`<tr><td>Alertas JNE</td><td>${jne.length}</td><td></td><td></td></tr><tr><td>Banderas REA</td><td>${ban.length}</td><td></td><td></td></tr>`;
- const items=[...ban.map(b=>({u:b.u,k:'b',d:b.dist,t:b.resumen_publicable,f:`${b.id} · ${b.canal} · ${b.fecha_recepcion}${b.fecha_asumida?' (fecha asumida)':''}`})),...jne.map(a=>({u:a.u,k:'j',d:a.dist,t:'Riesgo de violencia electoral. '+a.tipo,f:'JNE · JEE '+a.jee}))];
+  +`<tr><td>Alertas JNE</td><td>${jne.length}</td><td></td><td></td></tr><tr><td>Denuncias con bandera</td><td>${den.length}</td><td></td><td></td></tr>`;
+ const items=[...den.map(b=>({u:b.u,k:'b',d:b.dist,t:b.resumen_publicable,f:b.canal?`${b.id} · ${b.canal} · ${b.fecha_recepcion}${b.fecha_asumida?' (fecha asumida)':''}`:b.id})),...jne.map(a=>({u:a.u,k:'j',d:a.dist,t:'Riesgo de violencia electoral. '+a.tipo,f:'JNE · JEE '+a.jee}))];
  feed.innerHTML=items.map(i=>`<div class="it" data-u="${i.u}" tabindex="0"><span class="mini">${i.k==='b'?FL(14,17):`<img src="${LOGO}" alt="">`}</span><span><b>${i.d}</b><br>${i.t}<br><small>${i.f}</small></span></div>`).join('');
  document.querySelectorAll('.it').forEach(e=>{e.onclick=()=>abrir(e.dataset.u);e.onkeydown=ev=>{if(ev.key==='Enter')abrir(e.dataset.u)}});
  const pd={};loc.forEach((l,i)=>{const o=pd[l.departamento]??={l:0,o:0,ll:0,c:0};o.l++;o.o+=l.n_orientadores;if(E[i].every(x=>x>=1))o.ll++;if(E[i].every(x=>x==2))o.c++});
  deps.innerHTML='<tr><th>Departamento</th><th>Locales</th><th>Orientadores</th><th>Con llegada</th><th>Con cierre</th></tr>'+Object.entries(pd).sort().map(([d,o])=>`<tr><td>${d}</td><td>${o.l}</td><td>${o.o}</td><td>${o.ll}</td><td>${o.c}</td></tr>`).join('');
- pie.textContent=`Orientación: lista de orientadores al 01/10/2026 (${total} orientadores en ${loc.length} locales). JNE: base de riesgos electorales ERM 2026 (DEE - DNEECT), ${jne.length} casos con riesgo de violencia. Banderas REA: denuncias informadas ítems 75 a 85, corte 01/10/2026 (fecha asumida en 80, 82 y 83). Ubigeo INEI.`;
- // mapa
+ const asum=ban.filter(b=>b.fecha_asumida).map(b=>b.id.replace('REA-','')).join(', ');
+ pie.textContent=`Orientación: lista de orientadores al ${META.ori.corte} (${total} orientadores en ${loc.length} locales). JNE: ${META.jne.fuente}, corte ${META.jne.corte}, ${jne.length} casos con riesgo de violencia. Denuncias REA con bandera: ${META.rea.fuente}, corte ${META.rea.corte}, más las alertas del precargado REA (corte 30/09/2026)${asum?`; fecha de ingreso asumida en los ítems ${asum}`:''}. Verificados y restituidos: base REA y base de restituidos de OTI (corte 25/09/2026). Ubigeo INEI.`;
+ graficos_(D);leyendaMapa();
  if(!map)return;
- const capas=!!map.getSource('d');
- const ori={};loc.forEach((l,i)=>{const a=ori[l.ubigeo_inei]??={n:0,e:0};a.n++;a.e=Math.max(a.e,Math.min(...E[i]))});
- geo.features.forEach(f=>{const q=riesgo.get(f.properties.u),o=ori[f.properties.u];f.properties.rest=q&&q.restituidos?q.restituidos.total:0;f.properties.ver=q&&q.verificacion?1:0;f.properties.orn=o?o.n:0;f.properties.ore=o?o.e:0});
- if(capas){map.getSource('d').setData(geo);
- ['rest','ver'].forEach(l=>map.setLayoutProperty(l,'visibility',on.riesgo?'visible':'none'));
- map.setLayoutProperty('ori-fill','visibility',on.ori&&estilo==='B'?'visible':'none');map.setLayoutProperty('ori-line','visibility',on.ori&&estilo==='B'?'visible':'none');}
- flags.forEach(b=>b.style.display=on.riesgo?'':'none');
+ aplica();
  mkOri.forEach(m=>m.remove());mkOri=[];mkOtros.forEach(m=>m.remove());mkOtros=[];
- const ctr=u=>{const p=geo.features.find(x=>x.properties.u===u).properties;return[p.lon,p.lat]};
- if(on.ori){const vistos={};loc.forEach((l,i)=>{const c=agr(E[i]),e=E[i];vistos[l.ubigeo_inei]=(vistos[l.ubigeo_inei]||0)+1;const k=vistos[l.ubigeo_inei]-1,dx=(k%2?1:-1)*(k?14:0)*(k?1:0);
-   const b=document.createElement('button');b.className='m';b.title=estilo==='D'?`Orientación electoral · ${l.local} · ${l.distrito}`:`${l.local} · ${l.distrito}`;b.setAttribute('aria-label',`Orientación en ${l.local}, ${l.distrito}: ${l.n_orientadores} orientadores`);
-   b.innerHTML=estilo==='D'?`<div class="pinD ${c==='n'?'':c}"><span><i class="fa-solid fa-users"></i></span><em>${l.n_orientadores}</em></div>`:estilo==='C'?`<div class="hexC"><i>${e.map(x=>`<b class="${x==2?'c':x==1?'l':''}"></b>`).join('')}</i></div>`:estilo==='B'?`<div class="dotB ${c==='c'?'c':c==='l'?'l':c==='n'?'n':''}">${l.n_orientadores}</div>`:`<div class="sqA ${c}">${l.n_orientadores}</div>`;
-   b.onclick=ev=>{ev.stopPropagation();abrir(l.ubigeo_inei,l.id)};mkOri.push(new maplibregl.Marker({element:b,anchor:estilo==='D'?'bottom':'center',offset:[dx,0]}).setLngLat(ctr(l.ubigeo_inei)).addTo(map))})}
- if(on.jne)jne.forEach(a=>{const e=document.createElement('button');e.className='mk-jne';e.title='Alerta del JNE';e.innerHTML=`<img src="${LOGO}" alt="">`;e.setAttribute('aria-label','Alerta del JNE en '+a.dist);e.onclick=ev=>{ev.stopPropagation();abrir(a.u)};mkOtros.push(new maplibregl.Marker({element:e,offset:[10,-10]}).setLngLat(ctr(a.u)).addTo(map))});
- if(on.ban){const v=new Set();ban.forEach(b=>{if(v.has(b.u))return;v.add(b.u);const e=document.createElement('button');e.className='bandera';e.title='Posible conflicto o violencia';e.setAttribute('aria-label','Posible conflicto o violencia en '+b.dist);e.innerHTML=FL(24,30);e.onclick=ev=>{ev.stopPropagation();abrir(b.u)};mkOtros.push(new maplibregl.Marker({element:e,anchor:'bottom-left',offset:[-6,-6]}).setLngLat(ctr(b.u)).addTo(map))})}
+ const ctr=u=>{const p=idx.get(u);return[p.lon,p.lat]};
+ if(on.ori){const vistos={};loc.forEach(l=>{vistos[l.ubigeo_inei]=(vistos[l.ubigeo_inei]||0)+1;const k=vistos[l.ubigeo_inei]-1,dx=k?(k%2?1:-1)*12:0;
+   const b=document.createElement('button');b.className='m';b.title=`Orientación electoral · ${l.local} · ${l.distrito}`;b.setAttribute('aria-label',`Orientación en ${l.local}, ${l.distrito}: ${l.n_orientadores} orientadores`);
+   b.innerHTML=pin(l.n_orientadores);
+   b.onclick=ev=>{ev.stopPropagation();abrir(l.ubigeo_inei,l.id)};mkOri.push(new maplibregl.Marker({element:b,anchor:'bottom',offset:[dx,0]}).setLngLat(ctr(l.ubigeo_inei)).addTo(map))})}
+ if(on.jne)jne.forEach(a=>{const e=document.createElement('button');e.className='mk-jne';e.title='Alerta del JNE';e.innerHTML=`<img src="${LOGO}" alt="">`;e.setAttribute('aria-label','Alerta del JNE en '+a.dist);e.onclick=ev=>{ev.stopPropagation();abrir(a.u)};mkOtros.push(new maplibregl.Marker({element:e,offset:[8,-8]}).setLngLat(ctr(a.u)).addTo(map))});
+ if(on.ban){const v=new Set();den.forEach(b=>{if(v.has(b.u))return;v.add(b.u);const e=document.createElement('button');e.className='bandera';e.title='Posible conflicto o violencia';e.setAttribute('aria-label','Posible conflicto o violencia en '+b.dist);e.innerHTML=FL(24,30);e.onclick=ev=>{ev.stopPropagation();abrir(b.u)};mkOtros.push(new maplibregl.Marker({element:e,anchor:'bottom-left',offset:[-6,-6]}).setLngLat(ctr(b.u)).addTo(map))})}
 }
-function gl(k){return estilo==='D'?'<div class="pinD"><span><i class="fa-solid fa-users"></i></span></div>':estilo==='C'?'<div class="hexC"><i><b></b><b></b></i></div>':estilo==='B'?'<div class="dotB n">2</div>':'<div class="sqA">2</div>'}
+/* ---------- capas del mapa ---------- */
+const CAPAS=()=>({
+ rest:{type:'fill',source:'d',filter:['>',['get','rest'],0],paint:{'fill-color':['step',['get','rest'],css('--rr1'),UMB[0],css('--rr2'),UMB[1],css('--rr3'),UMB[2],css('--rr4')],'fill-opacity':.92}},
+ lin:{type:'line',source:'d',paint:{'line-color':css('--lineamapa'),'line-width':.3}},
+ ver:{type:'line',source:'d',filter:['==',['get','ver'],1],paint:{'line-color':css('--ver'),'line-width':['interpolate',['linear'],['zoom'],4,1.8,9,3]}}
+});
+function aplica(){if(!map.getSource('d'))return;const set=(id,v)=>map.setLayoutProperty(id,'visibility',v?'visible':'none');set('rest',on.rest);set('ver',on.ver)}
+function recolorea(){map.setPaintProperty('bg','background-color',css('--mapa'));Object.entries(CAPAS()).forEach(([id,l])=>Object.entries(l.paint).forEach(([k,val])=>map.setPaintProperty(id,k,val)));aplica()}
 function abrir(u,lid){
  const f=geo.features.find(x=>x.properties.u===u);if(!f)return;const p=f.properties,q=riesgo.get(u);
- const ls=locales.filter(l=>l.ubigeo_inei===u&&(!lid||l.id===lid)),b=ban.filter(x=>x.u===u),j=jne.filter(x=>x.u===u);
+ const ls=locales.filter(l=>l.ubigeo_inei===u&&(!lid||l.id===lid)),d=den.filter(x=>x.u===u),j=jne.filter(x=>x.u===u),rb=q&&q.restituidos;
  panel.innerHTML=`<h2>Detalle</h2><b style="font-size:1.05rem">${p.dist}</b><p class="mut">${p.prov}, ${p.dep}. Ubigeo INEI ${u}</p>`
-  +ls.map(l=>{const e=estados(l);return `<p><b>Orientación RENIEC</b> · ${l.local}</p>`+e.map((x,i)=>`<div class="slot"><span>Orientador ${i+1}</span><em>${ESTADO[x]}</em></div>`).join('')}).join('')
-  +(b.length?'<p><b>Posible conflicto o violencia (denuncias REA)</b></p>'+b.map(x=>`<p>${x.resumen_publicable}</p><p class="mut">${x.id} · ${x.canal} · ${x.entidad_emisora} · ingresó el ${x.fecha_recepcion}${x.fecha_asumida?' (fecha asumida)':''}${x.n_ciudadanos?' · '+x.n_ciudadanos+' ciudadanos listados en la denuncia (no son verificados ni restituidos)':''}</p>`).join(''):'')
+  +ls.map(l=>`<p><b>Orientación RENIEC</b> · ${l.local}</p><p class="mut">${l.n_orientadores} ${l.n_orientadores==1?'orientador planificado':'orientadores planificados'}</p>`).join('')
+  +(d.length?'<p><b>Posible conflicto o violencia (denuncias)</b></p>'+d.map(x=>`<p>${x.resumen_publicable}</p><p class="mut">${x.id}${x.canal?` · ${x.canal} · ${x.entidad_emisora} · ingresó el ${x.fecha_recepcion}${x.fecha_asumida?' (fecha asumida)':''}`:''}${x.n_ciudadanos?' · '+x.n_ciudadanos+' ciudadanos listados en la denuncia (no son verificados ni restituidos)':''}</p>`).join(''):'')
   +(j.length?'<p><b>JNE</b></p>'+j.map(x=>`<p>Riesgo de violencia electoral. ${x.tipo} (JEE ${x.jee}).</p>`).join(''):'')
-  +(q?'<p><b>Riesgo previo REA</b></p>'+(q.verificacion?`<p>Verificación domiciliaria realizada (${q.verificacion.domicilios??'sin dato'} domicilios).</p>`:'')+(q.restituidos?`<p>Restituidos: ${q.restituidos.total.toLocaleString('es-PE')} (RENIEC ${q.restituidos.reniec.toLocaleString('es-PE')}, JNE ${q.restituidos.jne.toLocaleString('es-PE')}).</p>`:''):'');
+  +(q&&(q.verificacion||rb)?'<p><b>Verificación y restituidos</b></p>'+`<p>Verificación domiciliaria: ${q.verificacion?`realizada${q.verificacion.domicilios?` (${fmt(q.verificacion.domicilios)} domicilios)`:''}`:'no registrada'}.</p>`+restBloque(rb,p.dist,rb?`${fmt(rb.total)} restituidos en este distrito`:'Sin restituidos registrados en este distrito'):'');
+ panel.insertAdjacentHTML('beforeend','<p><button class="btn" id="todoPais">Ver todo el país</button></p>');document.getElementById('todoPais').onclick=panelPais;
  const bb=[[180,90],[-180,-90]];(function w(c){if(typeof c[0]==='number'){bb[0][0]=Math.min(bb[0][0],c[0]);bb[0][1]=Math.min(bb[0][1],c[1]);bb[1][0]=Math.max(bb[1][0],c[0]);bb[1][1]=Math.max(bb[1][1],c[1])}else c.forEach(w)})(f.geometry.coordinates);
  map.fitBounds(bb,{padding:80,maxZoom:9,duration:600});
 }
 document.getElementById('sala').onclick=e=>{const v=document.documentElement.classList.toggle('sala');e.target.setAttribute('aria-pressed',v);setTimeout(()=>map.resize(),50)};
+leyenda.open=innerWidth>=900;
 (async()=>{
  const [g,r,aj,bj,oj]=await Promise.all([fetch(P+'distritos_pais.geojson').then(x=>x.json()),fetch(P+'riesgo_previo.json').then(x=>x.json()),fetch(JNE_).then(x=>x.json()),fetch(BAN_).then(x=>x.json()),fetch(ORIE).then(x=>x.json())]);
- geo=g;r.distritos.forEach(d=>riesgo.set(d.ubigeo_inei,d));locales=oj.registros;
+ geo=g;totREA=r.totales;META={rea:bj,jne:aj,ori:oj};r.distritos.forEach(d=>riesgo.set(d.ubigeo_inei,d));locales=oj.registros;
  jne=aj.alertas.map(a=>({u:a.ubigeo_inei,dist:a.distrito,tipo:a.tipo_riesgo,jee:a.jee}));
  ban=bj.registros.filter(x=>x.conflictividad).map(x=>({...x,u:x.ubigeo_inei,dist:x.distrito}));
- const DIA=new Set(ban.map(x=>x.u));
+ // una sola lista de denuncias con bandera: las informadas (ban) y las del precargado REA que no estan en ban
+ const enBan=new Set(ban.map(b=>+b.id.replace('REA-','')));den=[...ban];
+ riesgo.forEach(d=>d.alertas_rea.forEach(a=>{if(!enBan.has(a.item))den.push({id:'REA-'+a.item,u:d.ubigeo_inei,dist:d.distrito,resumen_publicable:a.motivo})}));
+ // atributos fijos de cada distrito para dibujar: total de restituidos y si hubo verificacion
+ geo.features.forEach(f=>{const p=f.properties,q=riesgo.get(p.u),rb=q&&q.restituidos;idx.set(p.u,p);p.rest=rb?rb.total:0;p.ver=q&&q.verificacion?1:0});
+ panelPais();
  map=new maplibregl.Map({container:'map',style:{version:8,sources:{},layers:[{id:'bg',type:'background',paint:{'background-color':css('--mapa')}}]},center:[-75.5,-9.3],zoom:4.2,attributionControl:false});
  map.addControl(new maplibregl.NavigationControl({showCompass:false}),'top-left');
- matchMedia('(prefers-color-scheme:dark)').addEventListener('change',()=>setTimeout(()=>{map.setPaintProperty('bg','background-color',css('--mapa'));map.setPaintProperty('lin','line-color',css('--lineamapa'))},50));
+ matchMedia('(prefers-color-scheme:dark)').addEventListener('change',()=>setTimeout(()=>{recolorea();leyendaMapa()},50));
  map.on('load',()=>{
   map.addSource('d',{type:'geojson',data:geo});
-  map.addLayer({id:'rest',type:'fill',source:'d',paint:{'fill-color':css('--rest'),'fill-opacity':['step',['get','rest'],0,1,.12,100,.22,1000,.34]}});
-  map.addLayer({id:'ori-fill',type:'fill',source:'d',filter:['>',['get','orn'],0],layout:{visibility:'none'},paint:{'fill-color':css('--ori'),'fill-opacity':['match',['get','ore'],2,.55,1,.4,.22]}});
-  map.addLayer({id:'lin',type:'line',source:'d',paint:{'line-color':css('--lineamapa'),'line-width':.3}});
-  map.addLayer({id:'ori-line',type:'line',source:'d',filter:['>',['get','orn'],0],layout:{visibility:'none'},paint:{'line-color':css('--ori'),'line-width':2.2,'line-dasharray':[2,1.5]}});
-  map.addLayer({id:'ver',type:'line',source:'d',filter:['==',['get','ver'],1],paint:{'line-color':css('--ver'),'line-width':1.6,'line-dasharray':[2,1.5]}});
+  Object.entries(CAPAS()).forEach(([id,l])=>map.addLayer({id,...l}));
   map.on('click',e=>{const f=map.queryRenderedFeatures(e.point,{layers:['rest','lin']})[0];if(f)abrir(f.properties.u)});
-  [...riesgo.values()].filter(d=>d.alertas_rea.length&&!DIA.has(d.ubigeo_inei)).forEach(d=>{const f=geo.features.find(x=>x.properties.u===d.ubigeo_inei).properties;const e=document.createElement('button');e.className='bandera previo';e.title='Previo REA: riesgo de conflicto';e.innerHTML=FL(22,27);e.onclick=ev=>{ev.stopPropagation();abrir(d.ubigeo_inei)};flags.push(e);new maplibregl.Marker({element:e,anchor:'bottom-left'}).setLngLat([f.lon,f.lat]).addTo(map)});
   pintar();
  });
  pintar();
