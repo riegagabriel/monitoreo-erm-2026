@@ -21,6 +21,7 @@ CAMBIOS = [
     ("JNE_='../data/alertas_jne_Q20261001.json'", "JNE_='data/alertas_jne.json'"),
     ("BAN_='../data/banderas_rea_Q20261002.json'", "BAN_='data/banderas_rea.json'"),
     ("ORIE='../data/orientacion_locales.json'", "ORIE='data/orientacion_locales.json'"),
+    ("COORD='../data/locales_coords.json'", "COORD='data/locales_coords.json'"),
     ("LOGO='../logo/JNE_marker.png'", "LOGO='logo/JNE_marker.png'"),
     ('src="../dashboard/public/reniec-logo.png"', 'src="reniec-logo.png"'),
     ("const SELECTOR=true;", "const SELECTOR=false;"),  # sin selector de estilos ni modo de prueba en la web
@@ -41,6 +42,7 @@ DATOS = [  # (origen, destino dentro de publicar/.../data)
     (RAIZ / "data" / "alertas_jne_Q20261001.json", "alertas_jne.json"),
     (RAIZ / "data" / "banderas_rea_Q20261002.json", "banderas_rea.json"),
     (RAIZ / "data" / "orientacion_locales.json", "orientacion_locales.json"),
+    (RAIZ / "data" / "locales_coords.json", "locales_coords.json"),
 ]
 
 
