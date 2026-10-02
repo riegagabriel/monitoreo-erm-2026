@@ -1,4 +1,4 @@
-"""Banderas del dia: denuncias REA informadas (items 75 a 88) para el dashboard de monitoreo.
+"""Banderas del dia: denuncias REA informadas (items 75 a 89) para el dashboard de monitoreo.
 
 Fuente (solo lectura): DENUNCIAS_REA/entregables/OBSERVACIONES_INFORMADAS_Q20261002.xlsx, hoja OBSERVACIONES.
 Reglas: INSTRUCCIONES_CARGA_OTRO_MAPA.md (misma carpeta). Salida: data/banderas_rea_Q20261002.json.
@@ -21,7 +21,7 @@ FUENTE = RAIZ.parent / "DENUNCIAS_REA" / "entregables" / "OBSERVACIONES_INFORMAD
 LOOKUP = RAIZ.parent / "DENUNCIAS_REA" / "data" / "geodata" / "distritos_lookup.parquet"
 SALIDA = RAIZ / "data" / "banderas_rea_Q20261002.json"
 CORTE = "02/10/2026"
-FECHA_ASUMIDA = {80, 82, 83, 86, 87, 88}  # sin sello de RENIEC (instrucciones, regla 6)
+FECHA_ASUMIDA = {80, 82, 83, 86, 87, 88, 89}  # sin sello de RENIEC (instrucciones, regla 6)
 
 CATEGORIAS = {
     "Impugnación o depuración de electores": 1,
@@ -76,10 +76,10 @@ def main() -> None:
     reg = construir(filas, cat)
     con = [r for r in reg if r["conflictividad"]]
     esperado = (len(reg), len(con), len({r["ubigeo_inei"] for r in con}), sum(r["n_ciudadanos"] or 0 for r in reg))
-    if esperado != (14, 11, 9, 380):
-        raise SystemExit(f"La carga no cuadra con las instrucciones (filas, con bandera, distritos, listados): {esperado} != (14, 11, 9, 380)")
+    if esperado != (15, 12, 10, 380):
+        raise SystemExit(f"La carga no cuadra con las instrucciones (filas, con bandera, distritos, listados): {esperado} != (15, 12, 10, 380)")
     SALIDA.parent.mkdir(parents=True, exist_ok=True)
-    SALIDA.write_text(json.dumps({"fuente": "REA, denuncias informadas (items 75 a 88)", "corte": CORTE, "registros": reg},
+    SALIDA.write_text(json.dumps({"fuente": "REA, denuncias informadas (items 75 a 89)", "corte": CORTE, "registros": reg},
                                  ensure_ascii=False, indent=1), encoding="utf-8")
     print(f"{len(reg)} filas, {len(con)} con bandera en {len({r['ubigeo_inei'] for r in con})} distritos, "
           f"{esperado[3]} ciudadanos listados -> {SALIDA}")
