@@ -325,6 +325,15 @@
    "t": "Momentos de tensión en los exteriores de la I.E. 86394 de Cayas: pobladores increparon a ciudadanos a quienes señalan como presuntos «votantes golondrinos». La Policía se encuentra en el lugar."
   },
   {
+   "id": "MAT-C23",
+   "h": 13.02,
+   "g": 1,
+   "c": "ent",
+   "u": "021012",
+   "l": null,
+   "t": "Según reportes recibidos desde Rahuapampa, hay rechazo entre un grupo de ciudadanos hacia presuntos golondrinos. Las imágenes muestran increpaciones, empujones e intervención policial en los exteriores del local de votación."
+  },
+  {
    "id": "MAT-C21",
    "h": 13.08,
    "g": 2,
@@ -359,6 +368,33 @@
    "u": "080107",
    "l": "L-14",
    "t": "Otro orientador del local reporta el mismo caso: una ciudadana restituida que no puede trasladarse hasta su local de votación."
+  },
+  {
+   "id": "ORI-20261004134850-L-07",
+   "h": 13.8,
+   "g": 1,
+   "c": "ori",
+   "u": "040111",
+   "l": "L-07",
+   "t": "Una ciudadana restituida solicita una solución porque no puede trasladarse hasta su local de votación. Calificó la situación como un fraude y dijo que haría público el caso."
+  },
+  {
+   "id": "ORI-20261004135512-L-14",
+   "h": 13.92,
+   "g": 2,
+   "c": "ori",
+   "u": "080107",
+   "l": "L-14",
+   "t": "Un ciudadano restituido manifestó su disconformidad, calificó al personal de forma ofensiva y dijo que los esperaría afuera. Se hizo presente personal de la Defensoría del Pueblo, que sugirió evaluar una dispensa para ciudadanos en su situación."
+  },
+  {
+   "id": "ORI-20261004135701-L-06",
+   "h": 13.95,
+   "g": 1,
+   "c": "ori",
+   "u": "021014",
+   "l": "L-06",
+   "t": "Un ciudadano fue restituido a su domicilio real según su padrón."
   }
  ]
 }

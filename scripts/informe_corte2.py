@@ -23,7 +23,7 @@ from actualizar_locales import BASE, HOJA, nz  # noqa: E402
 RAIZ = c.RAIZ
 SEG = RAIZ / "seguimiento"
 MENORES = {"de", "del", "la", "las", "los", "y", "e"}
-VIOL = re.compile(r"\b(violen|amenaz|agresi|agred|golpe|pelea|rina\b|enfrentamiento|disturbio|atac|incendi|quem[oa]|destrozo|balacera|disparo|herid|lesion|intimid|hostig)")
+VIOL = re.compile(r"\b(violen|amenaz|agresi|agred|golpe|pelea|rina\b|enfrentamiento|disturbio|atac|empujon|incendi|quem[oa]|destrozo|balacera|disparo|herid|lesion|intimid|hostig)")
 
 
 def es_grave(texto: str, tipo_a: bool) -> bool:
@@ -95,14 +95,14 @@ def datos(ruta: Path) -> dict:
             if x:
                 l = por_id[lid]
                 texto = x["resumen_publicable"].strip()
-                inc[r["corte"]].append({"hora": x["hora"], "lid": lid, "departamento": titulo(l["departamento"]), "distrito": titulo(l["distrito"]), "local": l["local"],
+                inc[r["corte"]].append({"hora": x["hora"], "lid": lid, "u": l["ubigeo_inei"], "departamento": titulo(l["departamento"]), "distrito": titulo(l["distrito"]), "local": l["local"],
                                         "grave": es_grave(texto, x["tipo"].strip().upper() == "A"), "texto": texto})
     otros = []
     if c.INC_MATRIZ.exists():
         geo = {f["properties"]["u"]: f["properties"] for f in json.loads((RAIZ / "dashboard" / "public" / "data" / "precarga" / "distritos_pais.geojson").read_text(encoding="utf-8"))["features"]}
         for x in json.loads(c.INC_MATRIZ.read_text(encoding="utf-8")):
             g = geo[x["u"]]
-            otros.append({"hora": f"{int(x['h']):02d}:{round((x['h'] % 1) * 60):02d}", "lid": x["l"], "departamento": titulo(g["dep"]), "distrito": titulo(g["dist"]),
+            otros.append({"hora": f"{int(x['h']):02d}:{round((x['h'] % 1) * 60):02d}", "lid": x["l"], "u": x["u"], "departamento": titulo(g["dep"]), "distrito": titulo(g["dist"]),
                           "local": por_id[x["l"]]["local"] if x["l"] else "", "grave": es_grave(x["t"], x["g"] == 2), "texto": x["t"]})
     otros.sort(key=lambda x: x["hora"])
     for v in inc.values():

@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import csv
 import html
+import json
 import random
 import sys
 import urllib.request
@@ -28,6 +29,8 @@ from docx.shared import RGBColor  # noqa: E402
 CONTEXTO = c.RAIZ / "data" / "entrada" / "contexto_casos.csv"
 DEP = {"Ancash": "Áncash", "Junin": "Junín", "Huanuco": "Huánuco", "San Martin": "San Martín", "Apurimac": "Apurímac"}
 dep = lambda s: DEP.get(s, s)  # noqa: E731
+DIST = {"Masin": "Masín", "Chavin de Huantar": "Chavín de Huántar"}
+dist = lambda s: DIST.get(s, s)  # noqa: E731
 
 
 def datos(ruta: Path) -> dict:
@@ -40,8 +43,19 @@ def datos(ruta: Path) -> dict:
         with CONTEXTO.open(encoding="utf-8", newline="") as f:
             d["contexto"] = [{"distritos": x["distritos"].strip(), "texto": x["texto"].strip()} for x in csv.DictReader(f)]
     todas = d["incidencias"]["c1"] + d["incidencias"]["c2"] + d["otros"]
+    for x in todas:
+        x["distrito"] = dist(x["distrito"])
     d["todas"] = todas
     d["graves"] = sorted([x for x in todas if x["grave"]], key=lambda x: x["hora"], reverse=True)
+    riesgo = {x["ubigeo_inei"]: (x.get("restituidos") or {}) for x in json.loads((c.RAIZ / "dashboard" / "public" / "data" / "precarga" / "riesgo_previo.json").read_text(encoding="utf-8"))["distritos"]}
+    for x in todas:
+        x["rest"] = riesgo.get(x["u"], {}).get("total", 0)
+        x["rest_reniec"], x["rest_jne"] = riesgo.get(x["u"], {}).get("reniec", 0), riesgo.get(x["u"], {}).get("jne", 0)
+    dist_inc = {x["u"] for x in todas}
+    dist_gra = {x["u"] for x in d["graves"]}
+    suma = lambda us, k: sum(riesgo.get(u, {}).get(k, 0) for u in us)  # noqa: E731
+    d["rest_inc"] = {"distritos": len(dist_inc), "total": suma(dist_inc, "total"), "reniec": suma(dist_inc, "reniec"), "jne": suma(dist_inc, "jne"),
+                     "graves_distritos": len(dist_gra), "graves_total": suma(dist_gra, "total"), "graves_reniec": suma(dist_gra, "reniec"), "graves_jne": suma(dist_gra, "jne"), "graves_sin": sum(1 for u in dist_gra if not riesgo.get(u, {}).get("total"))}
     d["deps_completos"] = sum(1 for x in d["departamentos"] if x["orientadores"] and x["c2"] >= x["orientadores"])
     return d
 
@@ -49,6 +63,10 @@ def datos(ruta: Path) -> dict:
 def pc(n: int, total: int) -> str:
     p = 100 * n / total if total else 0
     return "<1 %" if 0 < p < 1 else f"{round(p)} %"
+
+
+def fn(n: int) -> str:
+    return f"{n:,}".replace(",", " ")
 
 
 def lista(items: list[str]) -> str:
@@ -69,7 +87,12 @@ def textos(d: dict) -> dict[str, str]:
     inc = (f"Se han reportado {len(d['todas'])} incidencias durante la jornada, de las cuales {len(g)} son graves: se registraron en "
            + lista([f"{x['distrito']} ({dep(x['departamento'])})" for x in sorted(g, key=lambda x: x["hora"])])
            + f". Las otras {len(d['todas']) - len(g)} son de atención.")
-    return {"general": general, "orientacion": orient, "incidencias": inc}
+    r = d["rest_inc"]
+    nombres_sin = sorted({x["distrito"] for x in d["graves"] if not x["rest"]})
+    sin = f" En {len(nombres_sin)} de ellos ({lista(nombres_sin)}) no hay restituidos registrados." if nombres_sin else ""
+    rest = (f"Las incidencias se registraron en {r['distritos']} distritos, donde hay {fn(r['total'])} ciudadanos restituidos ({fn(r['reniec'])} por RENIEC y {fn(r['jne'])} por el JNE). "
+            f"En los {r['graves_distritos']} distritos con incidencias graves suman {fn(r['graves_total'])} ({fn(r['graves_reniec'])} por RENIEC y {fn(r['graves_jne'])} por el JNE)." + sin)
+    return {"general": general, "orientacion": orient, "incidencias": inc, "restituidos": rest}
 
 
 def kpis(d: dict) -> list[tuple[str, str, str]]:
@@ -88,7 +111,7 @@ def boceto(d: dict) -> str:
     barras = "".join(f"<div class='gf'><span>{html.escape(k)}</span><span class='pista'><i style='width:{100 * n / max(1, list(cs['por_tipo'].values())[0]):.0f}%'></i></span><b>{n}</b><em>{pc(n, cs['total'])}</em></div>"
                      for k, n in cs["por_tipo"].items() if n > 0)
     ctx = "".join(f"<div class='ctx'><b>{html.escape(x['distritos'])}</b><p>{html.escape(x['texto'])}</p></div>" for x in d["contexto"])
-    filas = "".join(f"<tr><td>{html.escape(x['hora'])}</td><td><b>{html.escape(x['distrito'])}</b><br><span class='mut'>{html.escape(dep(x['departamento']))}</span></td><td>{html.escape(x['texto'])}</td></tr>" for x in d["graves"])
+    filas = "".join(f"<tr><td>{html.escape(x['hora'])}</td><td><b>{html.escape(x['distrito'])}</b><br><span class='mut'>{html.escape(dep(x['departamento']))}</span></td><td class='num'>{fn(x['rest_reniec']) if x['rest'] else '—'}</td><td class='num'>{fn(x['rest_jne']) if x['rest'] else '—'}</td><td>{html.escape(x['texto'])}</td></tr>" for x in d["graves"])
     return f"""<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Boceto · Informe ejecutivo</title>
 <style>
 :root{{--tinta:#1c2733;--mut:#5b6773;--linea:#d6dbe0;--marca:#0b3d6e;--fondo:#eef1f4;--ger:#b42318}}
@@ -101,7 +124,7 @@ h2{{font-size:16.5px;margin:24px 0 8px;color:var(--marca);border-bottom:2px soli
 .kpi b{{display:block;font-size:26px;color:var(--marca)}}.kpi span{{display:block;font-size:12.5px;line-height:1.3}}.kpi small{{color:var(--mut);font-size:12px}}
 .gf{{display:grid;grid-template-columns:200px 1fr 44px 48px;gap:10px;align-items:center;margin:6px 0;font-size:13.5px}}.pista{{height:10px;background:#e3e8ee;border-radius:5px}}.pista i{{display:block;height:100%;background:var(--marca);border-radius:5px}}.gf em{{font-style:normal;color:var(--mut);text-align:right}}
 .ctx{{border-left:4px solid var(--ger);background:#fdf2f1;padding:8px 14px;margin:10px 0}}.ctx b{{color:var(--ger)}}
-table{{width:100%;border-collapse:collapse;margin:10px 0;font-size:13.5px}}th{{background:var(--marca);color:#fff;text-align:left;padding:6px 8px}}td{{padding:6px 8px;border-bottom:1px solid var(--linea);vertical-align:top}}.mut{{color:var(--mut);font-size:12px}}
+table{{width:100%;border-collapse:collapse;margin:10px 0;font-size:13.5px}}th{{background:var(--marca);color:#fff;text-align:left;padding:6px 8px}}td{{padding:6px 8px;border-bottom:1px solid var(--linea);vertical-align:top}}.mut{{color:var(--mut);font-size:12px}}td.num{{text-align:right;white-space:nowrap}}
 .pie{{margin-top:26px;font-size:12px;color:var(--mut);border-top:1px solid var(--linea);padding-top:8px}}
 @media(max-width:700px){{.hoja{{padding:24px 18px}}.kpis{{grid-template-columns:repeat(2,1fr)}}.gf{{grid-template-columns:1fr 44px 48px}}.gf .pista{{grid-column:1/-1}}}}
 </style></head><body>
@@ -114,9 +137,10 @@ table{{width:100%;border-collapse:collapse;margin:10px 0;font-size:13.5px}}th{{b
 <h2>2. Orientación brindada</h2><p>{html.escape(t['orientacion'])}</p>{barras}
 <h2>3. Situaciones que requieren atención</h2><p>{html.escape(t['incidencias'])}</p>
 {ctx}
-<table><thead><tr><th style="width:9%">Hora</th><th style="width:24%">Distrito</th><th>Qué se reportó</th></tr></thead><tbody>{filas}</tbody></table>
+<p>{html.escape(t['restituidos'])}</p>
+<table><thead><tr><th style="width:7%">Hora</th><th style="width:20%">Distrito</th><th style="width:11%">Restituidos RENIEC</th><th style="width:11%">Restituidos JNE</th><th>Qué se reportó</th></tr></thead><tbody>{filas}</tbody></table>
 <h2>4. Próximos pasos</h2><p>El corte de cierre de la orientación está previsto hacia las 16:30. Se continuará el seguimiento de los distritos con incidencias graves en coordinación con la PNP, el Ministerio Público y las subprefecturas.</p>
-<p class="pie">Fuente: formulario de orientadores, matriz de seguimiento de la SDPEG e información de campo. Datos al {d['corte_datos']}.</p>
+<p class="pie">Fuente: formulario de orientadores, matriz de seguimiento de la SDPEG, información de campo y base de ciudadanos restituidos al 25/09/2026. Datos al {d['corte_datos']}.</p>
 </main></body></html>"""
 
 
@@ -155,11 +179,14 @@ def word(d: dict, salida: Path) -> None:
     inf.p(t["incidencias"])
     for x in d["contexto"]:
         caja(inf, x["distritos"] + ".", x["texto"])
-    inf.tabla(["Hora", "Distrito", "Qué se reportó"], [(x["hora"], f"{x['distrito']} ({dep(x['departamento'])})", x["texto"]) for x in d["graves"]], [1.5, 4.3, 11.0], centradas=(0,))
+    inf.p(t["restituidos"])
+    inf.tabla(["Hora", "Distrito", "Restituidos RENIEC", "Restituidos JNE", "Qué se reportó"],
+              [(x["hora"], f"{x['distrito']} ({dep(x['departamento'])})", fn(x["rest_reniec"]) if x["rest"] else "—", fn(x["rest_jne"]) if x["rest"] else "—", x["texto"]) for x in d["graves"]],
+              [1.3, 3.2, 1.9, 1.9, 8.5], centradas=(0, 2, 3))
     inf.h1("4. Próximos pasos")
     inf.p("El corte de cierre de la orientación está previsto hacia las 16:30. Se continuará el seguimiento de los distritos con incidencias graves en coordinación con la PNP, "
           "el Ministerio Público y las subprefecturas.")
-    inf.guardar(salida, "Informe ejecutivo")
+    inf.guardar(salida, "Informe ejecutivo", "formulario de orientadores, matriz de seguimiento de la SDPEG, información de campo y base de ciudadanos restituidos al 25/09/2026")
 
 
 def main() -> None:

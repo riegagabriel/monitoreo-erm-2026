@@ -191,7 +191,7 @@ const avisoBase=aviso.textContent;
 const pin=n=>`<div class="pinD"><span><i class="fa-solid fa-users"></i></span>${n===''?'':`<em>${n}</em>`}</div>`;
 const jl=()=>`<span class="jl"><img src="${LOGO}" alt=""></span>`;
 const norm=s=>String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
-const VIOL=/\b(violen|amenaz|agresi|agred|golpe|pelea|rina\b|enfrentamiento|disturbio|atac|incendi|quem[oa]|destrozo|balacera|disparo|herid|lesion|intimid|hostig)/;
+const VIOL=/\b(violen|amenaz|agresi|agred|golpe|pelea|rina\b|enfrentamiento|disturbio|atac|empujon|incendi|quem[oa]|destrozo|balacera|disparo|herid|lesion|intimid|hostig)/;
 const grave=x=>x.g==2||VIOL.test(norm(x.t)); // grave: etiquetada como grave o con referencia a violencia en el texto
 const hh=h=>`${String(Math.floor(h)).padStart(2,'0')}:${String(Math.round((h%1)*60)).padStart(2,'0')}`;
 // Avance de cada orientador (0 sin reporte, 1 llego, 2 cierre), desde data/jornada.json (corte.py); sin archivo, todo en 0.

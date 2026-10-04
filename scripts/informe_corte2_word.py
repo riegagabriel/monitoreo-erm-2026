@@ -103,6 +103,7 @@ class Informe:
         for i, h in enumerate(cabecera):
             c = t.rows[0].cells[i]
             c.text = ""
+            c.paragraphs[0].paragraph_format.keep_with_next = True
             r = c.paragraphs[0].add_run(h)
             r.bold, r.font.size, r.font.color.rgb = True, Pt(size), RGBColor(255, 255, 255)
             shade(c, "0B3D6E")
@@ -158,8 +159,8 @@ class Informe:
                    [(x["hora"], f"{x['distrito']} ({dep(x['departamento'])})", x["local"] or "—", "Grave" if x["grave"] else "De atención", x["texto"]) for x in items],
                    [1.3, 3.2, 3.5, 1.9, 6.9], centradas=(0,))
 
-    def guardar(self, salida: Path, etiqueta: str):
-        self.p(f"Fuente: formulario de orientadores y matriz de seguimiento de la SDPEG. Datos al {self.d['corte_datos']}.", size=9, italic=True, color=GRIS, after=0)
+    def guardar(self, salida: Path, etiqueta: str, fuente: str = "formulario de orientadores y matriz de seguimiento de la SDPEG"):
+        self.p(f"Fuente: {fuente}. Datos al {self.d['corte_datos']}.", size=9, italic=True, color=GRIS, after=0)
         pie = self.sec.footer.paragraphs[0]
         pie.alignment = AL.CENTER
         pie.add_run(f"SDPEG · {etiqueta}, corte 2 · datos al {self.d['corte_datos']} · Página ").font.size = Pt(8.5)
