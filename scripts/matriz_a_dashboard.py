@@ -70,11 +70,17 @@ def leer_casos(ws) -> tuple[list[dict], list[str]]:
             faltan.append(k)
     if any(k in faltan for k in OBLIGATORIAS):
         raise SystemExit(f"Faltan columnas obligatorias en la hoja Casos: {[COLS[k] for k in OBLIGATORIAS if k in faltan]}")
-    out = []
+    out, vistos = [], {}
     for r in filas[1:]:
         if r[ix["id"]] in (None, ""):
             continue
-        out.append({k: (r[i] if i is not None else None) for k, i in ix.items()})
+        c = {k: (r[i] if i is not None else None) for k, i in ix.items()}
+        cid = str(c["id"]).strip()
+        vistos[cid] = vistos.get(cid, 0) + 1
+        if vistos[cid] > 1:  # ID repetido en la hoja: el 2.o se llama «C25-2», el 3.o «C25-3»
+            c["id"] = f"{cid}-{vistos[cid]}"
+            print(f"AVISO: el ID {cid} esta repetido en la hoja; el repetido se trata como {c['id']} (pedir al equipo que lo corrija)")
+        out.append(c)
     return out, [COLS[k] for k in faltan]
 
 
@@ -97,6 +103,8 @@ def aplicar_validaciones(casos: list[dict], ruta: Path) -> None:
             c["desc"] = x["texto"].strip()
         if (x.get("fecha") or "").strip():
             c["fecha"] = x["fecha"].strip()
+        if (x.get("hora") or "").strip():
+            c["hora"] = x["hora"].strip()
 
 
 def cargar_ref(wb) -> tuple[dict, dict, dict]:

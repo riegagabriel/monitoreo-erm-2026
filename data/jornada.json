@@ -1,10 +1,10 @@
 {
- "corte": "04/10/2026 15:20",
+ "corte": "04/10/2026 16:19",
  "es_ejemplo": false,
  "fuente": "Formulario de orientadores (corte 1: llegada; corte 3: cierre)",
  "orientadores_base": 51,
  "orientadores_con_llegada": 50,
- "orientadores_con_cierre": 0,
+ "orientadores_con_cierre": 2,
  "locales_completos": 28,
  "corte2": {
   "orientadores": 49,
@@ -13,14 +13,14 @@
   "locales_completos": 26
  },
  "consultas": {
-  "total": 783,
+  "total": 920,
   "orientadores": 49,
   "por_tipo": {
-   "Restitución de domicilio": 367,
-   "DNI vencido": 193,
-   "Otras consultas": 192,
-   "Cara de niño": 28,
-   "Ciudadanos fallecidos": 3
+   "Restitución de domicilio": 399,
+   "Otras consultas": 290,
+   "DNI vencido": 196,
+   "Cara de niño": 31,
+   "Ciudadanos fallecidos": 4
   }
  },
  "avance": {
@@ -42,7 +42,7 @@
   "L-05": {
    "orientadores_base": 2,
    "llegaron": 2,
-   "cierre": 0
+   "cierre": 1
   },
   "L-06": {
    "orientadores_base": 2,
@@ -82,7 +82,7 @@
   "L-14": {
    "orientadores_base": 2,
    "llegaron": 2,
-   "cierre": 0
+   "cierre": 1
   },
   "L-15": {
    "orientadores_base": 2,
@@ -322,7 +322,7 @@
    "c": "ent",
    "u": "021003",
    "l": null,
-   "t": "Momentos de tensión en los exteriores de la I.E. 86394 de Cayas: pobladores increparon a ciudadanos a quienes señalan como presuntos «votantes golondrinos». La Policía se encuentra en el lugar."
+   "t": "Tensión en los exteriores de la I.E. 86394 de Cayas: pobladores increparon a ciudadanos a quienes señalan como presuntos «votantes golondrinos». La Policía acudió al lugar. Más tarde se reportaron enfrentamientos en los exteriores de un local de votación del mismo distrito."
   },
   {
    "id": "MAT-C23",
@@ -431,6 +431,15 @@
    "u": "051009",
    "l": "L-12",
    "t": "Un poblador de Circamarca se acercó molesto por la restitución de su domicilio; señaló que RENIEC no puede hacerlo sin avisar y que genera un gasto innecesario a la población."
+  },
+  {
+   "id": "MAT-C25-2",
+   "h": 15.48,
+   "g": 2,
+   "c": "ent",
+   "u": "061301",
+   "l": null,
+   "t": "Un video muestra a ronderos latigueando a personas señaladas como presuntos golondrinos; en los comentarios se indica que serían familiares de residentes."
   }
  ]
 }
