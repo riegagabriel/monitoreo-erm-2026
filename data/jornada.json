@@ -1,10 +1,10 @@
 {
- "corte": "04/10/2026 16:52",
+ "corte": "04/10/2026 17:09",
  "es_ejemplo": false,
  "fuente": "Formulario de orientadores (corte 1: llegada; corte 3: cierre)",
  "orientadores_base": 51,
  "orientadores_con_llegada": 50,
- "orientadores_con_cierre": 37,
+ "orientadores_con_cierre": 42,
  "locales_completos": 29,
  "corte2": {
   "orientadores": 49,
@@ -13,14 +13,14 @@
   "locales_completos": 27
  },
  "consultas": {
-  "total": 1636,
-  "orientadores": 49,
+  "total": 1885,
+  "orientadores": 50,
   "por_tipo": {
-   "Restitución de domicilio": 625,
-   "Otras consultas": 586,
-   "DNI vencido": 349,
-   "Cara de niño": 72,
-   "Ciudadanos fallecidos": 4
+   "Otras consultas": 739,
+   "Restitución de domicilio": 709,
+   "DNI vencido": 356,
+   "Cara de niño": 76,
+   "Ciudadanos fallecidos": 5
   }
  },
  "avance": {
@@ -62,7 +62,7 @@
   "L-10": {
    "orientadores_base": 2,
    "llegaron": 2,
-   "cierre": 1
+   "cierre": 2
   },
   "L-11": {
    "orientadores_base": 2,
@@ -97,12 +97,12 @@
   "L-18": {
    "orientadores_base": 2,
    "llegaron": 2,
-   "cierre": 0
+   "cierre": 2
   },
   "L-19": {
    "orientadores_base": 1,
    "llegaron": 1,
-   "cierre": 0
+   "cierre": 1
   },
   "L-20": {
    "orientadores_base": 2,
@@ -112,7 +112,7 @@
   "L-21": {
    "orientadores_base": 2,
    "llegaron": 2,
-   "cierre": 1
+   "cierre": 2
   },
   "L-22": {
    "orientadores_base": 1,
@@ -483,6 +483,15 @@
    "t": "Otro orientador del local reporta un caso similar: un ciudadano con la prensa dijo que, por orden de un candidato, a él y a otras personas les habrían colocado «no reside». Se le explicó que RENIEC no tuvo contacto con candidatos y se le orientó."
   },
   {
+   "id": "MAT-C27",
+   "h": 16.52,
+   "g": 2,
+   "c": "ent",
+   "u": "160704",
+   "l": null,
+   "t": "Alerta de toma de local de votación en dos locales del distrito de Morona (Datem del Marañón, Loreto)."
+  },
+  {
    "id": "ORI-20261004163630-L-30",
    "h": 16.6,
    "g": 1,
@@ -517,6 +526,24 @@
    "u": "021014",
    "l": "L-06",
    "t": "Otro orientador del local reporta lo mismo: vandalismo de pobladores hacia las 16:40."
+  },
+  {
+   "id": "ORI-20261004165521-L-19",
+   "h": 16.92,
+   "g": 1,
+   "c": "ori",
+   "u": "101103",
+   "l": "L-19",
+   "t": "Una ciudadana con restricción por sentencia indicó que presentará su resolución en una agencia de RENIEC."
+  },
+  {
+   "id": "ORI-20261004165846-L-21",
+   "h": 16.97,
+   "g": 1,
+   "c": "ori",
+   "u": "120804",
+   "l": "L-21",
+   "t": "Se reportó un cambio de personal en los miembros de mesa del local."
   }
  ]
 }
