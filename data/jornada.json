@@ -1,5 +1,5 @@
 {
- "corte": "04/10/2026 10:51",
+ "corte": "04/10/2026 12:01",
  "es_ejemplo": false,
  "fuente": "Formulario de orientadores (corte 1: llegada; corte 3: cierre)",
  "orientadores_base": 51,
@@ -153,5 +153,69 @@
    "cierre": 0
   }
  },
- "incidencias": []
+ "incidencias": [
+  {
+   "id": "ORI-20261004080110-L-06",
+   "h": 8.02,
+   "g": 1,
+   "c": "ori",
+   "u": "021014",
+   "l": "L-06",
+   "t": "Un orientador del local informa que a las 08:00 las mesas de sufragio aún no se habían aperturado."
+  },
+  {
+   "id": "ORI-20261004080233-L-06",
+   "h": 8.03,
+   "g": 1,
+   "c": "ori",
+   "u": "021014",
+   "l": "L-06",
+   "t": "Otro orientador del local informa que a las 08:02 las mesas de sufragio seguían sin aperturarse."
+  },
+  {
+   "id": "ORI-20261004080643-L-12",
+   "h": 8.1,
+   "g": 1,
+   "c": "ori",
+   "u": "051009",
+   "l": "L-12",
+   "t": "Un miembro de mesa pedía ejercer su labor sin su DNI físico, que olvidó en su centro de trabajo."
+  },
+  {
+   "id": "MAT-C17",
+   "h": 9.35,
+   "g": 2,
+   "c": "ent",
+   "u": "051007",
+   "l": null,
+   "t": "Ciudadanos protestan por presuntos votos golondrinos y algunos intentaron ingresar a los locales de votación. Se informó a la Policía y el jefe de la ODPE se dirige al lugar."
+  },
+  {
+   "id": "ORI-20261004094258-L-14",
+   "h": 9.7,
+   "g": 1,
+   "c": "ori",
+   "u": "080107",
+   "l": "L-14",
+   "t": "Un ciudadano manifestó no entender el motivo de su restitución de domicilio."
+  },
+  {
+   "id": "ORI-20261004105117-L-10",
+   "h": 10.85,
+   "g": 2,
+   "c": "ori",
+   "u": "040127",
+   "l": "L-10",
+   "t": "Se informó a dos ciudadanos con domicilio restituido; al retirarse, uno dijo en tono amenazante que volvería con más personas. El hecho ocurrió hacia las 9:08."
+  },
+  {
+   "id": "MAT-C18",
+   "h": 10.92,
+   "g": 2,
+   "c": "ori",
+   "u": "230109",
+   "l": "L-30",
+   "t": "La orientadora del local reporta que un grupo de 10 personas con domicilio restituido reclama dentro del local de votación. La PNP se acercó y logró calmar a 5; el resto sigue reclamando."
+  }
+ ]
 }

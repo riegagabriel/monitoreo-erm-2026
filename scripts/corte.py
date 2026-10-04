@@ -4,10 +4,14 @@ Uso: python scripts/corte.py [hoja_respuestas.xlsx]      (defecto: data/entrada/
 Lee la pestaña RESP_ORIENTADORES por TITULO de columna (une los bloques repetidos con sufijo « 2»), cruza cada orientador con la base de
 asignacion y cuenta, por local, cuantos orientadores reportaron llegada (corte 1) y cierre (corte 3). Las filas anteriores al inicio de la
 jornada son ensayos y se excluyen. Un nombre que no este en la base aborta: nunca se descarta en silencio.
-Salida: data/jornada.json, sin nombres ni monitores. Las incidencias NO se publican todavia (lista vacia).
+Incidencias: las del formulario entran solo si estan validadas en data/entrada/incidencias_forms.csv (id_envio, hora, local_id, tipo, resumen_publicable,
+validado = SI) y las de la matriz desde data/entrada/incidencias_matriz.json (lo escribe matriz_a_dashboard.py --aplicar). Una incidencia del formulario
+que no esta en el CSV se lista como pendiente de validar y NO se publica.
+Salida: data/jornada.json, sin nombres ni monitores.
 """
 from __future__ import annotations
 
+import csv
 import datetime as dt
 import json
 import re
@@ -19,12 +23,18 @@ import openpyxl
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from actualizar_locales import BASE, HOJA, leer_adicionales, nz  # noqa: E402
+from matriz_a_dashboard import revisar_texto  # noqa: E402
 
 RAIZ = Path(__file__).resolve().parent.parent
 ENTRADA = RAIZ / "data" / "entrada" / "hoja_respuestas.xlsx"
 LOCALES = RAIZ / "data" / "orientacion_locales.json"
 SALIDA = RAIZ / "data" / "jornada.json"
+INC_FORMS = RAIZ / "data" / "entrada" / "incidencias_forms.csv"
+INC_MATRIZ = RAIZ / "data" / "entrada" / "incidencias_matriz.json"
 INICIO_JORNADA = dt.datetime(2026, 10, 4)
+T_INC = r"¿Reporta alguna incidencia en el corte {c}\?(?: 2)?"
+T_DET = r"Describa brevemente la incidencia del corte {c}(?: 2)?"
+MAX_INCIDENCIA = 280
 PESTANA = "RESP_ORIENTADORES"
 T_NOMBRE = "Seleccione su nombre y local de votación."
 T_CORTE = "¿Qué corte va a registrar?"
@@ -49,6 +59,11 @@ def _hora(v, fila: int, campo: str):
     return dt.time(int(m.group(1)), int(m.group(2)))
 
 
+def _primero(r, cabecera, patron):
+    """Primer valor no vacio entre las columnas cuyo titulo completo coincide con el patron (los bloques A y B repiten el titulo con sufijo « 2»)."""
+    return next((r[i] for i, t in enumerate(cabecera) if re.fullmatch(patron, str(t or "").strip()) and r[i] not in (None, "")), None)
+
+
 def normalizar(cabecera: list, filas: list) -> list[dict]:
     """Una fila de la hoja -> {fila, ts, k (nombre normalizado), corte (1-3), llegada, termino}. Une las columnas de titulo repetido."""
     cols = defaultdict(list)
@@ -69,8 +84,10 @@ def normalizar(cabecera: list, filas: list) -> list[dict]:
         m = re.search(r"Corte (\d)", str(corte_t or ""))
         if not etiqueta or not m:
             raise SystemExit(f"Fila {n}: falta el nombre o el corte")
-        out.append({"fila": n, "ts": r[0], "k": nz(" ".join(str(etiqueta).split(" · ")[2:])), "corte": int(m.group(1)),
-                    "llegada": _hora(val(r, T_LLEGADA), n, "llegada"), "termino": _hora(val(r, T_TERMINO), n, "termino")})
+        partes, c = str(etiqueta).split(" · "), int(m.group(1))
+        out.append({"fila": n, "ts": r[0], "k": nz(" ".join(partes[2:])), "dist": nz(partes[0]), "local": nz(partes[1]) if len(partes) > 1 else "", "corte": c,
+                    "llegada": _hora(val(r, T_LLEGADA), n, "llegada"), "termino": _hora(val(r, T_TERMINO), n, "termino"),
+                    "inc": _primero(r, cabecera, T_INC.format(c=c)), "det": _primero(r, cabecera, T_DET.format(c=c))})
     return out
 
 
@@ -96,6 +113,54 @@ def avance_por_local(reg: list[dict], base: dict[str, list[str]], n_local: dict[
     info = {"envios_reales": len(reales), "pruebas_excluidas": len(reg) - len(reales), "orientadores_con_llegada": len(set().union(*lleg.values())),
             "orientadores_con_cierre": len(set().union(*cier.values())), "ultimo_envio": max(r["ts"] for r in reales) if reales else None}
     return av, info
+
+
+def incidencias_forms(reg: list[dict], por_local: dict, locales: dict[str, dict], ruta: Path, inicio: dt.datetime) -> tuple[list[dict], list[dict]]:
+    """(incidencias validadas en formato del dashboard, incidencias del formulario aun sin revisar). Aborta ante un registro invalido."""
+    hojas = {}
+    if ruta.exists():
+        with ruta.open(encoding="utf-8", newline="") as f:
+            hojas = {x["id_envio"].strip(): x for x in csv.DictReader(f)}
+    inc, pend, vistos = [], [], set()
+    for r in reg:
+        if r["ts"] < inicio or r["inc"] != "Sí":
+            continue
+        lid = por_local.get((r["dist"], r["local"]))
+        if lid is None:
+            raise SystemExit(f"Fila {r['fila']}: la incidencia viene de un local que no esta en orientacion_locales.json ({r['dist']} · {r['local']})")
+        ide = f"ORI-{r['ts']:%Y%m%d%H%M%S}-{lid}"
+        vistos.add(ide)
+        x = hojas.get(ide)
+        if x is None:
+            pend.append({"id_envio": ide, "fila": r["fila"], "local_id": lid, "texto": r["det"]})
+            continue
+        if x["validado"].strip().upper() != "SI":
+            continue
+        texto, tipo, h = x["resumen_publicable"].strip(), x["tipo"].strip().upper(), _hora(x["hora"].strip(), r["fila"], "hora de la incidencia")
+        errores = revisar_texto(texto, set())
+        if not texto or len(texto) > MAX_INCIDENCIA:
+            errores.append(f"el resumen debe tener entre 1 y {MAX_INCIDENCIA} caracteres")
+        if tipo not in ("A", "B"):
+            errores.append("tipo debe ser A o B")
+        if x["local_id"].strip() != lid:
+            errores.append(f"local_id {x['local_id']} no coincide con el del envio ({lid})")
+        if errores:
+            raise SystemExit(f"incidencias_forms.csv, {ide}: {errores}")
+        inc.append({"id": ide, "h": round(h.hour + h.minute / 60, 2), "g": 2 if tipo == "A" else 1, "c": "ori", "u": locales[lid]["ubigeo_inei"], "l": lid, "t": texto})
+    sobran = sorted(set(hojas) - vistos)
+    if sobran:
+        raise SystemExit(f"incidencias_forms.csv trae ids que no existen en la hoja de respuestas: {sobran}")
+    return inc, pend
+
+
+def incidencias_matriz(ruta: Path, locales: dict[str, dict]) -> list[dict]:
+    if not ruta.exists():
+        return []
+    inc = json.loads(ruta.read_text(encoding="utf-8"))
+    for x in inc:
+        if set(x) != {"id", "h", "g", "c", "u", "l", "t"} or (x["l"] and x["l"] not in locales):
+            raise SystemExit(f"incidencias_matriz.json: registro invalido {x.get('id')}")
+    return inc
 
 
 def cargar_base(locales: dict) -> dict[str, list[str]]:
@@ -140,16 +205,25 @@ def main() -> None:
     filas = list(openpyxl.load_workbook(ruta, data_only=True)[PESTANA].iter_rows(values_only=True))
     reg = normalizar(list(filas[0]), filas[1:])
     av, info = avance_por_local(reg, base, n_local, INICIO_JORNADA)
+    por_id = {r["id"]: r for r in locales["registros"]}
+    por_local = {(nz(r["distrito"]), nz(r["local"])): r["id"] for r in locales["registros"]}
+    inc_f, pend = incidencias_forms(reg, por_local, por_id, INC_FORMS, INICIO_JORNADA)
+    incidencias = sorted(inc_f + incidencias_matriz(INC_MATRIZ, por_id), key=lambda x: x["h"])
+    if len({x["id"] for x in incidencias}) != len(incidencias):
+        raise SystemExit("Hay incidencias con el mismo id")
     ultimo = info["ultimo_envio"]
     completos = sum(1 for a in av.values() if a["llegaron"] == a["orientadores_base"])
     jornada = {"corte": ultimo.strftime("%d/%m/%Y %H:%M") if ultimo else "", "es_ejemplo": False,
                "fuente": "Formulario de orientadores (corte 1: llegada; corte 3: cierre)", "orientadores_base": len(base),
                "orientadores_con_llegada": info["orientadores_con_llegada"], "orientadores_con_cierre": info["orientadores_con_cierre"],
-               "locales_completos": completos, "avance": av, "incidencias": []}
+               "locales_completos": completos, "avance": av, "incidencias": incidencias}
     SALIDA.write_text(json.dumps(jornada, ensure_ascii=False, indent=1), encoding="utf-8")
     print(f"corte {jornada['corte']} | envios reales {info['envios_reales']} (pruebas excluidas: {info['pruebas_excluidas']})")
     print(f"llegada reportada: {info['orientadores_con_llegada']} de {len(base)} orientadores | cierre: {info['orientadores_con_cierre']}")
     print(f"locales con todos sus orientadores: {completos} de {len(av)} -> {SALIDA}")
+    print(f"incidencias publicadas: {len(incidencias)} ({len(inc_f)} del formulario, {len(incidencias) - len(inc_f)} de la matriz, {sum(1 for x in incidencias if x['g'] == 2)} graves)")
+    for p in pend:
+        print(f"  PENDIENTE DE VALIDAR (no se publica) fila {p['fila']} {p['id_envio']}: {p['texto']}")
 
 
 if __name__ == "__main__":

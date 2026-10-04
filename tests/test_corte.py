@@ -80,5 +80,41 @@ class Avance(unittest.TestCase):
             corte.avance_por_local(reg, self.BASE, n, INICIO)
 
 
+class IncidenciasForms(unittest.TestCase):
+    LOC = {"L-01": {"ubigeo_inei": "010101"}}
+    POR = {("D", "LOCAL"): "L-01"}
+    T = dt.datetime(2026, 10, 4, 8, 1, 10)
+
+    def reg(self, inc="Sí"):
+        return [dict(fila=30, ts=self.T, dist="D", local="LOCAL", inc=inc, det="texto crudo")]
+
+    def csv(self, filas):
+        import tempfile
+        f = Path(tempfile.mkdtemp()) / "i.csv"
+        f.write_text("\n".join(["id_envio,hora,local_id,tipo,resumen_publicable,validado,nota", *filas]), encoding="utf-8")
+        return f
+
+    def test_validada_sale_con_ubigeo_del_local_y_gravedad(self):
+        inc, pend = corte.incidencias_forms(self.reg(), self.POR, self.LOC, self.csv(["ORI-20261004080110-L-01,08:01,L-01,A,Resumen.,SI,"]), INICIO)
+        self.assertEqual((inc, pend), ([{"id": "ORI-20261004080110-L-01", "h": 8.02, "g": 2, "c": "ori", "u": "010101", "l": "L-01", "t": "Resumen."}], []))
+
+    def test_sin_fila_en_el_csv_queda_pendiente_y_no_se_publica(self):
+        inc, pend = corte.incidencias_forms(self.reg(), self.POR, self.LOC, self.csv([]), INICIO)
+        self.assertEqual((inc, [p["fila"] for p in pend]), ([], [30]))
+
+    def test_validado_no_excluye_sin_error(self):
+        inc, pend = corte.incidencias_forms(self.reg(), self.POR, self.LOC, self.csv(["ORI-20261004080110-L-01,08:01,L-01,B,,NO,"]), INICIO)
+        self.assertEqual((inc, pend), ([], []))
+
+    def test_resumen_con_dni_o_largo_aborta(self):
+        for texto in ("DNI 12345678 aqui", "x" * 281):
+            with self.assertRaises(SystemExit):
+                corte.incidencias_forms(self.reg(), self.POR, self.LOC, self.csv([f"ORI-20261004080110-L-01,08:01,L-01,B,{texto},SI,"]), INICIO)
+
+    def test_id_que_no_existe_en_la_hoja_aborta(self):
+        with self.assertRaises(SystemExit):
+            corte.incidencias_forms(self.reg(), self.POR, self.LOC, self.csv(["ORI-20261004999999-L-01,08:01,L-01,B,Texto.,SI,"]), INICIO)
+
+
 if __name__ == "__main__":
     unittest.main()
