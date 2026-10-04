@@ -1,11 +1,11 @@
 {
- "corte": "04/10/2026 08:43",
+ "corte": "04/10/2026 10:13",
  "es_ejemplo": false,
  "fuente": "Formulario de orientadores (corte 1: llegada; corte 3: cierre)",
  "orientadores_base": 51,
- "orientadores_con_llegada": 40,
+ "orientadores_con_llegada": 49,
  "orientadores_con_cierre": 0,
- "locales_completos": 20,
+ "locales_completos": 26,
  "avance": {
   "L-01": {
    "orientadores_base": 2,
@@ -34,7 +34,7 @@
   },
   "L-07": {
    "orientadores_base": 2,
-   "llegaron": 0,
+   "llegaron": 2,
    "cierre": 0
   },
   "L-08": {
@@ -44,12 +44,12 @@
   },
   "L-10": {
    "orientadores_base": 2,
-   "llegaron": 0,
+   "llegaron": 2,
    "cierre": 0
   },
   "L-11": {
    "orientadores_base": 2,
-   "llegaron": 1,
+   "llegaron": 2,
    "cierre": 0
   },
   "L-12": {
@@ -64,7 +64,7 @@
   },
   "L-14": {
    "orientadores_base": 2,
-   "llegaron": 1,
+   "llegaron": 2,
    "cierre": 0
   },
   "L-15": {
@@ -114,17 +114,17 @@
   },
   "L-25": {
    "orientadores_base": 2,
-   "llegaron": 1,
+   "llegaron": 2,
    "cierre": 0
   },
   "L-26": {
    "orientadores_base": 2,
-   "llegaron": 0,
+   "llegaron": 1,
    "cierre": 0
   },
   "L-27": {
    "orientadores_base": 1,
-   "llegaron": 0,
+   "llegaron": 1,
    "cierre": 0
   },
   "L-28": {
