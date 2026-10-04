@@ -1,10 +1,10 @@
 {
- "corte": "04/10/2026 16:28",
+ "corte": "04/10/2026 16:35",
  "es_ejemplo": false,
  "fuente": "Formulario de orientadores (corte 1: llegada; corte 3: cierre)",
  "orientadores_base": 51,
  "orientadores_con_llegada": 50,
- "orientadores_con_cierre": 8,
+ "orientadores_con_cierre": 15,
  "locales_completos": 29,
  "corte2": {
   "orientadores": 49,
@@ -13,13 +13,13 @@
   "locales_completos": 27
  },
  "consultas": {
-  "total": 919,
+  "total": 1054,
   "orientadores": 49,
   "por_tipo": {
-   "Restitución de domicilio": 454,
-   "Otras consultas": 279,
-   "DNI vencido": 154,
-   "Cara de niño": 30,
+   "Restitución de domicilio": 477,
+   "Otras consultas": 305,
+   "DNI vencido": 227,
+   "Cara de niño": 43,
    "Ciudadanos fallecidos": 2
   }
  },
@@ -27,7 +27,7 @@
   "L-01": {
    "orientadores_base": 1,
    "llegaron": 1,
-   "cierre": 0
+   "cierre": 1
   },
   "L-03": {
    "orientadores_base": 2,
@@ -77,7 +77,7 @@
   "L-13": {
    "orientadores_base": 2,
    "llegaron": 2,
-   "cierre": 0
+   "cierre": 2
   },
   "L-14": {
    "orientadores_base": 2,
@@ -132,7 +132,7 @@
   "L-25": {
    "orientadores_base": 2,
    "llegaron": 2,
-   "cierre": 0
+   "cierre": 2
   },
   "L-26": {
    "orientadores_base": 2,
@@ -152,7 +152,7 @@
   "L-29": {
    "orientadores_base": 2,
    "llegaron": 2,
-   "cierre": 0
+   "cierre": 1
   },
   "L-30": {
    "orientadores_base": 2,
@@ -162,7 +162,7 @@
   "L-31": {
    "orientadores_base": 2,
    "llegaron": 2,
-   "cierre": 0
+   "cierre": 1
   },
   "L-32": {
    "orientadores_base": 1,
