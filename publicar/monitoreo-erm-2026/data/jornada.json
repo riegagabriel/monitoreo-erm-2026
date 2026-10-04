@@ -1,5 +1,5 @@
 {
- "corte": "04/10/2026 12:04",
+ "corte": "04/10/2026 12:17",
  "es_ejemplo": false,
  "fuente": "Formulario de orientadores (corte 1: llegada; corte 3: cierre)",
  "orientadores_base": 51,
@@ -243,6 +243,33 @@
    "u": "230109",
    "l": "L-30",
    "t": "Un orientador del local reporta una aglomeración de ciudadanos por cambio de domicilio."
+  },
+  {
+   "id": "ORI-20261004120453-L-30",
+   "h": 12.07,
+   "g": 1,
+   "c": "ori",
+   "u": "230109",
+   "l": "L-30",
+   "t": "Un orientador del local reporta una aglomeración leve de ciudadanos."
+  },
+  {
+   "id": "ORI-20261004120931-L-07",
+   "h": 12.15,
+   "g": 1,
+   "c": "ori",
+   "u": "040111",
+   "l": "L-07",
+   "t": "Una ciudadana con domicilio restituido se alteró al recibir la información sobre el motivo de su restitución."
+  },
+  {
+   "id": "ORI-20261004121018-L-07",
+   "h": 12.17,
+   "g": 1,
+   "c": "ori",
+   "u": "040111",
+   "l": "L-07",
+   "t": "Una ciudadana con domicilio restituido se alteró al recibir la información; gritó y se retiró diciendo que era una estafa y que lo haría público."
   }
  ]
 }
