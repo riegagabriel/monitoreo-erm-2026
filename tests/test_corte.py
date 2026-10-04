@@ -110,13 +110,13 @@ class Consultas(unittest.TestCase):
         r = corte.normalizar(self.CAB, [self.fila(dt.datetime(2026, 10, 4, 12), 2, {5: 3, 6: 2, 7: 4, 8: 1, 9: "12345678"})])
         self.assertEqual(r[0]["consultas"], {"DNI vencido": 3, "Restitución de domicilio": 4, "Otras consultas": 3})
 
-    def test_vale_el_ultimo_envio_de_cada_orientador_y_se_suman_los_orientadores(self):
+    def test_suma_todos_los_registros_de_los_cortes_2_y_3(self):
         filas = [self.fila(dt.datetime(2026, 10, 4, 12), 2, {5: 10}), self.fila(dt.datetime(2026, 10, 4, 13), 2, {5: 4, 7: 6}),
                  self.fila(dt.datetime(2026, 10, 4, 16), 3, {10: 20})]
         reg = corte.normalizar(self.CAB, filas)
         reg.append(dict(reg[0], k="LUIS", ts=dt.datetime(2026, 10, 4, 12), consultas={"DNI vencido": 5}))
-        self.assertEqual(corte.resumen_consultas(reg[:2] + [reg[3]], INICIO), {"total": 15, "orientadores": 2, "por_tipo": {"DNI vencido": 9, "Restitución de domicilio": 6}})
-        self.assertEqual(corte.resumen_consultas(reg[:3], INICIO)["por_tipo"], {"DNI vencido": 20})
+        self.assertEqual(corte.resumen_consultas(reg[:2] + [reg[3]], INICIO), {"total": 25, "orientadores": 2, "por_tipo": {"DNI vencido": 19, "Restitución de domicilio": 6}})
+        self.assertEqual(corte.resumen_consultas(reg[:3], INICIO)["por_tipo"], {"DNI vencido": 34, "Restitución de domicilio": 6})
 
 
 class IncidenciasForms(unittest.TestCase):

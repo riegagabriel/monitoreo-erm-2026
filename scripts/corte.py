@@ -107,16 +107,15 @@ def normalizar(cabecera: list, filas: list) -> list[dict]:
 
 
 def resumen_consultas(reg: list[dict], inicio: dt.datetime) -> dict:
-    """El formulario pide el total estimado de TODA la jornada: vale el ultimo envio de cada orientador que anoto consultas."""
-    ultimo: dict[str, dict] = {}
-    for r in sorted(reg, key=lambda r: r["ts"]):
-        if r["ts"] >= inicio and r["corte"] in (2, 3) and r.get("consultas"):
-            ultimo[r["k"]] = r["consultas"]
+    """Suma de todos los registros de consultas enviados en los cortes 2 y 3 (criterio del usuario, 04/10/2026)."""
     por_tipo: dict[str, int] = defaultdict(int)
-    for v in ultimo.values():
-        for t, n in v.items():
-            por_tipo[t] += n
-    return {"total": sum(por_tipo.values()), "orientadores": len(ultimo), "por_tipo": dict(sorted(por_tipo.items(), key=lambda a: -a[1]))}
+    orientadores: set[str] = set()
+    for r in reg:
+        if r["ts"] >= inicio and r["corte"] in (2, 3) and r.get("consultas"):
+            orientadores.add(r["k"])
+            for t, n in r["consultas"].items():
+                por_tipo[t] += n
+    return {"total": sum(por_tipo.values()), "orientadores": len(orientadores), "por_tipo": dict(sorted(por_tipo.items(), key=lambda a: -a[1]))}
 
 
 def _lids(r: dict, base: dict[str, list[str]], por_local: dict | None) -> list[str]:

@@ -348,7 +348,7 @@ function orientaBrindada(){
  bOrienta.innerHTML=`<div class="orienta"><h2>Orientación brindada</h2><p class="sub">Ciudadanos que consultaron a los orientadores de RENIEC durante la jornada, según lo reportado por ellos</p>`
   +(c.total?`<div class="tot"><b>${fmt(c.total)}</b><span>personas consultaron · ${c.orientadores} orientadores reportaron</span></div><p class="txt">${txt}</p>`
    +ts.map(([t,n])=>`<div class="gf"><span>${t}</span><span class="pista"><i style="width:${100*n/ts[0][1]}%"></i></span><b>${fmt(n)}</b><em>${pc(n)}</em></div>`).join('')
-   +`<p class="nota">Cifras estimadas por cada orientador para toda la jornada.</p>`
+   +`<p class="nota">Suma de las consultas que los orientadores registraron en el formulario durante la jornada.</p>`
   :`<p class="mut">Aún sin reportes de consultas.</p>`)+'</div>';
 }
 function tablaAlertas(){
