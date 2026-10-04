@@ -93,6 +93,32 @@ class VariosLocales(unittest.TestCase):
         self.assertEqual((av["L-01"]["llegaron"], av["L-02"]["llegaron"], info["orientadores_con_llegada"]), (0, 1, 1))
 
 
+class Consultas(unittest.TestCase):
+    CAB = ["Timestamp", "Seleccione su nombre y local de votación.", "¿Qué corte va a registrar?", "Hora de llegada al local de votación",
+           "Hora de término de la orientación electoral", "Consultas hasta el corte 2 · DNI vencido", "Consultas hasta el corte 2 · Otros tipos de consultas",
+           "Consultas hasta el corte 2 · Restitución de domicilio — dashboard 2", "Consultas hasta el corte 2 · Otras consultas",
+           "DNI de los ciudadanos fallecidos (opcional) · corte 2", "Consultas de todo el día · DNI vencido 2"]
+
+    def fila(self, ts, c, vals):
+        r = [None] * len(self.CAB)
+        r[0], r[1], r[2] = ts, "D · LOCAL · ANA", f"Corte {c} · X"
+        for i, v in vals.items():
+            r[i] = v
+        return r
+
+    def test_une_nombres_de_tipo_de_los_dos_bloques_y_no_lee_el_dni(self):
+        r = corte.normalizar(self.CAB, [self.fila(dt.datetime(2026, 10, 4, 12), 2, {5: 3, 6: 2, 7: 4, 8: 1, 9: "12345678"})])
+        self.assertEqual(r[0]["consultas"], {"DNI vencido": 3, "Restitución de domicilio": 4, "Otras consultas": 3})
+
+    def test_vale_el_ultimo_envio_de_cada_orientador_y_se_suman_los_orientadores(self):
+        filas = [self.fila(dt.datetime(2026, 10, 4, 12), 2, {5: 10}), self.fila(dt.datetime(2026, 10, 4, 13), 2, {5: 4, 7: 6}),
+                 self.fila(dt.datetime(2026, 10, 4, 16), 3, {10: 20})]
+        reg = corte.normalizar(self.CAB, filas)
+        reg.append(dict(reg[0], k="LUIS", ts=dt.datetime(2026, 10, 4, 12), consultas={"DNI vencido": 5}))
+        self.assertEqual(corte.resumen_consultas(reg[:2] + [reg[3]], INICIO), {"total": 15, "orientadores": 2, "por_tipo": {"DNI vencido": 9, "Restitución de domicilio": 6}})
+        self.assertEqual(corte.resumen_consultas(reg[:3], INICIO)["por_tipo"], {"DNI vencido": 20})
+
+
 class IncidenciasForms(unittest.TestCase):
     LOC = {"L-01": {"ubigeo_inei": "010101"}}
     POR = {("D", "LOCAL"): "L-01"}

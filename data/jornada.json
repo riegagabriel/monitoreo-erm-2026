@@ -12,6 +12,17 @@
   "distritos": 28,
   "locales_completos": 26
  },
+ "consultas": {
+  "total": 574,
+  "orientadores": 49,
+  "por_tipo": {
+   "Restitución de domicilio": 290,
+   "Otras consultas": 130,
+   "DNI vencido": 125,
+   "Cara de niño": 28,
+   "Ciudadanos fallecidos": 1
+  }
+ },
  "avance": {
   "L-01": {
    "orientadores_base": 2,

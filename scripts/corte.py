@@ -35,6 +35,9 @@ INICIO_JORNADA = dt.datetime(2026, 10, 4)
 T_INC = r"¿Reporta alguna incidencia en el corte {c}\?(?: 2)?"
 T_DET = r"Describa brevemente la incidencia del corte {c}(?: 2)?"
 MAX_INCIDENCIA = 280
+T_CONSULTA = re.compile(r"Consultas (?:hasta el corte 2|de todo el día) · (.+?)(?: \d)?")
+TIPO_CONSULTA = {"Restitución de domicilio — dashboard": "Restitución de domicilio", "Otros tipos de consultas": "Otras consultas",
+                 "Consulta sobre ciudadanos fallecidos": "Ciudadanos fallecidos"}
 PESTANA = "RESP_ORIENTADORES"
 T_NOMBRE = "Seleccione su nombre y local de votación."
 T_CORTE = "¿Qué corte va a registrar?"
@@ -64,6 +67,18 @@ def _primero(r, cabecera, patron):
     return next((r[i] for i, t in enumerate(cabecera) if re.fullmatch(patron, str(t or "").strip()) and r[i] not in (None, "")), None)
 
 
+def _consultas(r, cabecera) -> dict[str, int]:
+    """Cantidades por tipo de consulta de una fila (solo numeros; el DNI opcional de fallecidos nunca se lee)."""
+    out: dict[str, int] = {}
+    for i, t in enumerate(cabecera):
+        m = T_CONSULTA.fullmatch(str(t or "").strip())
+        v = r[i]
+        if m and isinstance(v, (int, float)) and not isinstance(v, bool) and v >= 0:
+            tipo = TIPO_CONSULTA.get(m.group(1), m.group(1))
+            out[tipo] = out.get(tipo, 0) + int(v)
+    return out
+
+
 def normalizar(cabecera: list, filas: list) -> list[dict]:
     """Una fila de la hoja -> {fila, ts, k (nombre normalizado), corte (1-3), llegada, termino}. Une las columnas de titulo repetido."""
     cols = defaultdict(list)
@@ -87,8 +102,21 @@ def normalizar(cabecera: list, filas: list) -> list[dict]:
         partes, c = [x for x in re.split(r"\s*·\s*", str(etiqueta)) if x], int(m.group(1))
         out.append({"fila": n, "ts": r[0], "k": nz(" ".join(partes[2:])), "dist": nz(partes[0]), "local": nz(partes[1]) if len(partes) > 1 else "", "corte": c,
                     "llegada": _hora(val(r, T_LLEGADA), n, "llegada"), "termino": _hora(val(r, T_TERMINO), n, "termino"),
-                    "inc": _primero(r, cabecera, T_INC.format(c=c)), "det": _primero(r, cabecera, T_DET.format(c=c))})
+                    "inc": _primero(r, cabecera, T_INC.format(c=c)), "det": _primero(r, cabecera, T_DET.format(c=c)), "consultas": _consultas(r, cabecera)})
     return out
+
+
+def resumen_consultas(reg: list[dict], inicio: dt.datetime) -> dict:
+    """El formulario pide el total estimado de TODA la jornada: vale el ultimo envio de cada orientador que anoto consultas."""
+    ultimo: dict[str, dict] = {}
+    for r in sorted(reg, key=lambda r: r["ts"]):
+        if r["ts"] >= inicio and r["corte"] in (2, 3) and r.get("consultas"):
+            ultimo[r["k"]] = r["consultas"]
+    por_tipo: dict[str, int] = defaultdict(int)
+    for v in ultimo.values():
+        for t, n in v.items():
+            por_tipo[t] += n
+    return {"total": sum(por_tipo.values()), "orientadores": len(ultimo), "por_tipo": dict(sorted(por_tipo.items(), key=lambda a: -a[1]))}
 
 
 def _lids(r: dict, base: dict[str, list[str]], por_local: dict | None) -> list[str]:
@@ -236,13 +264,15 @@ def main() -> None:
     jornada = {"corte": ultimo.strftime("%d/%m/%Y %H:%M") if ultimo else "", "es_ejemplo": False,
                "fuente": "Formulario de orientadores (corte 1: llegada; corte 3: cierre)", "orientadores_base": len(base),
                "orientadores_con_llegada": info["orientadores_con_llegada"], "orientadores_con_cierre": info["orientadores_con_cierre"],
-               "locales_completos": completos, "corte2": resumen_corte2(reg, base, n_local, por_id, INICIO_JORNADA, por_local), "avance": av, "incidencias": incidencias}
+               "locales_completos": completos, "corte2": resumen_corte2(reg, base, n_local, por_id, INICIO_JORNADA, por_local), "consultas": resumen_consultas(reg, INICIO_JORNADA), "avance": av, "incidencias": incidencias}
     SALIDA.write_text(json.dumps(jornada, ensure_ascii=False, indent=1), encoding="utf-8")
     print(f"corte {jornada['corte']} | envios reales {info['envios_reales']} (pruebas excluidas: {info['pruebas_excluidas']})")
     print(f"llegada reportada: {info['orientadores_con_llegada']} de {len(base)} orientadores | cierre: {info['orientadores_con_cierre']}")
     print(f"locales con todos sus orientadores: {completos} de {len(av)} -> {SALIDA}")
     c2 = jornada["corte2"]
     print(f"corte 2: {c2['orientadores']} orientadores en {c2['locales']} locales y {c2['distritos']} distritos ({c2['locales_completos']} locales completos)")
+    cs = jornada["consultas"]
+    print(f"consultas atendidas (total estimado de la jornada): {cs['total']} de {cs['orientadores']} orientadores | " + ", ".join(f"{t} {n}" for t, n in cs["por_tipo"].items()))
     print(f"incidencias publicadas: {len(incidencias)} ({len(inc_f)} del formulario, {len(incidencias) - len(inc_f)} de la matriz, {sum(1 for x in incidencias if x['g'] == 2)} graves)")
     for p in pend:
         print(f"  PENDIENTE DE VALIDAR (no se publica) fila {p['fila']} {p['id_envio']}: {p['texto']}")
