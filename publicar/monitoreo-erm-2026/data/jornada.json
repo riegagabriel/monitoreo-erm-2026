@@ -1,11 +1,11 @@
 {
- "corte": "04/10/2026 10:13",
+ "corte": "04/10/2026 10:51",
  "es_ejemplo": false,
  "fuente": "Formulario de orientadores (corte 1: llegada; corte 3: cierre)",
  "orientadores_base": 51,
- "orientadores_con_llegada": 49,
+ "orientadores_con_llegada": 50,
  "orientadores_con_cierre": 0,
- "locales_completos": 27,
+ "locales_completos": 28,
  "avance": {
   "L-01": {
    "orientadores_base": 2,
@@ -24,7 +24,7 @@
   },
   "L-05": {
    "orientadores_base": 2,
-   "llegaron": 1,
+   "llegaron": 2,
    "cierre": 0
   },
   "L-06": {
