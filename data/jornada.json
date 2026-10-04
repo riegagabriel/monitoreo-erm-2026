@@ -1,10 +1,10 @@
 {
- "corte": "04/10/2026 17:09",
+ "corte": "04/10/2026 17:34",
  "es_ejemplo": false,
  "fuente": "Formulario de orientadores (corte 1: llegada; corte 3: cierre)",
  "orientadores_base": 51,
  "orientadores_con_llegada": 50,
- "orientadores_con_cierre": 42,
+ "orientadores_con_cierre": 46,
  "locales_completos": 29,
  "corte2": {
   "orientadores": 49,
@@ -13,12 +13,12 @@
   "locales_completos": 27
  },
  "consultas": {
-  "total": 1885,
-  "orientadores": 50,
+  "total": 2133,
+  "orientadores": 51,
   "por_tipo": {
-   "Otras consultas": 739,
-   "Restitución de domicilio": 709,
-   "DNI vencido": 356,
+   "Otras consultas": 857,
+   "Restitución de domicilio": 795,
+   "DNI vencido": 400,
    "Cara de niño": 76,
    "Ciudadanos fallecidos": 5
   }
@@ -52,7 +52,7 @@
   "L-07": {
    "orientadores_base": 2,
    "llegaron": 2,
-   "cierre": 1
+   "cierre": 2
   },
   "L-08": {
    "orientadores_base": 2,
@@ -137,7 +137,7 @@
   "L-26": {
    "orientadores_base": 2,
    "llegaron": 1,
-   "cierre": 0
+   "cierre": 1
   },
   "L-27": {
    "orientadores_base": 1,
@@ -167,12 +167,12 @@
   "L-32": {
    "orientadores_base": 1,
    "llegaron": 1,
-   "cierre": 0
+   "cierre": 1
   },
   "L-33": {
    "orientadores_base": 1,
    "llegaron": 1,
-   "cierre": 0
+   "cierre": 1
   }
  },
  "incidencias": [
@@ -438,6 +438,15 @@
    "t": "Un poblador de Circamarca se acercó molesto por la restitución de su domicilio; señaló que RENIEC no puede hacerlo sin avisar y que genera un gasto innecesario a la población."
   },
   {
+   "id": "MAT-C25",
+   "h": 15.47,
+   "g": 2,
+   "c": "pre",
+   "u": "061112",
+   "l": null,
+   "t": "Un grupo de ronderos no dejaba votar a un grupo de ciudadanos por considerarlos presuntos golondrinos. La policía intervino y cercó la zona."
+  },
+  {
    "id": "MAT-C25-2",
    "h": 15.48,
    "g": 2,
@@ -544,6 +553,15 @@
    "u": "120804",
    "l": "L-21",
    "t": "Se reportó un cambio de personal en los miembros de mesa del local."
+  },
+  {
+   "id": "ORI-20261004173434-L-32",
+   "h": 17.57,
+   "g": 1,
+   "c": "ori",
+   "u": "080910",
+   "l": "L-32",
+   "t": "Un ciudadano se quejó por su restitución de domicilio y un personero discutió con personal de la ONPE."
   }
  ]
 }
