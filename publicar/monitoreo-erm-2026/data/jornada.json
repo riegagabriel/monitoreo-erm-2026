@@ -1,0 +1,152 @@
+{
+ "corte": "04/10/2026 08:43",
+ "es_ejemplo": false,
+ "fuente": "Formulario de orientadores (corte 1: llegada; corte 3: cierre)",
+ "orientadores_base": 51,
+ "orientadores_con_llegada": 40,
+ "orientadores_con_cierre": 0,
+ "locales_completos": 20,
+ "avance": {
+  "L-01": {
+   "orientadores_base": 2,
+   "llegaron": 2,
+   "cierre": 0
+  },
+  "L-03": {
+   "orientadores_base": 2,
+   "llegaron": 2,
+   "cierre": 0
+  },
+  "L-04": {
+   "orientadores_base": 2,
+   "llegaron": 2,
+   "cierre": 0
+  },
+  "L-05": {
+   "orientadores_base": 2,
+   "llegaron": 1,
+   "cierre": 0
+  },
+  "L-06": {
+   "orientadores_base": 2,
+   "llegaron": 2,
+   "cierre": 0
+  },
+  "L-07": {
+   "orientadores_base": 2,
+   "llegaron": 0,
+   "cierre": 0
+  },
+  "L-08": {
+   "orientadores_base": 2,
+   "llegaron": 2,
+   "cierre": 0
+  },
+  "L-10": {
+   "orientadores_base": 2,
+   "llegaron": 0,
+   "cierre": 0
+  },
+  "L-11": {
+   "orientadores_base": 2,
+   "llegaron": 1,
+   "cierre": 0
+  },
+  "L-12": {
+   "orientadores_base": 2,
+   "llegaron": 2,
+   "cierre": 0
+  },
+  "L-13": {
+   "orientadores_base": 2,
+   "llegaron": 2,
+   "cierre": 0
+  },
+  "L-14": {
+   "orientadores_base": 2,
+   "llegaron": 1,
+   "cierre": 0
+  },
+  "L-15": {
+   "orientadores_base": 2,
+   "llegaron": 2,
+   "cierre": 0
+  },
+  "L-16": {
+   "orientadores_base": 1,
+   "llegaron": 1,
+   "cierre": 0
+  },
+  "L-18": {
+   "orientadores_base": 2,
+   "llegaron": 2,
+   "cierre": 0
+  },
+  "L-19": {
+   "orientadores_base": 1,
+   "llegaron": 1,
+   "cierre": 0
+  },
+  "L-20": {
+   "orientadores_base": 2,
+   "llegaron": 2,
+   "cierre": 0
+  },
+  "L-21": {
+   "orientadores_base": 2,
+   "llegaron": 2,
+   "cierre": 0
+  },
+  "L-22": {
+   "orientadores_base": 1,
+   "llegaron": 1,
+   "cierre": 0
+  },
+  "L-23": {
+   "orientadores_base": 2,
+   "llegaron": 2,
+   "cierre": 0
+  },
+  "L-24": {
+   "orientadores_base": 2,
+   "llegaron": 2,
+   "cierre": 0
+  },
+  "L-25": {
+   "orientadores_base": 2,
+   "llegaron": 1,
+   "cierre": 0
+  },
+  "L-26": {
+   "orientadores_base": 2,
+   "llegaron": 0,
+   "cierre": 0
+  },
+  "L-27": {
+   "orientadores_base": 1,
+   "llegaron": 0,
+   "cierre": 0
+  },
+  "L-28": {
+   "orientadores_base": 1,
+   "llegaron": 1,
+   "cierre": 0
+  },
+  "L-29": {
+   "orientadores_base": 2,
+   "llegaron": 2,
+   "cierre": 0
+  },
+  "L-30": {
+   "orientadores_base": 2,
+   "llegaron": 2,
+   "cierre": 0
+  },
+  "L-31": {
+   "orientadores_base": 2,
+   "llegaron": 2,
+   "cierre": 0
+  }
+ },
+ "incidencias": []
+}

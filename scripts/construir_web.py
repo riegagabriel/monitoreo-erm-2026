@@ -22,6 +22,7 @@ CAMBIOS = [
     ("BAN_='../data/banderas_rea_Q20261002.json'", "BAN_='data/banderas_rea.json'"),
     ("ORIE='../data/orientacion_locales.json'", "ORIE='data/orientacion_locales.json'"),
     ("COORD='../data/locales_coords.json'", "COORD='data/locales_coords.json'"),
+    ("JOR='../data/jornada.json'", "JOR='data/jornada.json'"),
     ("LOGO='../logo/JNE_marker.png'", "LOGO='logo/JNE_marker.png'"),
     ('src="../dashboard/public/reniec-logo.png"', 'src="reniec-logo.png"'),
     ("const SELECTOR=true;", "const SELECTOR=false;"),  # sin selector de estilos ni modo de prueba en la web
@@ -43,6 +44,7 @@ DATOS = [  # (origen, destino dentro de publicar/.../data)
     (RAIZ / "data" / "banderas_rea_Q20261002.json", "banderas_rea.json"),
     (RAIZ / "data" / "orientacion_locales.json", "orientacion_locales.json"),
     (RAIZ / "data" / "locales_coords.json", "locales_coords.json"),
+    (RAIZ / "data" / "jornada.json", "jornada.json"),  # avance de la jornada: lo genera scripts/corte.py
 ]
 
 
