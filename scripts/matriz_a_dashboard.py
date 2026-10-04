@@ -251,7 +251,7 @@ def contexto(wb, casos: list[dict]) -> dict:
     ban = json.loads(BANDERAS.read_text(encoding="utf-8"))["registros"]
     por_u: dict[str, list[str]] = {}
     for b in ban:
-        if b.get("conflictividad") in (True, "True"):
+        if b.get("conflictividad") in (True, "True") and not str(b["id"]).startswith("MAT-"):
             por_u.setdefault(b["ubigeo_inei"], []).append(b["id"])
     return {"r2i": r2i, "nombres": nombres, "geo": geo, "banderas": por_u, "prohibidos": nombres_internos(casos),
             "locales": json.loads(LOCALES.read_text(encoding="utf-8"))["registros"]}
