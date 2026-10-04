@@ -5,8 +5,9 @@ Entrada por defecto: data/entrada/matriz_casos.xlsx (ignorada por Git). Con --de
 Salida: reporte en pantalla y data/entrada/matriz_simulacion.json (lo que se publicaria, caso por caso).
 Con --aplicar, solo los casos «LISTO PARA PUBLICAR»: verdes -> data/entrada/incidencias_matriz.json (lo lee corte.py); rojas -> se agregan a
 data/banderas_rea_Q20261002.json (los ids MAT-* anteriores se reemplazan, los REA-* no se tocan).
-data/entrada/validaciones_matriz.csv (id, validado, motivo, canal, texto) completa las columnas que la hoja aun no tiene; el valor de la hoja manda
-si existe, salvo «texto», que reemplaza a la descripcion de la hoja.
+data/entrada/validaciones_matriz.csv (id, validado, motivo, canal, texto, fecha) completa las columnas que la hoja aun no tiene; el valor de la hoja manda
+si existe, salvo «texto» y «fecha», que reemplazan a los de la hoja (la fecha sirve para corregir un tipeo).
+Siempre escribe data/entrada/estado_matriz.csv: por caso, si esta en el dashboard, por que, y el valor que deberia llevar «¿Se ha registrado en Dashboard?».
 
 Reglas:
 - Destino por «Fecha reporte»: el dia de la jornada (04/10/2026) -> bandera VERDE (incidencia del domingo, formato de jornada.json);
@@ -37,6 +38,8 @@ URL = RAIZ / "data" / "entrada" / "matriz_url.txt"
 SIMULACION = RAIZ / "data" / "entrada" / "matriz_simulacion.json"
 VALIDACIONES = RAIZ / "data" / "entrada" / "validaciones_matriz.csv"
 INC_MATRIZ = RAIZ / "data" / "entrada" / "incidencias_matriz.json"
+ESTADO = RAIZ / "data" / "entrada" / "estado_matriz.csv"
+RUIDO = {"IE", "I", "E", "COLEGIO", "INSTITUCION", "EDUCATIVA", "N", "NO", "DE", "DEL", "LA", "LAS", "LOS", "EL", "Y"}
 GEOJSON = RAIZ / "dashboard" / "public" / "data" / "precarga" / "distritos_pais.geojson"
 BANDERAS = RAIZ / "data" / "banderas_rea_Q20261002.json"
 LOCALES = RAIZ / "data" / "orientacion_locales.json"
@@ -47,7 +50,7 @@ CANALES = {"ori": "Orientadores", "rea": "Denuncias REA de hoy", "ent": "Entidad
 GRAVEDAD = {"ALTA": 2, "MEDIA": 1, "BAJA": 1}
 COLS = {"id": "ID", "dep": "DEPARTAMENTO", "prov": "PROVINCIA", "dist": "DISTRITO", "ubigeo": "UBIGEO RENIEC", "local": "LOCAL DE VOTACION",
         "fecha": "FECHA REPORTE", "hora": "HORA", "desc": "DESCRIPCION RESUMIDA", "gravedad": "GRAVEDAD", "bandera": "BANDERA ROJA",
-        "remitente": "REMITENTE", "responsable": "RESPONSABLE", "validado": "VALIDADO PARA DASHBOARD", "motivo": "MOTIVO", "canal": "CANAL DASHBOARD"}
+        "remitente": "REMITENTE", "responsable": "RESPONSABLE", "registrado": "SE HA REGISTRADO EN DASHBOARD", "validado": "VALIDADO PARA DASHBOARD", "motivo": "MOTIVO", "canal": "CANAL DASHBOARD"}
 OBLIGATORIAS = ("id", "dist", "fecha", "desc")
 
 
@@ -88,10 +91,12 @@ def aplicar_validaciones(casos: list[dict], ruta: Path) -> None:
         if not x:
             continue
         for k in ("validado", "motivo", "canal"):
-            if c.get(k) in (None, "") and x.get(k, "").strip():
+            if c.get(k) in (None, "") and (x.get(k) or "").strip():
                 c[k] = x[k].strip()
-        if x.get("texto", "").strip():
+        if (x.get("texto") or "").strip():
             c["desc"] = x["texto"].strip()
+        if (x.get("fecha") or "").strip():
+            c["fecha"] = x["fecha"].strip()
 
 
 def cargar_ref(wb) -> tuple[dict, dict, dict]:
@@ -176,11 +181,12 @@ def ubicar(c: dict, ctx: dict) -> tuple[list[str], list[str]]:
 
 
 def local_id(c: dict, u: str, ctx: dict) -> tuple[str | None, str | None]:
-    nombre = nz(c.get("local"))
-    if not nombre:
+    buscado = {t for t in nz(c.get("local")).split() if t not in RUIDO}
+    if not buscado:
         return None, None
     for l in ctx["locales"]:
-        if l["ubigeo_inei"] == u and (nombre in nz(l["local"]) or nz(l["local"]) in nombre):
+        nombre = {t for t in nz(l["local"]).split() if t not in RUIDO}
+        if l["ubigeo_inei"] == u and nombre and (buscado <= nombre or nombre <= buscado):
             return l["id"], None
     return None, f"el local «{c.get('local')}» no esta entre los locales con orientadores de ese distrito"
 
@@ -250,6 +256,50 @@ def evaluar(c: dict, ctx: dict) -> dict:
     return res
 
 
+def conciliar(casos: list[dict], res: list[dict], ctx: dict) -> list[dict]:
+    """Por caso: si esta en el dashboard (segun lo ya escrito en los JSON), por que, y el valor que deberia llevar la columna de la hoja."""
+    ban = {x["id"] for x in json.loads(BANDERAS.read_text(encoding="utf-8"))["registros"] if str(x["id"]).startswith("MAT-")}
+    inc = {x["id"] for x in json.loads(INC_MATRIZ.read_text(encoding="utf-8"))} if INC_MATRIZ.exists() else set()
+    pub = {}
+    for i in ban:
+        pub.setdefault(i.split("-")[1], []).append(("roja", i))
+    for i in inc:
+        pub.setdefault(i.split("-")[1], []).append(("verde", i))
+    por_id = {r["id"]: r for r in res}
+    out = []
+    for c in casos:
+        cid = str(c["id"]).strip()
+        r = por_id[cid]
+        bandera = str(c.get("bandera") or "").strip()
+        propias = pub.get(cid, [])
+        ubigeos, _ = ubicar(c, ctx)
+        rea = sorted({b for u in ubigeos for b in ctx["banderas"].get(u, [])})
+        if propias:
+            en, detalle = "SI", ", ".join(f"bandera {t} ({i})" for t, i in sorted(propias))
+        elif rea and nz(bandera) == "SI":
+            en, detalle = "SI", f"el distrito ya tiene bandera por {', '.join(rea)}; el caso no se publica aparte"
+        else:
+            en = "NO"
+            if r["estado"] in ("NO APLICA", "BANDERA POR DEFINIR"):
+                detalle = "«Bandera roja RENIEC» = " + ("No" if r["estado"] == "NO APLICA" else "Por definir")
+            elif r["estado"] == "ERROR":
+                detalle = "; ".join(e for e in r["errores"] if "duplicado" not in e) or "revisar"
+            elif r["estado"] == "PENDIENTE DE VALIDAR":
+                detalle = "falta la validacion («Validado para dashboard»)"
+            else:
+                detalle = "listo, falta publicar"
+        if en == "NO" and r["estado"] == "NO APLICA":
+            sugerido = "No aplica (bandera roja = No)"
+        elif en == "NO" and r["estado"] == "BANDERA POR DEFINIR":
+            sugerido = "Pendiente de definir la bandera"
+        else:
+            sugerido = "Registrado en dashboard" if en == "SI" else "Pendiente de registro"
+        hoja = str(c.get("registrado") or "").strip()
+        out.append({"id": cid, "distrito": r["distrito"], "bandera_roja": bandera, "en_dashboard": en, "detalle": detalle, "hoja_dice": hoja,
+                    "valor_sugerido": sugerido, "coincide": "SI" if nz(hoja) == nz(sugerido) else "NO"})
+    return out
+
+
 def contexto(wb, casos: list[dict]) -> dict:
     r2i, nombres, por_reniec = cargar_ref(wb)
     geo = {f["properties"]["u"]: f["properties"] for f in json.loads(GEOJSON.read_text(encoding="utf-8"))["features"]}
@@ -298,6 +348,14 @@ def main() -> None:
         ban["registros"] = [x for x in ban["registros"] if not str(x["id"]).startswith("MAT-")] + rojas
         BANDERAS.write_text(json.dumps(ban, ensure_ascii=False, indent=1), encoding="utf-8")
         print(f"escrito: {len(verdes)} incidencias verdes -> {INC_MATRIZ.name} | {len(rojas)} banderas rojas -> {BANDERAS.name}")
+    est = conciliar(casos, res, ctx)
+    with ESTADO.open("w", encoding="utf-8", newline="") as f:
+        w = csv.DictWriter(f, fieldnames=list(est[0]))
+        w.writeheader()
+        w.writerows(est)
+    print(f"\nCONCILIACION con la hoja (se escribio {ESTADO.name}):")
+    for e in est:
+        print(f"{e['id']:4} {e['distrito'][:24]:24} bandera={e['bandera_roja'][:10]:10} dashboard={e['en_dashboard']:3} hoja=«{e['hoja_dice'][:22]}» {'' if e['coincide'] == 'SI' else '<- ACTUALIZAR a «' + e['valor_sugerido'] + '»'} | {e['detalle'][:110]}")
 
 
 if __name__ == "__main__":

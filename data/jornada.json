@@ -1,5 +1,5 @@
 {
- "corte": "04/10/2026 13:21",
+ "corte": "04/10/2026 13:42",
  "es_ejemplo": false,
  "fuente": "Formulario de orientadores (corte 1: llegada; corte 3: cierre)",
  "orientadores_base": 51,
@@ -7,10 +7,10 @@
  "orientadores_con_cierre": 0,
  "locales_completos": 28,
  "corte2": {
-  "orientadores": 46,
-  "locales": 28,
+  "orientadores": 48,
+  "locales": 29,
   "distritos": 28,
-  "locales_completos": 24
+  "locales_completos": 25
  },
  "avance": {
   "L-01": {
@@ -312,6 +312,42 @@
    "u": "021003",
    "l": null,
    "t": "Momentos de tensión en los exteriores de la I.E. 86394 de Cayas: pobladores increparon a ciudadanos a quienes señalan como presuntos «votantes golondrinos». La Policía se encuentra en el lugar."
+  },
+  {
+   "id": "MAT-C21",
+   "h": 13.08,
+   "g": 2,
+   "c": "ent",
+   "u": "021009",
+   "l": null,
+   "t": "Aglomeración de ciudadanos y presencia policial en el ingreso de un local de votación, en medio de momentos de tensión durante la jornada electoral."
+  },
+  {
+   "id": "MAT-C22",
+   "h": 13.12,
+   "g": 2,
+   "c": "ent",
+   "u": "021004",
+   "l": "L-05",
+   "t": "Tensión en los exteriores del colegio Carlos Alberto Izaguirre: un grupo de personas señaladas como presuntos «votantes golondrinos» estaría intentando ingresar, lo que genera reclamos entre ciudadanos."
+  },
+  {
+   "id": "ORI-20261004134200-L-14",
+   "h": 13.7,
+   "g": 1,
+   "c": "ori",
+   "u": "080107",
+   "l": "L-14",
+   "t": "Una ciudadana restituida solicita una solución porque no puede trasladarse hasta su local de votación, ubicado en Puno."
+  },
+  {
+   "id": "ORI-20261004134239-L-14",
+   "h": 13.7,
+   "g": 1,
+   "c": "ori",
+   "u": "080107",
+   "l": "L-14",
+   "t": "Otro orientador del local reporta el mismo caso: una ciudadana restituida que no puede trasladarse hasta su local de votación."
   }
  ]
 }
