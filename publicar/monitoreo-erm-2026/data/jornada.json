@@ -1,5 +1,5 @@
 {
- "corte": "04/10/2026 13:57",
+ "corte": "04/10/2026 15:20",
  "es_ejemplo": false,
  "fuente": "Formulario de orientadores (corte 1: llegada; corte 3: cierre)",
  "orientadores_base": 51,
@@ -13,13 +13,13 @@
   "locales_completos": 26
  },
  "consultas": {
-  "total": 574,
+  "total": 570,
   "orientadores": 49,
   "por_tipo": {
-   "Restitución de domicilio": 290,
+   "Restitución de domicilio": 288,
    "Otras consultas": 130,
-   "DNI vencido": 125,
-   "Cara de niño": 28,
+   "DNI vencido": 124,
+   "Cara de niño": 27,
    "Ciudadanos fallecidos": 1
   }
  },
@@ -395,6 +395,42 @@
    "u": "021014",
    "l": "L-06",
    "t": "Un ciudadano fue restituido a su domicilio real según su padrón."
+  },
+  {
+   "id": "MAT-C24",
+   "h": 14.47,
+   "g": 2,
+   "c": "ent",
+   "u": "060309",
+   "l": null,
+   "t": "Un grupo de ciudadanos incendió el local de votación I.E. David Sánchez Infantes. No hay heridos. El JNE ya se pronunció; la Fiscalía y la PNP se encuentran en el lugar."
+  },
+  {
+   "id": "ORI-20261004150131-L-12",
+   "h": 15.02,
+   "g": 1,
+   "c": "ori",
+   "u": "051009",
+   "l": "L-12",
+   "t": "Un poblador, molesto por la restitución de su domicilio, tomó fotos y grabó al personal y dijo que denunciaría a RENIEC por hacerla sin notificarle."
+  },
+  {
+   "id": "ORI-20261004150649-L-12",
+   "h": 15.1,
+   "g": 1,
+   "c": "ori",
+   "u": "051009",
+   "l": "L-12",
+   "t": "Un poblador molesto por su restitución de domicilio intentó tomar fotos al personal y dijo que denunciaría a RENIEC. Intervinieron la Policía y el coordinador de la ONPE para explicarle, pero no aceptó la explicación."
+  },
+  {
+   "id": "ORI-20261004152027-L-12",
+   "h": 15.33,
+   "g": 1,
+   "c": "ori",
+   "u": "051009",
+   "l": "L-12",
+   "t": "Un poblador de Circamarca se acercó molesto por la restitución de su domicilio; señaló que RENIEC no puede hacerlo sin avisar y que genera un gasto innecesario a la población."
   }
  ]
 }
