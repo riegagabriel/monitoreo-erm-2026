@@ -84,14 +84,14 @@ def normalizar(cabecera: list, filas: list) -> list[dict]:
         m = re.search(r"Corte (\d)", str(corte_t or ""))
         if not etiqueta or not m:
             raise SystemExit(f"Fila {n}: falta el nombre o el corte")
-        partes, c = str(etiqueta).split(" · "), int(m.group(1))
+        partes, c = [x for x in re.split(r"\s*·\s*", str(etiqueta)) if x], int(m.group(1))
         out.append({"fila": n, "ts": r[0], "k": nz(" ".join(partes[2:])), "dist": nz(partes[0]), "local": nz(partes[1]) if len(partes) > 1 else "", "corte": c,
                     "llegada": _hora(val(r, T_LLEGADA), n, "llegada"), "termino": _hora(val(r, T_TERMINO), n, "termino"),
                     "inc": _primero(r, cabecera, T_INC.format(c=c)), "det": _primero(r, cabecera, T_DET.format(c=c))})
     return out
 
 
-def avance_por_local(reg: list[dict], base: dict[str, list[str]], n_local: dict[str, int], inicio: dt.datetime):
+def avance_por_local(reg: list[dict], base: dict[str, list[str]], n_local: dict[str, int], inicio: dt.datetime, por_local: dict | None = None):
     """base: nombre normalizado -> ids de sus locales (uno o mas); n_local: id -> orientadores en la base. Devuelve (avance, info)."""
     reales = [r for r in reg if r["ts"] >= inicio]
     desconocidos = sorted({r["k"] for r in reales if r["k"] not in base})
@@ -99,7 +99,11 @@ def avance_por_local(reg: list[dict], base: dict[str, list[str]], n_local: dict[
         raise SystemExit(f"Orientadores que no estan en la base de asignacion: {desconocidos}")
     lleg, cier = defaultdict(set), defaultdict(set)
     for r in reales:
-        for lid in base[r["k"]]:
+        lids = base[r["k"]]
+        if len(lids) > 1 and por_local:  # orientador de varios locales: cuenta en el que eligio en el formulario
+            elegido = por_local.get((r.get("dist"), r.get("local")))
+            lids = [elegido] if elegido in lids else lids
+        for lid in lids:
             if r["corte"] == 1 and r["llegada"]:
                 lleg[lid].add(r["k"])
             if r["corte"] == 3 and r["termino"]:
@@ -204,9 +208,9 @@ def main() -> None:
         raise SystemExit(f"orientacion_locales.json suma {sum(n_local.values())} puestos y la base {puestos}: ejecute actualizar_locales.py")
     filas = list(openpyxl.load_workbook(ruta, data_only=True)[PESTANA].iter_rows(values_only=True))
     reg = normalizar(list(filas[0]), filas[1:])
-    av, info = avance_por_local(reg, base, n_local, INICIO_JORNADA)
     por_id = {r["id"]: r for r in locales["registros"]}
     por_local = {(nz(r["distrito"]), nz(r["local"])): r["id"] for r in locales["registros"]}
+    av, info = avance_por_local(reg, base, n_local, INICIO_JORNADA, por_local)
     inc_f, pend = incidencias_forms(reg, por_local, por_id, INC_FORMS, INICIO_JORNADA)
     incidencias = sorted(inc_f + incidencias_matriz(INC_MATRIZ, por_id), key=lambda x: x["h"])
     if len({x["id"] for x in incidencias}) != len(incidencias):

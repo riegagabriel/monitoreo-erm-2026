@@ -80,6 +80,19 @@ class Avance(unittest.TestCase):
             corte.avance_por_local(reg, self.BASE, n, INICIO)
 
 
+class VariosLocales(unittest.TestCase):
+    def test_etiqueta_sin_espacio_antes_del_punto_medio(self):
+        cab = ["Timestamp", "Seleccione su nombre y local de votación.", "¿Qué corte va a registrar?", "Hora de llegada al local de votación", "Hora de término de la orientación electoral"]
+        r = corte.normalizar(cab, [[dt.datetime(2026, 10, 4, 12, 29), "PICHARI · IE PARQUE INDUSTRIAL· ERICK FLORES", "Corte 1 · M", dt.time(7), None]])
+        self.assertEqual((r[0]["k"], r[0]["dist"], r[0]["local"]), ("ERICK FLORES", "PICHARI", "IE PARQUE INDUSTRIAL"))
+
+    def test_orientador_de_dos_locales_cuenta_en_el_que_eligio(self):
+        base, n = {"ANA": ["L-01", "L-02"]}, {"L-01": 1, "L-02": 1}
+        reg = [dict(ts=dt.datetime(2026, 10, 4, 7), k="ANA", corte=1, llegada=dt.time(7), termino=None, dist="D", local="DOS")]
+        av, info = corte.avance_por_local(reg, base, n, INICIO, {("D", "DOS"): "L-02"})
+        self.assertEqual((av["L-01"]["llegaron"], av["L-02"]["llegaron"], info["orientadores_con_llegada"]), (0, 1, 1))
+
+
 class IncidenciasForms(unittest.TestCase):
     LOC = {"L-01": {"ubigeo_inei": "010101"}}
     POR = {("D", "LOCAL"): "L-01"}
