@@ -1,10 +1,10 @@
 {
- "corte": "04/10/2026 17:34",
+ "corte": "04/10/2026 17:56",
  "es_ejemplo": false,
  "fuente": "Formulario de orientadores (corte 1: llegada; corte 3: cierre)",
  "orientadores_base": 51,
  "orientadores_con_llegada": 50,
- "orientadores_con_cierre": 46,
+ "orientadores_con_cierre": 47,
  "locales_completos": 29,
  "corte2": {
   "orientadores": 49,
@@ -13,12 +13,12 @@
   "locales_completos": 27
  },
  "consultas": {
-  "total": 2133,
+  "total": 2258,
   "orientadores": 51,
   "por_tipo": {
+   "Restitución de domicilio": 870,
    "Otras consultas": 857,
-   "Restitución de domicilio": 795,
-   "DNI vencido": 400,
+   "DNI vencido": 450,
    "Cara de niño": 76,
    "Ciudadanos fallecidos": 5
   }
@@ -87,7 +87,7 @@
   "L-15": {
    "orientadores_base": 2,
    "llegaron": 2,
-   "cierre": 0
+   "cierre": 1
   },
   "L-16": {
    "orientadores_base": 1,
@@ -571,6 +571,15 @@
    "u": "080910",
    "l": "L-32",
    "t": "Un ciudadano se quejó por su restitución de domicilio y un personero discutió con personal de la ONPE."
+  },
+  {
+   "id": "ORI-20261004175609-L-15",
+   "h": 17.93,
+   "g": 1,
+   "c": "ori",
+   "u": "080910",
+   "l": "L-15",
+   "t": "Se reportó un ligero disturbio en los exteriores del local."
   }
  ]
 }
