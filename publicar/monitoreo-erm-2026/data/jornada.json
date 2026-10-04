@@ -5,7 +5,7 @@
  "orientadores_base": 51,
  "orientadores_con_llegada": 49,
  "orientadores_con_cierre": 0,
- "locales_completos": 26,
+ "locales_completos": 27,
  "avance": {
   "L-01": {
    "orientadores_base": 2,
@@ -145,6 +145,11 @@
   "L-31": {
    "orientadores_base": 2,
    "llegaron": 2,
+   "cierre": 0
+  },
+  "L-32": {
+   "orientadores_base": 1,
+   "llegaron": 1,
    "cierre": 0
   }
  },

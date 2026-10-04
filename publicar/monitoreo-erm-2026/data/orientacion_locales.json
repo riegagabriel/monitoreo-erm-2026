@@ -1,8 +1,8 @@
 {
  "fuente": "Base de asignacion de orientadores",
  "corte": "03/10/2026",
- "orientadores": 51,
- "locales": 28,
+ "orientadores": 52,
+ "locales": 29,
  "distritos": 28,
  "registros": [
   {
@@ -340,6 +340,18 @@
    "lat": -17.48817,
    "n_orientadores": 2,
    "id": "L-31"
+  },
+  {
+   "ubigeo_inei": "080910",
+   "departamento": "CUSCO",
+   "provincia": "LA CONVENCION",
+   "distrito": "PICHARI",
+   "oficina_regional": "J.R. 09 - CUSCO",
+   "lon": -73.78089,
+   "lat": -12.41418,
+   "local": "IE PARQUE INDUSTRIAL",
+   "id": "L-32",
+   "n_orientadores": 1
   }
  ]
 }

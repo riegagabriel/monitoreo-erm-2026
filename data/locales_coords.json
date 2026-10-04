@@ -17,12 +17,6 @@
    "confianza": "exacta"
   },
   {
-   "id": "L-02",
-   "lat": null,
-   "lon": null,
-   "confianza": "sin dato"
-  },
-  {
    "id": "L-03",
    "codlocal": "001900",
    "nombre_padron": "18078",
@@ -106,12 +100,6 @@
    "lat": -16.55735,
    "lon": -71.45096,
    "confianza": "exacta"
-  },
-  {
-   "id": "L-09",
-   "lat": null,
-   "lon": null,
-   "confianza": "sin dato"
   },
   {
    "id": "L-10",
@@ -213,20 +201,6 @@
    ],
    "lat": -12.40045,
    "lon": -75.08392,
-   "confianza": "exacta"
-  },
-  {
-   "id": "L-17",
-   "codlocal": "185329",
-   "nombre_padron": "SANTA ROSA",
-   "direccion": "AVENIDA ALAMEDA S/N",
-   "centro_poblado": "SANTA ROSA DE TAMBO",
-   "area": "Rural",
-   "niveles": [
-    "Secundaria"
-   ],
-   "lat": -13.689044,
-   "lon": -75.2765,
    "confianza": "exacta"
   },
   {
@@ -435,6 +409,22 @@
    ],
    "lat": -17.4818,
    "lon": -70.123,
+   "confianza": "exacta"
+  },
+  {
+   "id": "L-32",
+   "codlocal": "343022",
+   "nombre_padron": "PARQUE INDUSTRIAL",
+   "direccion": "CIRO ALEGRIA S/N",
+   "centro_poblado": "PICHARI",
+   "area": "Urbana",
+   "niveles": [
+    "Inicial - Jardín",
+    "Primaria",
+    "Secundaria"
+   ],
+   "lat": -12.52392,
+   "lon": -73.825,
    "confianza": "exacta"
   }
  ]

@@ -9,6 +9,7 @@ Solo salen datos de ubicacion y el conteo de orientadores: ni nombres, ni DNI, n
 """
 from __future__ import annotations
 
+import csv
 import json
 import re
 import sys
@@ -45,12 +46,35 @@ def leer_base(ruta: Path, hoja: str) -> list[tuple[str, str]]:
     return out
 
 
-def construir(base: list[tuple[str, str]], actual: dict) -> dict:
+ADICIONALES = RAIZ / "data" / "entrada" / "asignaciones_adicionales.csv"
+
+
+def leer_adicionales(ruta: Path = ADICIONALES) -> list[dict]:
+    """Orientadores que atienden un local ademas del de la base: columnas nombre, distrito, local (ignorado por Git: lleva nombres)."""
+    if not ruta.exists():
+        return []
+    with ruta.open(encoding="utf-8", newline="") as f:
+        return [{"nombre": r["nombre"].strip(), "distrito": r["distrito"].strip(), "local": r["local"].strip()} for r in csv.DictReader(f)]
+
+
+def construir(base: list[tuple[str, str]], actual: dict, adicionales: list[dict] = ()) -> dict:
     viejo = {(nz(r["distrito"]), nz(r["local"])): r for r in actual["registros"]}
-    conteo = Counter((nz(d), nz(l)) for d, l in base)
-    faltan = [k for k in conteo if k not in viejo]
+    extra = [(nz(a["distrito"]), nz(a["local"])) for a in adicionales]
+    conteo = Counter([(nz(d), nz(l)) for d, l in base] + extra)
+    faltan = [k for k in conteo if k not in viejo and k not in extra]
     if faltan:
         raise SystemExit(f"Locales de la base que no estan en {SALIDA.name} (sin ubigeo ni coordenadas): {faltan}")
+    sig = max(int(r["id"][2:]) for r in actual["registros"]) + 1
+    for a in adicionales:
+        k = (nz(a["distrito"]), nz(a["local"]))
+        if k in viejo:
+            continue
+        hermano = next((r for r in viejo.values() if nz(r["distrito"]) == k[0]), None)
+        if hermano is None:
+            raise SystemExit(f"Local adicional sin ningun local del mismo distrito para tomar ubigeo y oficina: {a}")
+        viejo[k] = {**{c: hermano[c] for c in ("ubigeo_inei", "departamento", "provincia", "distrito", "oficina_regional", "lon", "lat")},
+                    "local": a["local"], "id": f"L-{sig:02d}"}
+        sig += 1
     regs = []
     for k, n in conteo.items():
         r = dict(viejo[k])
@@ -65,13 +89,13 @@ def main() -> None:
     ruta = Path(sys.argv[1]) if len(sys.argv) > 1 else BASE
     hoja = sys.argv[2] if len(sys.argv) > 2 else HOJA
     actual = json.loads(SALIDA.read_text(encoding="utf-8"))
-    nuevo = construir(leer_base(ruta, hoja), actual)
+    nuevo = construir(leer_base(ruta, hoja), actual, leer_adicionales())
     m = re.search(r"(\d{2})\.(\d{2})\.(\d{2})", hoja)
     nuevo["corte"] = f"{m.group(1)}/{m.group(2)}/20{m.group(3)}" if m else hoja
     antes = {r["id"]: r["n_orientadores"] for r in actual["registros"]}
     SALIDA.write_text(json.dumps(nuevo, ensure_ascii=False, indent=1), encoding="utf-8")
     retirados = sorted(set(antes) - {r["id"] for r in nuevo["registros"]})
-    cambian = [(r["id"], antes[r["id"]], r["n_orientadores"]) for r in nuevo["registros"] if antes.get(r["id"]) != r["n_orientadores"]]
+    cambian = [(r["id"], antes.get(r["id"]), r["n_orientadores"]) for r in nuevo["registros"] if antes.get(r["id"]) != r["n_orientadores"]]
     print(f"{nuevo['orientadores']} orientadores en {nuevo['locales']} locales ({nuevo['distritos']} distritos), corte {nuevo['corte']}")
     print("retirados:", retirados, "| cambia el conteo (id, antes, ahora):", cambian)
 

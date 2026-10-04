@@ -18,7 +18,7 @@ from pathlib import Path
 import openpyxl
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from actualizar_locales import BASE, HOJA, nz  # noqa: E402
+from actualizar_locales import BASE, HOJA, leer_adicionales, nz  # noqa: E402
 
 RAIZ = Path(__file__).resolve().parent.parent
 ENTRADA = RAIZ / "data" / "entrada" / "hoja_respuestas.xlsx"
@@ -74,31 +74,32 @@ def normalizar(cabecera: list, filas: list) -> list[dict]:
     return out
 
 
-def avance_por_local(reg: list[dict], base: dict[str, str], n_local: dict[str, int], inicio: dt.datetime):
-    """base: nombre normalizado -> id de local; n_local: id -> orientadores en la base. Devuelve (avance, info)."""
+def avance_por_local(reg: list[dict], base: dict[str, list[str]], n_local: dict[str, int], inicio: dt.datetime):
+    """base: nombre normalizado -> ids de sus locales (uno o mas); n_local: id -> orientadores en la base. Devuelve (avance, info)."""
     reales = [r for r in reg if r["ts"] >= inicio]
     desconocidos = sorted({r["k"] for r in reales if r["k"] not in base})
     if desconocidos:
         raise SystemExit(f"Orientadores que no estan en la base de asignacion: {desconocidos}")
     lleg, cier = defaultdict(set), defaultdict(set)
     for r in reales:
-        if r["corte"] == 1 and r["llegada"]:
-            lleg[base[r["k"]]].add(r["k"])
-        if r["corte"] == 3 and r["termino"]:
-            cier[base[r["k"]]].add(r["k"])
+        for lid in base[r["k"]]:
+            if r["corte"] == 1 and r["llegada"]:
+                lleg[lid].add(r["k"])
+            if r["corte"] == 3 and r["termino"]:
+                cier[lid].add(r["k"])
     av = {}
     for lid, n in n_local.items():
         a, c = len(lleg[lid]), len(cier[lid])
         if a > n or c > n:
             raise SystemExit(f"Local {lid}: {a} llegadas y {c} cierres para {n} orientadores en la base")
         av[lid] = {"orientadores_base": n, "llegaron": a, "cierre": c}
-    info = {"envios_reales": len(reales), "pruebas_excluidas": len(reg) - len(reales), "orientadores_con_llegada": sum(len(s) for s in lleg.values()),
-            "orientadores_con_cierre": sum(len(s) for s in cier.values()), "ultimo_envio": max(r["ts"] for r in reales) if reales else None}
+    info = {"envios_reales": len(reales), "pruebas_excluidas": len(reg) - len(reales), "orientadores_con_llegada": len(set().union(*lleg.values())),
+            "orientadores_con_cierre": len(set().union(*cier.values())), "ultimo_envio": max(r["ts"] for r in reales) if reales else None}
     return av, info
 
 
-def cargar_base(locales: dict) -> dict[str, str]:
-    """nombre normalizado -> id de local, desde la base de asignacion (la llave del local es distrito + nombre del local)."""
+def cargar_base(locales: dict) -> dict[str, list[str]]:
+    """nombre normalizado -> ids de local, desde la base de asignacion mas las asignaciones adicionales (llave del local: distrito + nombre)."""
     ws = openpyxl.load_workbook(BASE, data_only=True)[HOJA]
     cab = [str(c).strip() if c else "" for c in next(ws.iter_rows(values_only=True))]
     ix = {h: i for i, h in enumerate(cab)}
@@ -118,7 +119,13 @@ def cargar_base(locales: dict) -> dict[str, str]:
             raise SystemExit(f"Local de la base sin id en orientacion_locales.json: {r[ix['DISTRITO']]} · {r[ix['NOMBRE DEL LOCAL']]}")
         if k in out:
             raise SystemExit(f"Nombre repetido en la base: {k}")
-        out[k] = lid
+        out[k] = [lid]
+    for a in leer_adicionales():
+        k, lid = nz(a["nombre"]), por_local.get((nz(a["distrito"]), nz(a["local"])))
+        if k not in out or lid is None:
+            raise SystemExit(f"Asignacion adicional sin orientador en la base o sin local en orientacion_locales.json: {a}")
+        if lid not in out[k]:
+            out[k].append(lid)
     return out
 
 
@@ -127,8 +134,9 @@ def main() -> None:
     locales = json.loads(LOCALES.read_text(encoding="utf-8"))
     base = cargar_base(locales)
     n_local = {r["id"]: r["n_orientadores"] for r in locales["registros"]}
-    if sum(n_local.values()) != len(base):
-        raise SystemExit(f"orientacion_locales.json suma {sum(n_local.values())} orientadores y la base {len(base)}: ejecute actualizar_locales.py")
+    puestos = sum(len(v) for v in base.values())
+    if sum(n_local.values()) != puestos:
+        raise SystemExit(f"orientacion_locales.json suma {sum(n_local.values())} puestos y la base {puestos}: ejecute actualizar_locales.py")
     filas = list(openpyxl.load_workbook(ruta, data_only=True)[PESTANA].iter_rows(values_only=True))
     reg = normalizar(list(filas[0]), filas[1:])
     av, info = avance_por_local(reg, base, n_local, INICIO_JORNADA)

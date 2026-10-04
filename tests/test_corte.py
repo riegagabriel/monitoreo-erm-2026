@@ -39,7 +39,7 @@ class Lectura(unittest.TestCase):
 
 
 class Avance(unittest.TestCase):
-    BASE = {"ANA PEREZ": "L-01", "LUIS RAMOS": "L-01", "ROSA DIAZ": "L-02"}
+    BASE = {"ANA PEREZ": ["L-01"], "LUIS RAMOS": ["L-01"], "ROSA DIAZ": ["L-02"]}
     N = {"L-01": 2, "L-02": 1, "L-03": 1}
 
     def reg(self, ts, k, c, ll=None, te=None):
@@ -65,6 +65,12 @@ class Avance(unittest.TestCase):
     def test_nombre_fuera_de_la_base_aborta(self):
         with self.assertRaises(SystemExit):
             corte.avance_por_local([self.reg(dt.datetime(2026, 10, 4, 7), "NADIE", 1, dt.time(7, 0))], self.BASE, self.N, INICIO)
+
+    def test_orientador_en_dos_locales_cuenta_en_ambos_y_una_vez_en_el_total(self):
+        base = {"ANA PEREZ": ["L-01", "L-02"], "LUIS RAMOS": ["L-01"]}
+        n = {"L-01": 2, "L-02": 1, "L-03": 0}
+        av, info = corte.avance_por_local([self.reg(dt.datetime(2026, 10, 4, 7), "ANA PEREZ", 1, dt.time(7))], base, n, INICIO)
+        self.assertEqual((av["L-01"]["llegaron"], av["L-02"]["llegaron"], info["orientadores_con_llegada"]), (1, 1, 1))
 
     def test_llegada_no_puede_superar_el_total_del_local(self):
         n = {"L-01": 1, "L-02": 1, "L-03": 1}
