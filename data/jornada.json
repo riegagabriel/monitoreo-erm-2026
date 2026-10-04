@@ -1,10 +1,10 @@
 {
- "corte": "04/10/2026 16:35",
+ "corte": "04/10/2026 16:52",
  "es_ejemplo": false,
  "fuente": "Formulario de orientadores (corte 1: llegada; corte 3: cierre)",
  "orientadores_base": 51,
  "orientadores_con_llegada": 50,
- "orientadores_con_cierre": 15,
+ "orientadores_con_cierre": 37,
  "locales_completos": 29,
  "corte2": {
   "orientadores": 49,
@@ -13,14 +13,14 @@
   "locales_completos": 27
  },
  "consultas": {
-  "total": 1054,
+  "total": 1636,
   "orientadores": 49,
   "por_tipo": {
-   "Restitución de domicilio": 477,
-   "Otras consultas": 305,
-   "DNI vencido": 227,
-   "Cara de niño": 43,
-   "Ciudadanos fallecidos": 2
+   "Restitución de domicilio": 625,
+   "Otras consultas": 586,
+   "DNI vencido": 349,
+   "Cara de niño": 72,
+   "Ciudadanos fallecidos": 4
   }
  },
  "avance": {
@@ -32,12 +32,12 @@
   "L-03": {
    "orientadores_base": 2,
    "llegaron": 2,
-   "cierre": 0
+   "cierre": 2
   },
   "L-04": {
    "orientadores_base": 2,
    "llegaron": 2,
-   "cierre": 0
+   "cierre": 2
   },
   "L-05": {
    "orientadores_base": 2,
@@ -47,12 +47,12 @@
   "L-06": {
    "orientadores_base": 2,
    "llegaron": 2,
-   "cierre": 0
+   "cierre": 2
   },
   "L-07": {
    "orientadores_base": 2,
    "llegaron": 2,
-   "cierre": 0
+   "cierre": 1
   },
   "L-08": {
    "orientadores_base": 2,
@@ -67,12 +67,12 @@
   "L-11": {
    "orientadores_base": 2,
    "llegaron": 2,
-   "cierre": 0
+   "cierre": 2
   },
   "L-12": {
    "orientadores_base": 2,
    "llegaron": 2,
-   "cierre": 0
+   "cierre": 2
   },
   "L-13": {
    "orientadores_base": 2,
@@ -92,7 +92,7 @@
   "L-16": {
    "orientadores_base": 1,
    "llegaron": 1,
-   "cierre": 0
+   "cierre": 1
   },
   "L-18": {
    "orientadores_base": 2,
@@ -107,27 +107,27 @@
   "L-20": {
    "orientadores_base": 2,
    "llegaron": 2,
-   "cierre": 0
+   "cierre": 2
   },
   "L-21": {
    "orientadores_base": 2,
    "llegaron": 2,
-   "cierre": 0
+   "cierre": 1
   },
   "L-22": {
    "orientadores_base": 1,
    "llegaron": 1,
-   "cierre": 0
+   "cierre": 1
   },
   "L-23": {
    "orientadores_base": 2,
    "llegaron": 2,
-   "cierre": 1
+   "cierre": 2
   },
   "L-24": {
    "orientadores_base": 2,
    "llegaron": 2,
-   "cierre": 0
+   "cierre": 2
   },
   "L-25": {
    "orientadores_base": 2,
@@ -142,7 +142,7 @@
   "L-27": {
    "orientadores_base": 1,
    "llegaron": 1,
-   "cierre": 0
+   "cierre": 1
   },
   "L-28": {
    "orientadores_base": 1,
@@ -152,12 +152,12 @@
   "L-29": {
    "orientadores_base": 2,
    "llegaron": 2,
-   "cierre": 1
+   "cierre": 2
   },
   "L-30": {
    "orientadores_base": 2,
    "llegaron": 2,
-   "cierre": 1
+   "cierre": 2
   },
   "L-31": {
    "orientadores_base": 2,
@@ -447,6 +447,15 @@
    "t": "Un video muestra a ronderos latigueando a personas señaladas como presuntos golondrinos; en los comentarios se indica que serían familiares de residentes."
   },
   {
+   "id": "MAT-C26-2",
+   "h": 15.58,
+   "g": 2,
+   "c": "ent",
+   "u": "160210",
+   "l": null,
+   "t": "El subprefecto del distrito informó de una confrontación entre residentes y un grupo de personas que llegaron a votar, a quienes los residentes señalan como presuntos electores «golondrinos»."
+  },
+  {
    "id": "ORI-20261004162107-L-14",
    "h": 16.35,
    "g": 1,
@@ -472,6 +481,42 @@
    "u": "040115",
    "l": "L-08",
    "t": "Otro orientador del local reporta un caso similar: un ciudadano con la prensa dijo que, por orden de un candidato, a él y a otras personas les habrían colocado «no reside». Se le explicó que RENIEC no tuvo contacto con candidatos y se le orientó."
+  },
+  {
+   "id": "ORI-20261004163630-L-30",
+   "h": 16.6,
+   "g": 1,
+   "c": "ori",
+   "u": "230109",
+   "l": "L-30",
+   "t": "Se reportó una aglomeración leve de ciudadanos por la reubicación de su domicilio."
+  },
+  {
+   "id": "ORI-20261004163905-L-12",
+   "h": 16.65,
+   "g": 1,
+   "c": "ori",
+   "u": "051009",
+   "l": "L-12",
+   "t": "Un ciudadano preguntó si podía votar con la constancia de pago del trámite de DNI extraviado. Se le indicó que solo se vota con DNI físico; intervino la ONPE y se mostró molesto porque venía de otro distrito."
+  },
+  {
+   "id": "ORI-20261004164706-L-06",
+   "h": 16.78,
+   "g": 2,
+   "c": "ori",
+   "u": "021014",
+   "l": "L-06",
+   "t": "Un orientador del local reporta aglomeración en la entrada en la última hora y actos de vandalismo de pobladores hacia las 16:40."
+  },
+  {
+   "id": "ORI-20261004164751-L-06",
+   "h": 16.78,
+   "g": 2,
+   "c": "ori",
+   "u": "021014",
+   "l": "L-06",
+   "t": "Otro orientador del local reporta lo mismo: vandalismo de pobladores hacia las 16:40."
   }
  ]
 }
