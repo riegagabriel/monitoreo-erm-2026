@@ -94,18 +94,19 @@ def aplicar_validaciones(casos: list[dict], ruta: Path) -> None:
             c["desc"] = x["texto"].strip()
 
 
-def cargar_ref(wb) -> tuple[dict, dict]:
-    """RENIEC -> INEI y (dep, prov, dist) -> INEI, desde la hoja Ref_Distritos de la matriz."""
+def cargar_ref(wb) -> tuple[dict, dict, dict]:
+    """RENIEC -> INEI, (dep, prov, dist) -> INEI y RENIEC -> (prov, dist), desde la hoja Ref_Distritos de la matriz."""
     ws = next(w for w in wb.worksheets if w.title.startswith("Ref_Distritos"))
     filas = list(ws.iter_rows(values_only=True))
     cab = [nz(c) for c in filas[0]]
     i_inei = next(j for j, h in enumerate(cab) if h.startswith("UBIGEO INEI"))
-    r2i, nombres = {}, {}
+    r2i, nombres, por_reniec = {}, {}, {}
     for r in filas[1:]:
         if r[0] and r[i_inei]:
             r2i[str(r[0])] = str(r[i_inei])
+            por_reniec[str(r[0])] = (nz(r[2]), nz(r[3]))
             nombres[(nz(r[1]), nz(r[2]), nz(r[3]))] = str(r[i_inei])
-    return r2i, nombres
+    return r2i, nombres, por_reniec
 
 
 def parse_fecha(v) -> dt.date | None:
@@ -156,6 +157,10 @@ def ubicar(c: dict, ctx: dict) -> tuple[list[str], list[str]]:
     nombres = [d.strip() for d in str(c.get("dist") or "").split(";") if d.strip()]
     if not nombres:
         return [], []
+    cod = str(c.get("ubigeo") or "").strip()
+    esperado = ctx.get("por_reniec", {}).get(cod)
+    if len(nombres) == 1 and esperado == (nz(c.get("prov")), nz(nombres[0])):
+        return [ctx["r2i"][cod]], []  # el ubigeo y la provincia/distrito coinciden: un error de tipeo en el departamento no bloquea
     ubigeos, errores = [], []
     for d in nombres:
         u = ctx["nombres"].get((nz(c.get("dep")), nz(c.get("prov")), nz(d)))
@@ -246,14 +251,14 @@ def evaluar(c: dict, ctx: dict) -> dict:
 
 
 def contexto(wb, casos: list[dict]) -> dict:
-    r2i, nombres = cargar_ref(wb)
+    r2i, nombres, por_reniec = cargar_ref(wb)
     geo = {f["properties"]["u"]: f["properties"] for f in json.loads(GEOJSON.read_text(encoding="utf-8"))["features"]}
     ban = json.loads(BANDERAS.read_text(encoding="utf-8"))["registros"]
     por_u: dict[str, list[str]] = {}
     for b in ban:
         if b.get("conflictividad") in (True, "True") and not str(b["id"]).startswith("MAT-"):
             por_u.setdefault(b["ubigeo_inei"], []).append(b["id"])
-    return {"r2i": r2i, "nombres": nombres, "geo": geo, "banderas": por_u, "prohibidos": nombres_internos(casos),
+    return {"r2i": r2i, "nombres": nombres, "por_reniec": por_reniec, "geo": geo, "banderas": por_u, "prohibidos": nombres_internos(casos),
             "locales": json.loads(LOCALES.read_text(encoding="utf-8"))["registros"]}
 
 

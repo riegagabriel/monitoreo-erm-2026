@@ -44,6 +44,17 @@ class Verde(unittest.TestCase):
         self.assertEqual(m.evaluar(caso(ubigeo="020813"), CTX)["estado"], "ERROR")
 
 
+class UbicarPorCodigo(unittest.TestCase):
+    CTX2 = {**CTX, "por_reniec": {"010406": ("LUYA", "INGUILPATA")}}
+
+    def test_error_de_tipeo_en_el_departamento_no_bloquea_si_el_codigo_coincide(self):
+        r = m.evaluar(caso(dep="Amzonas"), self.CTX2)
+        self.assertEqual((r["estado"], r["registros"][0]["u"]), ("LISTO PARA PUBLICAR", "010506"))
+
+    def test_si_la_provincia_no_coincide_con_el_codigo_sigue_siendo_error(self):
+        self.assertEqual(m.evaluar(caso(dep="Amzonas", prov="Bagua"), self.CTX2)["estado"], "ERROR")
+
+
 class Roja(unittest.TestCase):
     def test_alerta_previa_con_bandera_roja(self):
         r = m.evaluar(caso(fecha="2026-10-02"), CTX)

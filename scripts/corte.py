@@ -91,6 +91,26 @@ def normalizar(cabecera: list, filas: list) -> list[dict]:
     return out
 
 
+def _lids(r: dict, base: dict[str, list[str]], por_local: dict | None) -> list[str]:
+    lids = base[r["k"]]
+    if len(lids) > 1 and por_local:  # orientador de varios locales: cuenta en el que eligio en el formulario
+        elegido = por_local.get((r.get("dist"), r.get("local")))
+        lids = [elegido] if elegido in lids else lids
+    return lids
+
+
+def resumen_corte2(reg: list[dict], base: dict[str, list[str]], n_local: dict[str, int], locales: dict[str, dict], inicio: dt.datetime, por_local: dict | None = None) -> dict:
+    """Orientadores, locales y distritos con al menos un registro del corte 2, y locales con todos sus puestos registrados."""
+    reales = [r for r in reg if r["ts"] >= inicio and r["corte"] == 2]
+    personas = {r["k"] for r in reales}
+    por_lid = defaultdict(set)
+    for r in reales:
+        for lid in _lids(r, base, por_local):
+            por_lid[lid].add(r["k"])
+    completos = sum(1 for lid, ks in por_lid.items() if len(ks) >= n_local.get(lid, 0) > 0)
+    return {"orientadores": len(personas), "locales": len(por_lid), "distritos": len({locales[l]["ubigeo_inei"] for l in por_lid}), "locales_completos": completos}
+
+
 def avance_por_local(reg: list[dict], base: dict[str, list[str]], n_local: dict[str, int], inicio: dt.datetime, por_local: dict | None = None):
     """base: nombre normalizado -> ids de sus locales (uno o mas); n_local: id -> orientadores en la base. Devuelve (avance, info)."""
     reales = [r for r in reg if r["ts"] >= inicio]
@@ -99,11 +119,7 @@ def avance_por_local(reg: list[dict], base: dict[str, list[str]], n_local: dict[
         raise SystemExit(f"Orientadores que no estan en la base de asignacion: {desconocidos}")
     lleg, cier = defaultdict(set), defaultdict(set)
     for r in reales:
-        lids = base[r["k"]]
-        if len(lids) > 1 and por_local:  # orientador de varios locales: cuenta en el que eligio en el formulario
-            elegido = por_local.get((r.get("dist"), r.get("local")))
-            lids = [elegido] if elegido in lids else lids
-        for lid in lids:
+        for lid in _lids(r, base, por_local):
             if r["corte"] == 1 and r["llegada"]:
                 lleg[lid].add(r["k"])
             if r["corte"] == 3 and r["termino"]:
@@ -220,11 +236,13 @@ def main() -> None:
     jornada = {"corte": ultimo.strftime("%d/%m/%Y %H:%M") if ultimo else "", "es_ejemplo": False,
                "fuente": "Formulario de orientadores (corte 1: llegada; corte 3: cierre)", "orientadores_base": len(base),
                "orientadores_con_llegada": info["orientadores_con_llegada"], "orientadores_con_cierre": info["orientadores_con_cierre"],
-               "locales_completos": completos, "avance": av, "incidencias": incidencias}
+               "locales_completos": completos, "corte2": resumen_corte2(reg, base, n_local, por_id, INICIO_JORNADA, por_local), "avance": av, "incidencias": incidencias}
     SALIDA.write_text(json.dumps(jornada, ensure_ascii=False, indent=1), encoding="utf-8")
     print(f"corte {jornada['corte']} | envios reales {info['envios_reales']} (pruebas excluidas: {info['pruebas_excluidas']})")
     print(f"llegada reportada: {info['orientadores_con_llegada']} de {len(base)} orientadores | cierre: {info['orientadores_con_cierre']}")
     print(f"locales con todos sus orientadores: {completos} de {len(av)} -> {SALIDA}")
+    c2 = jornada["corte2"]
+    print(f"corte 2: {c2['orientadores']} orientadores en {c2['locales']} locales y {c2['distritos']} distritos ({c2['locales_completos']} locales completos)")
     print(f"incidencias publicadas: {len(incidencias)} ({len(inc_f)} del formulario, {len(incidencias) - len(inc_f)} de la matriz, {sum(1 for x in incidencias if x['g'] == 2)} graves)")
     for p in pend:
         print(f"  PENDIENTE DE VALIDAR (no se publica) fila {p['fila']} {p['id_envio']}: {p['texto']}")

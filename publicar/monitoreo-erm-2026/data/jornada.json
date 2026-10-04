@@ -1,11 +1,17 @@
 {
- "corte": "04/10/2026 12:34",
+ "corte": "04/10/2026 13:21",
  "es_ejemplo": false,
  "fuente": "Formulario de orientadores (corte 1: llegada; corte 3: cierre)",
  "orientadores_base": 51,
  "orientadores_con_llegada": 50,
  "orientadores_con_cierre": 0,
  "locales_completos": 28,
+ "corte2": {
+  "orientadores": 46,
+  "locales": 28,
+  "distritos": 28,
+  "locales_completos": 24
+ },
  "avance": {
   "L-01": {
    "orientadores_base": 2,
@@ -270,6 +276,42 @@
    "u": "040111",
    "l": "L-07",
    "t": "Una ciudadana con domicilio restituido se alteró al recibir la información; gritó y se retiró diciendo que era una estafa y que lo haría público."
+  },
+  {
+   "id": "ORI-20261004121908-L-14",
+   "h": 12.32,
+   "g": 1,
+   "c": "ori",
+   "u": "080107",
+   "l": "L-14",
+   "t": "Una ciudadana exige una solución durante la orientación."
+  },
+  {
+   "id": "MAT-C19",
+   "h": 12.43,
+   "g": 2,
+   "c": "ent",
+   "u": "021308",
+   "l": null,
+   "t": "Pobladores se concentran en el ingreso al centro de votación en rechazo a la presunta presencia de electores que consideran «golondrinos». La situación sigue en desarrollo y se espera la intervención de las autoridades."
+  },
+  {
+   "id": "ORI-20261004123408-L-32",
+   "h": 12.57,
+   "g": 1,
+   "c": "ori",
+   "u": "080910",
+   "l": "L-32",
+   "t": "Ciudadanos manifiestan molestia por la restitución de su domicilio."
+  },
+  {
+   "id": "MAT-C20",
+   "h": 12.98,
+   "g": 2,
+   "c": "ent",
+   "u": "021003",
+   "l": null,
+   "t": "Momentos de tensión en los exteriores de la I.E. 86394 de Cayas: pobladores increparon a ciudadanos a quienes señalan como presuntos «votantes golondrinos». La Policía se encuentra en el lugar."
   }
  ]
 }
