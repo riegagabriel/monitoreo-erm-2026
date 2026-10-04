@@ -1,32 +1,32 @@
 {
- "corte": "04/10/2026 16:19",
+ "corte": "04/10/2026 16:28",
  "es_ejemplo": false,
  "fuente": "Formulario de orientadores (corte 1: llegada; corte 3: cierre)",
  "orientadores_base": 51,
  "orientadores_con_llegada": 50,
- "orientadores_con_cierre": 2,
- "locales_completos": 28,
+ "orientadores_con_cierre": 8,
+ "locales_completos": 29,
  "corte2": {
   "orientadores": 49,
-  "locales": 29,
+  "locales": 30,
   "distritos": 28,
-  "locales_completos": 26
+  "locales_completos": 27
  },
  "consultas": {
-  "total": 920,
+  "total": 919,
   "orientadores": 49,
   "por_tipo": {
-   "Restitución de domicilio": 399,
-   "Otras consultas": 290,
-   "DNI vencido": 196,
-   "Cara de niño": 31,
-   "Ciudadanos fallecidos": 4
+   "Restitución de domicilio": 454,
+   "Otras consultas": 279,
+   "DNI vencido": 154,
+   "Cara de niño": 30,
+   "Ciudadanos fallecidos": 2
   }
  },
  "avance": {
   "L-01": {
-   "orientadores_base": 2,
-   "llegaron": 2,
+   "orientadores_base": 1,
+   "llegaron": 1,
    "cierre": 0
   },
   "L-03": {
@@ -57,12 +57,12 @@
   "L-08": {
    "orientadores_base": 2,
    "llegaron": 2,
-   "cierre": 0
+   "cierre": 2
   },
   "L-10": {
    "orientadores_base": 2,
    "llegaron": 2,
-   "cierre": 0
+   "cierre": 1
   },
   "L-11": {
    "orientadores_base": 2,
@@ -82,7 +82,7 @@
   "L-14": {
    "orientadores_base": 2,
    "llegaron": 2,
-   "cierre": 1
+   "cierre": 2
   },
   "L-15": {
    "orientadores_base": 2,
@@ -122,7 +122,7 @@
   "L-23": {
    "orientadores_base": 2,
    "llegaron": 2,
-   "cierre": 0
+   "cierre": 1
   },
   "L-24": {
    "orientadores_base": 2,
@@ -157,7 +157,7 @@
   "L-30": {
    "orientadores_base": 2,
    "llegaron": 2,
-   "cierre": 0
+   "cierre": 1
   },
   "L-31": {
    "orientadores_base": 2,
@@ -165,6 +165,11 @@
    "cierre": 0
   },
   "L-32": {
+   "orientadores_base": 1,
+   "llegaron": 1,
+   "cierre": 0
+  },
+  "L-33": {
    "orientadores_base": 1,
    "llegaron": 1,
    "cierre": 0
@@ -440,6 +445,33 @@
    "u": "061301",
    "l": null,
    "t": "Un video muestra a ronderos latigueando a personas señaladas como presuntos golondrinos; en los comentarios se indica que serían familiares de residentes."
+  },
+  {
+   "id": "ORI-20261004162107-L-14",
+   "h": 16.35,
+   "g": 1,
+   "c": "ori",
+   "u": "080107",
+   "l": "L-14",
+   "t": "Ciudadanos manifestaron su molestia por no haber sido informados del cambio de su local de votación; algunos dijeron que esperarían afuera a quienes «los sacaron»."
+  },
+  {
+   "id": "ORI-20261004162339-L-08",
+   "h": 16.38,
+   "g": 1,
+   "c": "ori",
+   "u": "040115",
+   "l": "L-08",
+   "t": "Un ciudadano se acercó con la prensa por la restitución de domicilio: dijo que no fueron a su casa durante la verificación y que la orden habría sido de un candidato."
+  },
+  {
+   "id": "ORI-20261004162719-L-08",
+   "h": 16.45,
+   "g": 1,
+   "c": "ori",
+   "u": "040115",
+   "l": "L-08",
+   "t": "Otro orientador del local reporta un caso similar: un ciudadano con la prensa dijo que, por orden de un candidato, a él y a otras personas les habrían colocado «no reside». Se le explicó que RENIEC no tuvo contacto con candidatos y se le orientó."
   }
  ]
 }

@@ -107,14 +107,19 @@ def normalizar(cabecera: list, filas: list) -> list[dict]:
 
 
 def resumen_consultas(reg: list[dict], inicio: dt.datetime) -> dict:
-    """Suma de todos los registros de consultas enviados en los cortes 2 y 3 (criterio del usuario, 04/10/2026)."""
-    por_tipo: dict[str, int] = defaultdict(int)
-    orientadores: set[str] = set()
+    """Suma de las consultas de los cortes 2 y 3 (criterio del usuario, 04/10/2026). Si un orientador envio varias veces el mismo corte
+    (reenvios), vale el envio de mayor total."""
+    mejor: dict[tuple, dict] = {}
     for r in reg:
         if r["ts"] >= inicio and r["corte"] in (2, 3) and r.get("consultas"):
-            orientadores.add(r["k"])
-            for t, n in r["consultas"].items():
-                por_tipo[t] += n
+            k = (r["k"], r["corte"])
+            if k not in mejor or sum(r["consultas"].values()) > sum(mejor[k].values()):
+                mejor[k] = r["consultas"]
+    por_tipo: dict[str, int] = defaultdict(int)
+    orientadores = {k[0] for k in mejor}
+    for v in mejor.values():
+        for t, n in v.items():
+            por_tipo[t] += n
     return {"total": sum(por_tipo.values()), "orientadores": len(orientadores), "por_tipo": dict(sorted(por_tipo.items(), key=lambda a: -a[1]))}
 
 
@@ -218,9 +223,7 @@ def cargar_base(locales: dict) -> dict[str, list[str]]:
     por_local = {(nz(r["distrito"]), nz(r["local"])): r["id"] for r in locales["registros"]}
     out = {}
     for r in ws.iter_rows(min_row=2, values_only=True):
-        try:
-            int(str(r[ix["N°"]]).strip())
-        except ValueError:
+        if r[ix["N°"]] not in (None, "") and not str(r[ix["N°"]]).strip().isdigit():  # N° vacio = 2.a fila de un orientador en dos locales
             continue
         nombre = r[ix["NOMBRES Y APELLIDOS"]]
         if not nombre:
@@ -229,9 +232,9 @@ def cargar_base(locales: dict) -> dict[str, list[str]]:
         lid = por_local.get((nz(r[ix["DISTRITO"]]), nz(r[ix["NOMBRE DEL LOCAL"]])))
         if lid is None:
             raise SystemExit(f"Local de la base sin id en orientacion_locales.json: {r[ix['DISTRITO']]} · {r[ix['NOMBRE DEL LOCAL']]}")
-        if k in out:
-            raise SystemExit(f"Nombre repetido en la base: {k}")
-        out[k] = [lid]
+        if lid in out.setdefault(k, []):
+            raise SystemExit(f"Orientador repetido en el mismo local de la base: {k}")
+        out[k].append(lid)  # un nombre en dos filas = atiende dos locales
     for a in leer_adicionales():
         k, lid = nz(a["nombre"]), por_local.get((nz(a["distrito"]), nz(a["local"])))
         if k not in out or lid is None:

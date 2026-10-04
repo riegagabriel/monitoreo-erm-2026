@@ -426,6 +426,20 @@
    "lat": -12.52392,
    "lon": -73.825,
    "confianza": "exacta"
+  },
+  {
+   "id": "L-33",
+   "codlocal": "003621",
+   "nombre_padron": "DIVINO MAESTRO",
+   "direccion": "AVENIDA TUPAC AMARU S/N",
+   "centro_poblado": "EL PARCO",
+   "area": "Rural",
+   "niveles": [
+    "Secundaria"
+   ],
+   "lat": -5.625385,
+   "lon": -78.47767,
+   "confianza": "exacta"
   }
  ]
 }

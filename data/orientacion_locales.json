@@ -1,8 +1,8 @@
 {
  "fuente": "Base de asignacion de orientadores",
- "corte": "03/10/2026",
+ "corte": "04/10/2026",
  "orientadores": 52,
- "locales": 29,
+ "locales": 30,
  "distritos": 28,
  "registros": [
   {
@@ -14,7 +14,7 @@
    "oficina_regional": "J.R. 16 - AMAZONAS",
    "lon": -78.4758,
    "lat": -5.61998,
-   "n_orientadores": 2,
+   "n_orientadores": 1,
    "id": "L-01"
   },
   {
@@ -351,6 +351,18 @@
    "lat": -12.41418,
    "local": "IE PARQUE INDUSTRIAL",
    "id": "L-32",
+   "n_orientadores": 1
+  },
+  {
+   "ubigeo_inei": "010204",
+   "departamento": "AMAZONAS",
+   "provincia": "BAGUA",
+   "distrito": "EL PARCO",
+   "oficina_regional": "J.R. 16 - AMAZONAS",
+   "lon": -78.4758,
+   "lat": -5.61998,
+   "local": "IE DIVINO MAESTRO",
+   "id": "L-33",
    "n_orientadores": 1
   }
  ]

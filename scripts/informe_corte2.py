@@ -39,16 +39,16 @@ def leer_base() -> list[dict]:
     ws = openpyxl.load_workbook(BASE, data_only=True)[HOJA]
     cab = [str(x).strip() if x else "" for x in next(ws.iter_rows(values_only=True))]
     ix = {h: i for i, h in enumerate(cab)}
-    out = []
+    out: dict[str, dict] = {}
     for r in ws.iter_rows(min_row=2, values_only=True):
-        try:
-            int(str(r[ix["N°"]]).strip())
-        except ValueError:
+        if r[ix["N°"]] not in (None, "") and not str(r[ix["N°"]]).strip().isdigit():  # N° vacio = 2.a fila de un orientador en dos locales
             continue
         if r[ix["NOMBRES Y APELLIDOS"]]:
-            out.append({"nombre": " ".join(str(r[ix["NOMBRES Y APELLIDOS"]]).split()), "monitor": " ".join(str(r[ix["MONITOR OPERATIVO"]]).split()),
-                        "distrito": str(r[ix["DISTRITO"]]).strip(), "local": str(r[ix["NOMBRE DEL LOCAL"]]).strip()})
-    return out
+            nombre = " ".join(str(r[ix["NOMBRES Y APELLIDOS"]]).split())
+            monitor = " ".join(str(r[ix["MONITOR OPERATIVO"]] or "").split())
+            x = out.setdefault(nz(nombre), {"nombre": nombre, "monitor": monitor, "distrito": str(r[ix["DISTRITO"]]).strip(), "local": str(r[ix["NOMBRE DEL LOCAL"]]).strip()})
+            x["monitor"] = x["monitor"] or monitor  # un orientador en dos locales aparece en dos filas: cuenta una vez
+    return list(out.values())
 
 
 def datos(ruta: Path) -> dict:

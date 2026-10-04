@@ -1,7 +1,7 @@
 """Actualiza data/orientacion_locales.json desde la base de asignacion vigente, conservando los ids L-nn.
 
 Uso: python scripts/actualizar_locales.py [ruta_base.xlsx] [hoja]
-Defecto: MONITOREO_ASIGNACION_PARA INFORME.xlsx, hoja «AL 03.10.26».
+Defecto: MONITOREO_REPORTE 041026_VF.xlsx (version final del 04/10/2026), hoja «04102026».
 
 Llave de emparejamiento: distrito + nombre del local (sin tildes ni mayusculas) contra el archivo actual. Un local de la base que no
 exista en el archivo actual aborta (no se inventa ubigeo ni coordenadas). Los locales que ya no estan en la base se retiran.
@@ -21,8 +21,8 @@ import openpyxl
 
 RAIZ = Path(__file__).resolve().parent.parent
 SALIDA = RAIZ / "data" / "orientacion_locales.json"
-BASE = RAIZ.parent / "MONITOREO_ASIGNACION_PARA INFORME.xlsx"
-HOJA = "AL 03.10.26"
+BASE = RAIZ.parent / "MONITOREO_REPORTE 041026_VF.xlsx"
+HOJA = "04102026"
 
 
 def nz(s) -> str:
@@ -37,9 +37,7 @@ def leer_base(ruta: Path, hoja: str) -> list[tuple[str, str]]:
     ix = {h: i for i, h in enumerate(cab)}
     out = []
     for r in ws.iter_rows(min_row=2, values_only=True):
-        try:
-            int(str(r[ix["N°"]]).strip())
-        except ValueError:
+        if r[ix["N°"]] not in (None, "") and not str(r[ix["N°"]]).strip().isdigit():  # N° vacio = 2.a fila de un orientador en dos locales
             continue
         if r[ix["NOMBRES Y APELLIDOS"]]:
             out.append((str(r[ix["DISTRITO"]]).strip(), str(r[ix["NOMBRE DEL LOCAL"]]).strip()))
@@ -61,19 +59,18 @@ def construir(base: list[tuple[str, str]], actual: dict, adicionales: list[dict]
     viejo = {(nz(r["distrito"]), nz(r["local"])): r for r in actual["registros"]}
     extra = [(nz(a["distrito"]), nz(a["local"])) for a in adicionales]
     conteo = Counter([(nz(d), nz(l)) for d, l in base] + extra)
-    faltan = [k for k in conteo if k not in viejo and k not in extra]
-    if faltan:
-        raise SystemExit(f"Locales de la base que no estan en {SALIDA.name} (sin ubigeo ni coordenadas): {faltan}")
     sig = max(int(r["id"][2:]) for r in actual["registros"]) + 1
-    for a in adicionales:
-        k = (nz(a["distrito"]), nz(a["local"]))
+    nuevos = {(nz(a["distrito"]), nz(a["local"])): a["local"] for a in adicionales}
+    nuevos.update({(nz(d), nz(l)): l.strip() for d, l in base})
+    for k, nombre in nuevos.items():
         if k in viejo:
             continue
         hermano = next((r for r in viejo.values() if nz(r["distrito"]) == k[0]), None)
         if hermano is None:
-            raise SystemExit(f"Local adicional sin ningun local del mismo distrito para tomar ubigeo y oficina: {a}")
+            raise SystemExit(f"Local sin ningun local del mismo distrito para tomar ubigeo y oficina (sin ubigeo ni coordenadas): {k}")
+        print(f"AVISO: local nuevo {nombre} ({hermano['distrito']}) = {f'L-{sig:02d}'}; toma ubigeo y coordenadas de {hermano['local']} (afinar el punto si hace falta)")
         viejo[k] = {**{c: hermano[c] for c in ("ubigeo_inei", "departamento", "provincia", "distrito", "oficina_regional", "lon", "lat")},
-                    "local": a["local"], "id": f"L-{sig:02d}"}
+                    "local": nombre, "id": f"L-{sig:02d}"}
         sig += 1
     regs = []
     for k, n in conteo.items():
@@ -90,8 +87,8 @@ def main() -> None:
     hoja = sys.argv[2] if len(sys.argv) > 2 else HOJA
     actual = json.loads(SALIDA.read_text(encoding="utf-8"))
     nuevo = construir(leer_base(ruta, hoja), actual, leer_adicionales())
-    m = re.search(r"(\d{2})\.(\d{2})\.(\d{2})", hoja)
-    nuevo["corte"] = f"{m.group(1)}/{m.group(2)}/20{m.group(3)}" if m else hoja
+    m = re.search(r"(\d{2})\.?(\d{2})\.?(\d{2})(\d{2})?$", hoja)
+    nuevo["corte"] = (f"{m.group(1)}/{m.group(2)}/{m.group(3)}{m.group(4)}" if m.group(4) else f"{m.group(1)}/{m.group(2)}/20{m.group(3)}") if m else hoja
     antes = {r["id"]: r["n_orientadores"] for r in actual["registros"]}
     SALIDA.write_text(json.dumps(nuevo, ensure_ascii=False, indent=1), encoding="utf-8")
     retirados = sorted(set(antes) - {r["id"] for r in nuevo["registros"]})

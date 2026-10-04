@@ -21,9 +21,13 @@ class Adicionales(unittest.TestCase):
         with self.assertRaises(SystemExit):
             al.construir([("PICHARI", "IE LA VICTORIA")], ACTUAL, [{"nombre": "X", "distrito": "OTRO", "local": "IE Z"}])
 
-    def test_local_de_la_base_desconocido_sigue_abortando(self):
+    def test_local_de_la_base_en_distrito_desconocido_aborta(self):
         with self.assertRaises(SystemExit):
-            al.construir([("PICHARI", "IE NO EXISTE")], ACTUAL, [])
+            al.construir([("OTRO", "IE NO EXISTE")], ACTUAL, [])
+
+    def test_local_nuevo_de_la_base_hereda_ubigeo_del_distrito(self):
+        r = {x["id"]: x for x in al.construir([("PICHARI", "IE LA VICTORIA"), ("PICHARI", "IE DIVINO MAESTRO")], ACTUAL, [])["registros"]}
+        self.assertEqual((r["L-16"]["local"], r["L-16"]["n_orientadores"], r["L-16"]["ubigeo_inei"]), ("IE DIVINO MAESTRO", 1, "080910"))
 
 
 if __name__ == "__main__":
