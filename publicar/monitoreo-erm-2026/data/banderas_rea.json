@@ -377,6 +377,28 @@
    "simulado": false
   },
   {
+   "id": "MAT-C06",
+   "item": null,
+   "fecha_recepcion": "03/10/2026",
+   "fecha_asumida": false,
+   "departamento": "AMAZONAS",
+   "provincia": "LUYA",
+   "distrito": "SAN JERONIMO",
+   "ubigeo_inei": "010518",
+   "lon": -78.0086,
+   "lat": -6.0034,
+   "categoria_rea": null,
+   "conflictividad": true,
+   "motivo_conflictividad": "El JEE advierte potencial de escalamiento de la confrontación entre simpatizantes el día de la elección.",
+   "fuente_dashboard": "conflictividad",
+   "resumen_publicable": "El 1/10, en el cierre de campaña, simpatizantes de dos organizaciones políticas coincidieron en la vía pública con intercambios verbales en tono alterado. No hubo agresiones físicas ni denuncias formales, pero el JEE advierte potencial de escalamiento el día de la elección y pidió acciones preventivas al Ministerio Público.",
+   "n_ciudadanos": null,
+   "entidad_emisora": null,
+   "canal": "Entidades del sistema",
+   "estado": "VALIDADO",
+   "simulado": false
+  },
+  {
    "id": "MAT-C11",
    "item": null,
    "fecha_recepcion": "03/10/2026",

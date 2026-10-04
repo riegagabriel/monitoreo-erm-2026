@@ -105,6 +105,8 @@ def aplicar_validaciones(casos: list[dict], ruta: Path) -> None:
             c["fecha"] = x["fecha"].strip()
         if (x.get("hora") or "").strip():
             c["hora"] = x["hora"].strip()
+        if (x.get("bandera") or "").strip():  # decision del usuario cuando la hoja dice «Por definir»
+            c["bandera"] = x["bandera"].strip()
 
 
 def cargar_ref(wb) -> tuple[dict, dict, dict]:
