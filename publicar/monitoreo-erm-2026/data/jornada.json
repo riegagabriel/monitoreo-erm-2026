@@ -327,7 +327,7 @@
    "c": "ent",
    "u": "021003",
    "l": null,
-   "t": "Tensión en los exteriores de la I.E. 86394 de Cayas: pobladores increparon a ciudadanos a quienes señalan como presuntos «votantes golondrinos». La Policía acudió al lugar. Más tarde se reportaron enfrentamientos en los exteriores de un local de votación del mismo distrito."
+   "t": "Tensión en los exteriores de la I.E. 86394 de Cayas: pobladores increparon a ciudadanos a quienes señalan como presuntos «votantes golondrinos». La Policía se encuentra en el lugar."
   },
   {
    "id": "MAT-C23",
@@ -463,6 +463,15 @@
    "u": "160210",
    "l": null,
    "t": "El subprefecto del distrito informó de una confrontación entre residentes y un grupo de personas que llegaron a votar, a quienes los residentes señalan como presuntos electores «golondrinos»."
+  },
+  {
+   "id": "MAT-C26",
+   "h": 15.87,
+   "g": 2,
+   "c": "ent",
+   "u": "021003",
+   "l": null,
+   "t": "Se registraron enfrentamientos en los exteriores de un local de votación del distrito de Cajay por personas que, sin vivir en la zona, estarían eligiendo autoridades allí."
   },
   {
    "id": "ORI-20261004162107-L-14",
