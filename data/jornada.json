@@ -13,14 +13,14 @@
   "locales_completos": 27
  },
  "consultas": {
-  "total": 2402,
-  "orientadores": 51,
+  "total": 1794,
+  "orientadores": 50,
   "por_tipo": {
-   "Otras consultas": 934,
-   "Restitución de domicilio": 901,
-   "DNI vencido": 484,
-   "Cara de niño": 78,
-   "Ciudadanos fallecidos": 5
+   "Otras consultas": 792,
+   "Restitución de domicilio": 611,
+   "DNI vencido": 337,
+   "Cara de niño": 50,
+   "Ciudadanos fallecidos": 4
   }
  },
  "avance": {

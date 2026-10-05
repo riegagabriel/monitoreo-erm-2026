@@ -107,20 +107,18 @@ def normalizar(cabecera: list, filas: list) -> list[dict]:
 
 
 def resumen_consultas(reg: list[dict], inicio: dt.datetime) -> dict:
-    """Suma de las consultas de los cortes 2 y 3 (criterio del usuario, 04/10/2026). Si un orientador envio varias veces el mismo corte
-    (reenvios), vale el envio de mayor total."""
-    mejor: dict[tuple, dict] = {}
+    """Personas orientadas = consultas declaradas en el corte 3 (cierre; el formulario pide el total de toda la jornada).
+    Criterio del usuario, 04/10/2026: solo corte 3. Si un orientador envio el cierre varias veces, vale el envio de mayor total."""
+    mejor: dict[str, dict] = {}
     for r in reg:
-        if r["ts"] >= inicio and r["corte"] in (2, 3) and r.get("consultas"):
-            k = (r["k"], r["corte"])
-            if k not in mejor or sum(r["consultas"].values()) > sum(mejor[k].values()):
-                mejor[k] = r["consultas"]
+        if r["ts"] >= inicio and r["corte"] == 3 and r.get("consultas"):
+            if r["k"] not in mejor or sum(r["consultas"].values()) > sum(mejor[r["k"]].values()):
+                mejor[r["k"]] = r["consultas"]
     por_tipo: dict[str, int] = defaultdict(int)
-    orientadores = {k[0] for k in mejor}
     for v in mejor.values():
         for t, n in v.items():
             por_tipo[t] += n
-    return {"total": sum(por_tipo.values()), "orientadores": len(orientadores), "por_tipo": dict(sorted(por_tipo.items(), key=lambda a: -a[1]))}
+    return {"total": sum(por_tipo.values()), "orientadores": len(mejor), "por_tipo": dict(sorted(por_tipo.items(), key=lambda a: -a[1]))}
 
 
 def _lids(r: dict, base: dict[str, list[str]], por_local: dict | None) -> list[str]:
